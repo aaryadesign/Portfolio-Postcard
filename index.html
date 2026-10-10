@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aarya Shah — Picnic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@500&family=Yellowtail&display=swap" rel="stylesheet">
+<!-- one typeface per letter of the section title -->
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@700&family=Kalam:wght@400&family=Abril+Fatface&family=Archivo+Black&family=Bebas+Neue&family=Bowlby+One&family=Bungee&family=Cherry+Bomb+One&family=DM+Serif+Display:ital@1&family=Fraunces:ital,opsz,wght@1,9..144,900&family=Instrument+Serif:ital@1&family=Rubik+Mono+One&family=Shrikhand&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: #c8283a; }
+  body { font-family: 'Geist', system-ui, sans-serif; color: #2b2824; overflow-x: hidden; }
+  #track { position: relative; width: 1px; }
+  #scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity 0.9s ease; }
+  body.on #scene { opacity: 1; }
+  /* the words, for screen readers and search; the scene draws them as print */
+  .copy { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  /* tabbing to a link brings the words into view, so focus is never invisible */
+  .copy:focus-within { position: fixed; left: 16px; top: 16px; z-index: 2; width: auto; height: auto; max-height: calc(100% - 32px); overflow: auto;
+    clip-path: none; padding: 16px 20px; border-radius: 12px; background: rgba(251, 247, 238, 0.97); line-height: 1.5; }
+  #sound { position: fixed; right: 16px; bottom: 16px; display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 12px;
+    border: 0; border-radius: 999px; background: rgba(251, 247, 238, 0.94); color: #2b2824; cursor: pointer;
+    font: 500 12px/1 'Geist Mono', ui-monospace, monospace; letter-spacing: 0.06em; text-transform: uppercase;
+    box-shadow: 0 1px 2px rgba(70, 20, 25, 0.2), 0 8px 20px rgba(70, 20, 25, 0.16);
+    opacity: 0; transition: opacity 0.9s ease 0.6s, transform 0.2s ease; }
+  body.on #sound { opacity: 1; }
+  #sound:hover { transform: translateY(-1px); }
+  #sound:focus-visible { outline: 2px solid #2b2824; outline-offset: 2px; }
+  #sound .bars { display: flex; align-items: flex-end; gap: 2px; width: 14px; height: 12px; }
+  #sound .bars i { flex: 1; height: 3px; border-radius: 1px; background: currentColor; transition: height 0.3s ease; }
+  #sound[aria-pressed="true"] .bars i { animation: bar 0.9s ease-in-out infinite alternate; }
+  #sound[aria-pressed="true"] .bars i:nth-child(2) { animation-delay: -0.3s; }
+  #sound[aria-pressed="true"] .bars i:nth-child(3) { animation-delay: -0.6s; }
+  @keyframes bar { from { height: 3px; } to { height: 12px; } }
+  @media (prefers-reduced-motion: reduce) { #sound[aria-pressed="true"] .bars i { animation: none; height: 8px; } }
+  .nogl #sound { display: none; }
+  /* leaving an email on the sticker sheet's blank: a cream card that pops up beside it */
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  #logo { position: fixed; left: 0; top: 0; z-index: 3; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    width: min(340px, calc(100vw - 32px)); padding: 8px; border-radius: 30px; background: #fff8e4;
+    box-shadow: 0 1px 2px rgba(60, 40, 0, 0.25), 0 14px 34px rgba(60, 40, 0, 0.22);
+    opacity: 0; scale: 0.96; pointer-events: none; transform-origin: 50% 100%; transition: opacity 0.18s ease, scale 0.18s ease; }
+  #logo.on { opacity: 1; scale: 1; pointer-events: auto; }
+  #logo input { flex: 1; min-width: 0; height: 44px; padding: 0 16px; border: 1.5px solid #141210; border-radius: 999px;
+    background: #fff; color: #141210; font: 500 16px/1 'Geist', system-ui, sans-serif; }
+  #logo input::placeholder { color: #8a8170; }
+  #logo input:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 190, 18, 0.7); }
+  #logo button { height: 44px; padding: 0 20px; border: 0; border-radius: 999px; background: #141210; color: #ffbe12;
+    font: 600 15px/1 'Geist', system-ui, sans-serif; cursor: pointer; }
+  #logo button:disabled { opacity: 0.6; cursor: default; }
+  #logo button:focus-visible { outline: 2px solid #141210; outline-offset: 2px; }
+  #logo .err { flex-basis: 100%; margin: 0 10px 2px; font: 500 13px/1.3 'Geist', system-ui, sans-serif; color: #b42318; }
+  #logo .err:empty { display: none; }
+  @media (prefers-reduced-motion: reduce) { #logo { transition: none; } }
+  /* the paints under the colouring page, and the brush ring that follows the cursor over it */
+  #paints { position: fixed; left: 0; top: 0; z-index: 2; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px 10px;
+    padding: 8px; border-radius: 30px; background: #fff8e4; box-shadow: 0 1px 2px rgba(60, 40, 0, 0.22), 0 12px 30px rgba(60, 40, 0, 0.18);
+    opacity: 0; pointer-events: none; transition: opacity 0.35s ease; }
+  #paints.on { opacity: 1; pointer-events: auto; }
+  #paints .sw, #paints .sz, #paints .act { display: flex; align-items: center; gap: 8px; }
+  #paints .sz button[data-s] { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%;
+    background: transparent; cursor: pointer; }
+  #paints .sz button[data-s]:hover { background: rgba(20, 18, 16, 0.06); }
+  #paints .sz button[data-s] i { width: var(--d); height: var(--d); border-radius: 50%; box-shadow: 0 0 0 1.5px #141210; }
+  #paints .sz button[data-s][aria-pressed="true"] { outline: 2.5px solid #141210; outline-offset: -1px; }
+  #paints .sw { padding: 0 2px; }
+  #paints .sw button { width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%; background: var(--c); cursor: pointer;
+    box-shadow: inset 0 0 0 1.5px rgba(20, 18, 16, 0.18); transition: transform 0.15s ease; }
+  #paints .sw button:hover { transform: translateY(-2px); }
+  #paints .sw button[aria-pressed="true"] { outline: 2.5px solid #141210; outline-offset: 2.5px; }
+  #paints .tool { height: 36px; padding: 0 16px; border: 1.5px solid #141210; border-radius: 999px; background: transparent; color: #141210;
+    font: 600 14px/1 'Geist', system-ui, sans-serif; cursor: pointer; white-space: nowrap; }
+  #paints .tool:hover { background: rgba(20, 18, 16, 0.06); }
+  #paints .tool[aria-pressed="true"] { background: #141210; color: #fff8e4; }
+  #paints .save { background: #141210; color: #ffbe12; }
+  #paints .save:hover { background: #2b2824; }
+  #paints button:focus-visible { outline: 2.5px solid #141210; outline-offset: 2.5px; }
+  @media (max-width: 600px) {
+    #paints { width: calc(100vw - 24px); border-radius: 26px; }
+    #paints .sw button, #paints .sz button[data-s] { width: 40px; height: 40px; }
+    #paints .tool { height: 40px; padding: 0 14px; }
+  }
+  #brush { position: fixed; left: 0; top: 0; z-index: 2; border-radius: 50%; pointer-events: none; opacity: 0;
+    background: color-mix(in srgb, var(--c, #3f9a4f) 55%, transparent); box-shadow: 0 0 0 1.5px #141210; transition: opacity 0.15s ease; }
+  #brush.on { opacity: 1; }
+  #brush.erase { box-shadow: 0 0 0 1.5px #141210, inset 0 0 0 3px rgba(255, 255, 255, 0.9); }
+  @media (prefers-reduced-motion: reduce) { #paints, #brush { transition: none; } }
+  /* the nav: a stamp in the corner; it opens into a sheet of stamps, the one you are on postmarked */
+  #nav { position: fixed; left: 16px; top: 16px; z-index: 4; opacity: 0; transition: opacity 0.9s ease 0.6s; }
+  body.on #nav { opacity: 1; }
+  #nav button { padding: 0; border: 0; background: none; cursor: pointer; }
+  #nav img { display: block; width: 100%; height: 100%; }
+  #nav .open { display: block; width: 60px; height: 73px; rotate: -4deg;
+    filter: drop-shadow(0 1px 1px rgba(70, 20, 25, 0.28)) drop-shadow(0 6px 12px rgba(70, 20, 25, 0.22));
+    transition: rotate 0.35s cubic-bezier(0.2, 1.6, 0.4, 1), translate 0.35s cubic-bezier(0.2, 1.6, 0.4, 1), scale 0.35s cubic-bezier(0.2, 1.6, 0.4, 1), filter 0.25s ease; }
+  #nav .open[aria-expanded="true"] { rotate: 6deg; scale: 0.96; }
+  /* the sheet slides out to the right of the stamp, unrolling from it */
+  #nav .sheet { position: absolute; left: 72px; top: -6px; display: grid; grid-template-columns: repeat(5, 84px); gap: 14px; padding: 18px;
+    border-radius: 18px; background: #fff8e4; box-shadow: 0 1px 2px rgba(60, 40, 0, 0.22), 0 14px 34px rgba(60, 40, 0, 0.22);
+    transform-origin: -14px 42px; opacity: 0; scale: 0.6 0.9; translate: -24px 0; visibility: hidden;
+    transition: opacity 0.16s ease, scale 0.24s ease-in, translate 0.24s ease-in, visibility 0s linear 0.24s; }
+  #nav .sheet.on { opacity: 1; scale: 1; translate: 0 0; visibility: visible;
+    transition: opacity 0.14s ease, scale 0.5s cubic-bezier(0.2, 1.25, 0.35, 1), translate 0.5s cubic-bezier(0.2, 1.25, 0.35, 1), visibility 0s; }
+  /* the stamps are dealt out one after another, flicked in from the left and spinning to rest */
+  #nav .st { position: relative; width: 84px; height: 102px; rotate: calc(var(--r) - 24deg); translate: -46px 6px; scale: 0.55; opacity: 0;
+    filter: drop-shadow(0 1px 1px rgba(60, 40, 0, 0.25)) drop-shadow(0 4px 8px rgba(60, 40, 0, 0.16));
+    transition: translate 0.18s ease-in, rotate 0.18s ease-in, scale 0.18s ease-in, opacity 0.12s ease, filter 0.25s ease; }
+  #nav .sheet.on .st { rotate: var(--r); translate: 0 0; scale: 1; opacity: 1;
+    transition: translate 0.55s cubic-bezier(0.2, 1.5, 0.4, 1) var(--d), rotate 0.6s cubic-bezier(0.2, 1.7, 0.4, 1) var(--d),
+      scale 0.5s cubic-bezier(0.2, 1.5, 0.4, 1) var(--d), opacity 0.14s ease var(--d), filter 0.25s ease; }
+  /* hovered: picked up off the sheet, straightened, a little wobble as it comes up */
+  @media (hover: hover) {
+    #nav .open:hover { rotate: 0deg; translate: 0 -3px; scale: 1.06; filter: drop-shadow(0 2px 2px rgba(70, 20, 25, 0.24)) drop-shadow(0 12px 18px rgba(70, 20, 25, 0.24)); }
+    #nav .open:hover img { animation: nav-wob 0.5s ease; }
+    #nav .sheet.on .st:hover { rotate: 0deg; translate: 0 -8px; scale: 1.08;
+      filter: drop-shadow(0 3px 3px rgba(60, 40, 0, 0.2)) drop-shadow(0 14px 18px rgba(60, 40, 0, 0.22));
+      transition: translate 0.35s cubic-bezier(0.2, 1.6, 0.4, 1), rotate 0.35s cubic-bezier(0.2, 1.6, 0.4, 1), scale 0.35s cubic-bezier(0.2, 1.6, 0.4, 1), filter 0.25s ease; }
+    #nav .sheet.on .st:hover img { animation: nav-wob 0.5s ease; }
+  }
+  #nav .sheet.on .st:active { scale: 0.96; transition-duration: 0.08s; }
+  @keyframes nav-wob { 0% { rotate: 0deg; } 30% { rotate: -4deg; } 60% { rotate: 2.5deg; } 85% { rotate: -1deg; } 100% { rotate: 0deg; } }
+  /* the postmark on the part you are in, struck down onto the stamp */
+  #nav .st .pm { position: absolute; right: -16px; top: -6px; width: 66px; height: 38px; opacity: 0; rotate: -12deg; pointer-events: none; }
+  #nav .st[aria-current="true"] .pm { opacity: 0.85; }
+  #nav .sheet.on .st[aria-current="true"] .pm { animation: nav-pm 0.4s cubic-bezier(0.3, 1.4, 0.5, 1) calc(var(--d) + 0.3s) both; }
+  @keyframes nav-pm { from { opacity: 0; scale: 1.6; } to { opacity: 0.85; scale: 1; } }
+  #nav button:focus-visible { outline: 2.5px solid #141210; outline-offset: 3px; border-radius: 4px; }
+  @media (max-width: 600px) {
+    #nav .open { width: 52px; height: 63px; }
+    #nav .sheet { left: 62px; top: -4px; grid-template-columns: repeat(3, 64px); gap: 10px; padding: 12px; border-radius: 16px; transform-origin: -12px 36px; }
+    #nav .st { width: 64px; height: 78px; }
+    #nav .st .pm { right: -12px; top: -5px; width: 50px; height: 29px; }
+  }
+  @media (prefers-reduced-motion: reduce) { #nav .sheet, #nav .st, #nav .open { transition: none !important; } #nav img, #nav .pm { animation: none !important; } }
+  .nogl #nav { display: none; }
+  .nogl .copy { position: fixed; inset: 0; width: auto; height: auto; clip-path: none; white-space: normal; background: #f4eee0; padding: 48px 24px; max-width: 640px; margin: auto; line-height: 1.5; }
+</style>
+</head>
+<body>
+  <div id="track"></div>
+  <canvas id="scene" aria-hidden="true"></canvas>
+  <button id="sound" type="button" aria-pressed="false"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="label">Sound off</span></button>
+  <main class="copy">
+    <h1>Aarya Shah</h1>
+    <p>AI Product Designer, 3+ years of experience. Open to work.</p>
+    <p>I’m Aarya. I’m happiest when a fuzzy idea turns into something people actually trust.</p>
+    <h2>Selected work</h2>
+    <ul>
+      <li>Tidepool — Design, 2025</li>
+      <li>Lantern — Build, 2025</li>
+      <li>Field Notes — Research, 2024</li>
+      <li>Orchard — Design + Build, 2024</li>
+    </ul>
+  </main>
+<script src="paint.js"></script>
+<script src="print.js"></script>
+<script src="colour.js"></script>
+<script src="scene.js"></script>
+<script src="nature.js"></script>
+<script src="butterflies.js"></script>
+<script src="sound.js"></script>
+<script src="props.js"></script>
+<script src="picnic.js"></script>
+</body>
+</html>
