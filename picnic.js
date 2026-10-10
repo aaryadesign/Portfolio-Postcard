@@ -15,19 +15,19 @@
   const INTRO = 'I’m Aarya. I’m happiest when a fuzzy idea turns into something people actually trust. I collect small moments: the pause before an answer, the words on a button, the feeling that something just understood you. Consider this a little postcard from my corner of the internet.';
   const ADDRESS = ['Aarya Shah', 'AI Product Designer', '3+ years of experience'];
 
-  // Placeholder projects. Each stamp is its own design; the postmark says what kind of work it was.
+  // The projects, in order. The first is the stamp on the back of the postcard, which peels off and leads
+  // the row; the rest lie along the mat after it. The art is Aarya's own; each gets postmarked as you reach
+  // it, in a corner clear of the picture.
+  const COVER = 'goalkeeper';
   const PROJECTS = [
-    { design: 'tidepool', type: 'Design', year: '2025', no: 'NO. 02', ink: '#c2303a', pm: { x: 104, y: 98, R: 44, waves: 1, waveLen: 84 },
-      stickers: [['sun', 'AI', '#f6c945', '#d0461f', 84, 84, -30, -28, -0.2], ['oval', 'Shipped', '#2f58b8', '#bfe3ff', 120, 72, 346, 262, 0.15]] },
-    { design: 'lantern', type: 'Build', year: '2025', no: 'NO. 03', ink: '#efe2bf', pm: { x: 364, y: 226, R: 40 },
-      stickers: [['square', 'Web', '#ef6b2c', '#ffd84a', 74, 74, -26, 240, -0.14], ['circle', 'Design\nsystem', '#6cbf5a', '#1f3f8a', 92, 92, 374, -30, 0.1]] },
-    { design: 'fieldnotes', type: 'Research', year: '2024', no: 'NO. 04', ink: '#2f6a3f', pm: { x: 372, y: 238, R: 40 },
-      stickers: [['circle', '12\ninterviews', '#5ec3d6', '#173f86', 96, 96, -36, -32, -0.1], ['sun', 'LLM', '#f6c945', '#d0461f', 80, 80, -30, 246, 0.24]] },
-    { design: 'orchard', type: 'Design + Build', year: '2024', no: 'NO. 05', ink: '#5b2a6c', pm: { x: 352, y: 196, R: 42 },
-      // inside the edge on this one: it gets turned over, and they go under with it
-      stickers: [['oval', 'iOS + Web', '#2f58b8', '#bfe3ff', 130, 76, 292, 226, -0.14], ['sun', 'Agents', '#f6c945', '#d0461f', 94, 94, 14, 14, 0.2]] },
+    { id: 'phonepe', ink: '#2a3a7a', pm: { x: 352, y: 224, R: 40 } },
+    { id: 'ride-through-the-valley', ink: '#7a1f2a', pm: { x: 90, y: 220, R: 40 } },
+    { id: 'dayro', ink: '#7a1f2a', pm: { x: 90, y: 224, R: 40 } },
+    { id: 'lamad', ink: '#2a3a7a', pm: { x: 352, y: 220, R: 40 } },
+    { id: 'transporter', ink: '#2a3a7a', pm: { x: 352, y: 222, R: 40 } },
+    { id: 'quickmart', ink: '#7a1f2a', pm: { x: 90, y: 220, R: 40 } },
   ];
-  const ROT = [-0.035, 0.04, -0.025, 0.05, -0.04];
+  const ROT = [-0.035, 0.04, -0.025, 0.05, -0.04, 0.035, -0.03];
   // What people said, each written on the back of a stamp. The first is the last project's stamp, turned over.
   const TESTIMONIALS = [
     { name: 'Heet Jivani', role: 'Founder @ Stairs Media', client: 'stairs',
@@ -116,7 +116,7 @@
   try { if (localStorage.getItem('picnic-logo') === '1') logo.savedAt = 1; } catch (e) {}
   let sheetTex = null, sheetKey = '', contactTex = [], contactKey = '', copiedTex = null, blankTex = null, savedTex = null;
   let foot = null, painter = null, footTex = null, footKey = '', flashTex = null;
-  const clientTex = {}, assets = { clients: {}, title: null };
+  const clientTex = {}, assets = { clients: {}, title: null, stamps: {} };
 
   function layout() {
     vw = innerWidth; vh = innerHeight;
@@ -310,7 +310,7 @@
       cardKey = key;
       if (tex) for (const k of ['front', 'sig', 'back', 'backPeeled', 'cover']) gl.deleteTexture(tex[k]);
       const mark = Print.openMark(portrait, DATE);
-      const cover = Print.coverStamp(portrait, mark);
+      const cover = Print.coverStamp(portrait, mark, assets.stamps[COVER]);
       const common = { cw, ch, TW, portrait, cover, mark, intro: INTRO, lines: ADDRESS };
       tex = {
         front: scene.texture(Print.front(cw, ch, TW)),
@@ -322,10 +322,10 @@
     }
     if (!stampTex.length) {
       PROJECTS.forEach((p, i) => {
-        const s = Print.stamp(p.design, { ...p.pm, top: p.type.toUpperCase(), bottom: 'AARYA SHAH', l1: p.year, l2: p.no, color: p.ink, seed: 20 + i });
+        const s = Print.stamp(assets.stamps[p.id], { ...p.pm, top: 'SELECTED WORK', bottom: 'AARYA SHAH', l1: DATE[0], l2: DATE[1], color: p.ink, seed: 20 + i });
         stampTex.push({
           plain: scene.texture(s.plain), inked: scene.texture(s.inked),
-          stickers: p.stickers.map(([kind, text, bg, fg, w, h, x, y, r]) => {
+          stickers: (p.stickers || []).map(([kind, text, bg, fg, w, h, x, y, r]) => {
             const st = Print.sticker(kind, text, bg, fg, w, h);
             return { tex: scene.texture(st.canvas), w: st.w, h: st.h, cx: x + w / 2 - Print.SW / 2, cy: y + h / 2 - Print.SH / 2, r };
           }),
@@ -418,16 +418,18 @@
     return x + last * 0.14;
   }
 
+  // the stamps are drawn from their art, so nothing is printed until it is here
+  const loadImg = (src) => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
+  const stampsLoaded = Promise.all([COVER, ...PROJECTS.map((p) => p.id)].map((id) => loadImg(`stamps/${id}.webp`).then((im) => { assets.stamps[id] = im; }).catch(() => {})));
   Promise.all([
     document.fonts.load("400 40px 'Geist'"), document.fonts.load("500 40px 'Geist'"), document.fonts.load("600 40px 'Geist'"),
     document.fonts.load("700 40px 'Geist'"), document.fonts.load("800 40px 'Geist'"), document.fonts.load("500 40px 'Geist Mono'"),
     document.fonts.load("400 40px 'Yellowtail'"), document.fonts.load("700 40px 'Source Serif 4'", 'NORISKTY'),
     document.fonts.load("400 40px 'Kalam'"), document.fonts.load("400 40px 'Cherry Bomb One'", 'Be the next sticker.Say hi to me'), document.fonts.load("italic 400 40px 'DM Serif Display'", '\u201c'),
     ...TITLE.filter((t) => t[1]).map(([ch, sp]) => document.fonts.load(`${sp.style || ''} ${sp.weight || 400} 40px '${sp.family}'`, ch)),
-  ]).catch(() => {}).then(() => { fontsReady = true; if (vw) build(); });
+  ]).catch(() => {}).then(() => stampsLoaded).then(() => { fontsReady = true; if (vw) build(); });
 
   // the client stickers as supplied (their painted shadows taken out) and the title artwork
-  const loadImg = (src) => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
   Promise.all([
     ...CLIENTS.map((id) => loadImg(`clients/${id}.png`).then((im) => { assets.clients[id] = Print.cleanSticker(im); }).catch(() => {})),
     loadImg('clients/title.svg').then((im) => { assets.title = im; }).catch(() => {}),

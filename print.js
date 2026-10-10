@@ -140,8 +140,9 @@ window.Print = (() => {
     return { canvas: c, W, H, cx, cy };
   }
 
-  // ---- stamps: 440 x 320 units, perforated edges ----
-  const SW = 440, SH = 320, SK = 2;
+  // ---- stamps: 440 x 308 units. The art is Aarya's own (stamps/*.webp), perforations and all; it is drawn
+  // to fill the stamp, and the postmark goes on top ----
+  const SW = 440, SH = 308, SK = 2.5;
   function perforate(ctx, W, H, r = 7.5) {
     ctx.save();
     ctx.globalCompositeOperation = 'destination-out';
@@ -152,121 +153,9 @@ window.Print = (() => {
     ctx.fill();
     ctx.restore();
   }
-  function art(name, w, h) {
-    const c = canvas(w * SK, h * SK);
-    Paint.paint(c, name);
-    return c;
-  }
-  function framed(ctx, img, x, y, w, h, r) {
-    ctx.save(); rr(ctx, x, y, w, h, r); ctx.clip(); ctx.drawImage(img, x, y, w, h); ctx.restore();
-  }
-  function dots(ctx, x, y, a, b) {
-    ctx.fillStyle = a; ctx.beginPath(); ctx.arc(x, y, 7, 0, TAU); ctx.fill();
-    ctx.globalCompositeOperation = 'multiply';
-    ctx.fillStyle = b; ctx.beginPath(); ctx.arc(x + 10, y, 7, 0, TAU); ctx.fill();
-    ctx.globalCompositeOperation = 'source-over';
-  }
-
-  const DESIGNS = {
-    cover(ctx) {
-      paper(ctx, SW, SH, '#f6f0e2', 11, 10);
-      framed(ctx, art('tree', 222, 284), 18, 18, 222, 284, 10);
-      const x = 258;
-      ctx.fillStyle = INK;
-      font(ctx, 700, 10); spaced(ctx, 'AARYA SHAH', x, 40, 2);
-      font(ctx, 800, 22); ctx.textAlign = 'right'; ctx.fillText('04', 422, 44); ctx.textAlign = 'left';
-      font(ctx, 800, 40);
-      ctx.fillText('Selected', x - 2, 128);
-      ctx.fillText('work.', x - 2, 166);
-      font(ctx, 500, 13);
-      ctx.fillStyle = INK;
-      font(ctx, 800, 20); ctx.fillText('2023—26', x, 296);
-      dots(ctx, 402, 290, '#c8283a', '#6f8c40');
-    },
-    tidepool(ctx) {
-      paper(ctx, SW, SH, '#f7f1e3', 21, 10);
-      framed(ctx, art('waves', 404, 284), 18, 18, 404, 284, 9);
-      ctx.fillStyle = '#fbf4e4';
-      font(ctx, 800, 50); ctx.textAlign = 'right'; ctx.fillText('25', 406, 70);
-      font(ctx, 700, 9.5); spaced(ctx, 'AARYA SHAH', 406, 88, 2, 'right');
-      ctx.textAlign = 'left';
-      ctx.save();
-      ctx.shadowColor = 'rgba(10,20,50,.45)'; ctx.shadowBlur = 8;
-      font(ctx, 400, 44, 'script'); ctx.fillText('Talking to the tide', 34, 262);
-      ctx.restore();
-      font(ctx, 600, 10); spaced(ctx, 'TIDEPOOL  ·  2025', 36, 288, 1.8);
-    },
-    lantern(ctx) {
-      const gold = '#d9bb6c', cream = '#f3e8cc';
-      ctx.fillStyle = '#1b2852'; ctx.fillRect(0, 0, SW, SH);
-      paper(ctx, SW, SH, '#1b2852', 31, 8);
-      ctx.strokeStyle = gold;
-      ctx.lineWidth = 1.6; ctx.strokeRect(16, 16, SW - 32, SH - 32);
-      ctx.lineWidth = 0.7; ctx.strokeRect(21, 21, SW - 42, SH - 42);
-      // engraved rosette behind the medallion
-      ctx.save();
-      ctx.translate(136, 160);
-      ctx.strokeStyle = 'rgba(217,187,108,.28)'; ctx.lineWidth = 0.6;
-      for (let i = 0; i < 56; i++) { ctx.rotate(Math.PI / 56); ctx.beginPath(); ctx.ellipse(0, 0, 112, 42, 0, 0, TAU); ctx.stroke(); }
-      ctx.restore();
-      ctx.save(); ctx.beginPath(); ctx.arc(136, 160, 84, 0, TAU); ctx.clip();
-      ctx.drawImage(art('night', 170, 170), 51, 75, 170, 170); ctx.restore();
-      ctx.strokeStyle = gold;
-      ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(136, 160, 85, 0, TAU); ctx.stroke();
-      ctx.lineWidth = 0.8; ctx.beginPath(); ctx.arc(136, 160, 91, 0, TAU); ctx.stroke();
-      const x = 252;
-      ctx.fillStyle = gold;
-      font(ctx, 500, 10.5, 'mono'); spaced(ctx, 'BUILD', x, 54, 3); ctx.textAlign = 'right'; ctx.fillText('№ 03', 410, 54); ctx.textAlign = 'left';
-      ctx.fillStyle = cream;
-      font(ctx, 800, 34); spaced(ctx, 'LANTERN', x - 1, 104, 1.5);
-      ctx.strokeStyle = gold; ctx.lineWidth = 0.8; ctx.beginPath(); ctx.moveTo(x, 120); ctx.lineTo(410, 120); ctx.stroke();
-      font(ctx, 500, 15);
-      ['Flipping the lights', 'on for a whole', 'AI workspace.'].forEach((l, i) => ctx.fillText(l, x, 148 + i * 20));
-      ctx.fillStyle = gold;
-      font(ctx, 800, 28); ctx.fillText('2025', x, 290);
-      font(ctx, 500, 8.5, 'mono'); spaced(ctx, 'AARYA SHAH', 410, 288, 1.5, 'right');
-    },
-    fieldnotes(ctx) {
-      paper(ctx, SW, SH, '#f4efdf', 41, 10);
-      framed(ctx, art('meadow', 176, 284), 18, 18, 176, 284, 9);
-      ctx.strokeStyle = 'rgba(70,110,170,.35)'; ctx.lineWidth = 0.8;
-      for (let y = 112; y < 300; y += 24) { ctx.beginPath(); ctx.moveTo(206, y); ctx.lineTo(420, y); ctx.stroke(); }
-      ctx.strokeStyle = 'rgba(200,60,60,.45)';
-      ctx.beginPath(); ctx.moveTo(222, 18); ctx.lineTo(222, 302); ctx.stroke();
-      ctx.fillStyle = INK;
-      font(ctx, 500, 8.5, 'mono'); spaced(ctx, 'AARYA SHAH · RESEARCH', 232, 38, 1.2);
-      font(ctx, 800, 30); ctx.fillText('FIELD NOTES', 231, 74);
-      ctx.fillStyle = PEN;
-      font(ctx, 400, 25, 'script');
-      ctx.fillText('Listening to twelve', 232, 133);
-      ctx.fillText('strangers, closely.', 232, 157);
-      ctx.fillStyle = INK;
-      font(ctx, 500, 10.5, 'mono');
-      ['✓ 12 interviews', '✓ 3 big themes', '✓ 1 useful truth'].forEach((l, i) => ctx.fillText(l, 232, 204 + i * 24));
-      font(ctx, 800, 18); ctx.fillText('2024', 232, 294);
-    },
-    orchard(ctx) {
-      paper(ctx, SW, SH, '#f6efe0', 51, 10);
-      ctx.fillStyle = '#e8742a'; rr(ctx, 18, 18, 404, 100, 9); ctx.fill();
-      ctx.fillStyle = '#fbefd8';
-      font(ctx, 800, 62); spaced(ctx, 'ORCHARD', 28, 98, -2);
-      font(ctx, 500, 9.5, 'mono'); ctx.textAlign = 'right';
-      ctx.fillText('DESIGN', 410, 44); ctx.fillText('+ BUILD', 410, 58);
-      font(ctx, 800, 22); ctx.fillText('2024', 410, 104); ctx.textAlign = 'left';
-      framed(ctx, art('orchard', 404, 176), 18, 126, 404, 176, 9);
-      ctx.save();
-      ctx.shadowColor = 'rgba(60,30,10,.45)'; ctx.shadowBlur = 8;
-      ctx.fillStyle = '#fbefd8';
-      font(ctx, 400, 36, 'script'); ctx.fillText('Raising a team of agents', 32, 286);
-      ctx.restore();
-    },
-  };
-
-  function stamp(design, mark) {
+  function stamp(img, mark) {
     const c = canvas(SW * SK, SH * SK), ctx = c.getContext('2d');
-    ctx.scale(SK, SK);
-    DESIGNS[design](ctx);
-    perforate(ctx, SW, SH);
+    if (img) ctx.drawImage(img, 0, 0, c.width, c.height);
     if (!mark) return c;
     const inked = canvas(c.width, c.height), ic = inked.getContext('2d');
     ic.drawImage(c, 0, 0);
@@ -497,8 +386,8 @@ window.Print = (() => {
   }
 
   // The cover stamp, inked with the part of the card's postmark that landed on it
-  function coverStamp(portrait, mark) {
-    const plain = stamp('cover');
+  function coverStamp(portrait, mark, img) {
+    const plain = stamp(img);
     const Lo = backLayout(portrait, 0), s = Lo.slot, sh = (s.w * SH) / SW, p = Lo.pm;
     const inked = canvas(plain.width, plain.height), ic = inked.getContext('2d');
     ic.drawImage(plain, 0, 0);
