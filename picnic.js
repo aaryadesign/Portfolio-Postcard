@@ -11,8 +11,7 @@
   const backOut = (t) => 1 + 2.4 * Math.pow(t - 1, 3) + 1.4 * Math.pow(t - 1, 2);
   const smooth = (t) => t * t * (3 - 2 * t);
 
-  // Placeholder words, to be replaced with Aarya's own
-  const INTRO = 'I’m Aarya. I’m happiest when a fuzzy idea turns into something people actually trust. I collect small moments: the pause before an answer, the words on a button, the feeling that something just understood you. Consider this a little postcard from my corner of the internet.';
+  const INTRO = 'A product designer. For three years I designed the heavy stuff: fuel logistics, ERPs, a 200-store retail chain, and 27 client projects across 7 countries at Whatmatters. Now AI lets designers build, so I ship what I design: three websites and two apps lately. The latest, Goalkeeper, is a voice assistant in testing, with 35 people waiting. Next, I want a team where I own the work and its numbers.';
   const ADDRESS = ['Aarya Shah', 'AI Product Designer', '3+ years of experience'];
 
   // The projects, in order. The first is the stamp on the back of the postcard, which peels off and leads

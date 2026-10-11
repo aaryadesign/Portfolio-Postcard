@@ -339,12 +339,18 @@ window.Print = (() => {
     ctx.fillText('Hello there,', mx, y);
     y += portrait ? 76 : 56;
     ctx.fillStyle = INK;
-    const fs = portrait ? 33 : 21.5, lh = portrait ? 50 : 33.5;
-    font(ctx, 400, fs);
-    wrap(ctx, intro, mw).forEach((l) => { ctx.fillText(l, mx, y); y += lh; });
-
-    // pictograms with a pencilled note
+    // pictograms with a pencilled note under it; the message gets smaller until it fits above them
     const py = portrait ? 1205 : 500, S = portrait ? 112 : 74, gap = portrait ? 104 : 40;
+    const room = py - (portrait ? 26 : 18) - (portrait ? 74 : 34) - y;
+    let fs = portrait ? 33 : 21.5, lh, msg;
+    for (;; fs -= 0.5) {
+      lh = fs * (portrait ? 1.5 : 1.56);
+      font(ctx, 400, fs);
+      msg = wrap(ctx, intro, mw);
+      if ((msg.length - 1) * lh <= room || fs <= 12) break;
+    }
+    msg.forEach((l) => { ctx.fillText(l, mx, y); y += lh; });
+
     ctx.fillStyle = PEN;
     font(ctx, 400, portrait ? 34 : 25, 'script');
     ctx.fillText('how I spend my days', mx, py - (portrait ? 26 : 18));
