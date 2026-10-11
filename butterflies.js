@@ -103,7 +103,7 @@ window.Butterflies = (() => {
 
     // c: { t, dt, cam, camY, vw, vh, zv, supports, ptr: {x, y, moving} | null, surfaceAt, toScreen, on }
     function step(c, out) {
-      const want = c.on ? (c.vw < 700 ? 2 : 3) : 0;
+      const want = c.on ? 1 : 0;
       u = c.vw < 700 ? 0.85 : 1;
       while (flock.length < want) { const b = {}; spawn(b, c, flock.length > 0); flock.push(b); }
       if (!want) return;

@@ -388,10 +388,11 @@ window.Nature = (() => {
     function step(t, dt, c, out) {
       const byId = {};
       for (const sp of c.supports) byId[sp.id] = sp;
-      const cap = c.vw < 700 ? 8 : 14;
+      // kept sparse: a few at a time, now and then
+      const cap = c.vw < 700 ? 4 : 6;
 
       if (t >= nextAt) {
-        nextAt = t + 3 + r() * 3.5;
+        nextAt = t + 7 + r() * 6;
         const air = items.filter((f) => f.state === 'air').length;
         if (items.length >= cap) {
           // make room: forget one lying out of sight, or let the wind carry one off the mat
@@ -403,7 +404,7 @@ window.Nature = (() => {
             if (old) push(old, t, 260 + r() * 140, (r() - 0.4) * 60, true);
           }
         }
-        if (air < 3 && items.length < cap) spawn(t, c);
+        if (air < 1 && items.length < cap) spawn(t, c);
       }
 
       // a quick swipe of the cursor knocks lying leaves aside

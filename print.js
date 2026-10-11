@@ -2,7 +2,7 @@
 // All of it is drawn to canvases that become textures in the scene.
 window.Print = (() => {
   const TAU = Math.PI * 2;
-  const INK = '#2b2824', PEN = '#23306e', PAPER = '#f4eee0';
+  const INK = '#2b2824', PAPER = '#f4eee0';
 
   function rng(seed) {
     let a = seed >>> 0;
@@ -290,12 +290,6 @@ window.Print = (() => {
 
     // header, the way old cards were printed
     font(ctx, 700, portrait ? 30 : 24); spaced(ctx, 'POST CARD', 500, portrait ? 74 : 62, portrait ? 16 : 13, 'center');
-    if (!portrait) {
-      font(ctx, 500, 9, 'mono');
-      ctx.fillStyle = 'rgba(43,40,36,.65)';
-      spaced(ctx, 'CORRESPONDENCE', 60, 62, 1.6);
-      spaced(ctx, 'NAME & ADDRESS', 944, 62, 1.6, 'right');
-    }
 
     // stamp box, seen once the stamp is gone
     ctx.save();
@@ -322,26 +316,25 @@ window.Print = (() => {
       ctx.restore();
     }
 
-    // the address side: name, role, experience, in pen
+    // the address side: name, role, experience, set in the same type as the message
     const ax0 = portrait ? 70 : 600, ax1 = portrait ? 930 : 944;
     const ay = portrait ? [420, 500, 580] : [330, 404, 478];
     ctx.strokeStyle = 'rgba(43,40,36,.38)'; ctx.lineWidth = 1.2;
     ay.forEach((y) => { ctx.beginPath(); ctx.moveTo(ax0, y + 12); ctx.lineTo(ax1, y + 12); ctx.stroke(); });
-    ctx.fillStyle = PEN;
-    font(ctx, 400, portrait ? 46 : 36, 'script');
-    lines.forEach((l, i) => ctx.fillText(l, ax0 + 6, ay[i]));
+    ctx.fillStyle = INK;
+    lines.forEach((l, i) => { font(ctx, i ? 500 : 700, portrait ? (i ? 32 : 38) : i ? 23 : 28); ctx.fillText(l, ax0 + 6, ay[i]); });
 
     // the message
     const mx = portrait ? 70 : 60, mw = portrait ? 860 : 455;
     let y = portrait ? 790 : 156;
-    ctx.fillStyle = PEN;
-    font(ctx, 400, portrait ? 66 : 52, 'script');
-    ctx.fillText('Hello there,', mx, y);
-    y += portrait ? 76 : 56;
     ctx.fillStyle = INK;
-    // pictograms with a pencilled note under it; the message gets smaller until it fits above them
+    font(ctx, 700, portrait ? 50 : 36);
+    ctx.fillText('Hello there,', mx, y);
+    y += portrait ? 66 : 48;
+    ctx.fillStyle = INK;
+    // pictograms under it; the message gets smaller until it fits above them
     const py = portrait ? 1205 : 500, S = portrait ? 112 : 74, gap = portrait ? 104 : 40;
-    const room = py - (portrait ? 26 : 18) - (portrait ? 74 : 34) - y;
+    const room = py - (portrait ? 70 : 44) - y;
     let fs = portrait ? 33 : 21.5, lh, msg;
     for (;; fs -= 0.5) {
       lh = fs * (portrait ? 1.5 : 1.56);
@@ -351,9 +344,6 @@ window.Print = (() => {
     }
     msg.forEach((l) => { ctx.fillText(l, mx, y); y += lh; });
 
-    ctx.fillStyle = PEN;
-    font(ctx, 400, portrait ? 34 : 25, 'script');
-    ctx.fillText('how I spend my days', mx, py - (portrait ? 26 : 18));
     const labels = ['research', 'design', 'prototype', 'build'];
     labels.forEach((kd, i) => {
       const x = mx + i * (S + gap);
