@@ -79,11 +79,9 @@ window.Scene = (() => {
     float ca = cos(a), sa = sin(a);
     p = vec2(ca*p.x + sa*p.y, -sa*p.x + ca*p.y);
     p.x -= len*.5;
-    // an ellipse, a little wider toward the stalk, measured as a true distance so a soft shadow stays
-    // leaf-shaped (a boxy estimate grew square fingers off the tips once blurred)
-    vec2 r = vec2(len*.5, W*(p.x < 0. ? 1.1 : .85));
-    float k0 = length(p/r), k1 = length(p/(r*r));
-    return k0*(k0 - 1.)/max(k1, 1e-4);
+    float t = clamp(p.x/(len*.5), -1., 1.);
+    float w = W*sqrt(max(0., 1. - t*t))*(1.1 - .3*t);
+    return max(abs(p.x) - len*.5, abs(p.y) - w);
   }
   vec2 branch(vec2 p, vec4 b, vec4 c, float t){
     vec2 base = b.xy;
@@ -109,7 +107,7 @@ window.Scene = (() => {
       vec2 pt = pa - tb;
       float tAlong = dot(pt, td);
       float bl = blur*(.55 + 1.*hash1(fi + seed*7.));
-      if (abs(dot(pt, tn)) > 110. + bl*2.5 || tAlong < -100. || tAlong > tl + 110. + bl*2.5) continue;
+      if (abs(dot(pt, tn)) > 80. + bl*2. || tAlong < -70. || tAlong > tl + 80.) continue;
       s = min(s, edge(bl, length(pt - td*clamp(tAlong, 0., tl)) - 1.3));
       for (int j = 0; j < 8; j++) {
         float fj = float(j);
