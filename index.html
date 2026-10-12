@@ -137,6 +137,13 @@
   @media (prefers-reduced-motion: reduce) { #nav .sheet, #nav .st, #nav .open { transition: none !important; } #nav img, #nav .pm { animation: none !important; } }
   .nogl #nav { display: none; }
   .nogl .copy { position: fixed; inset: 0; width: auto; height: auto; clip-path: none; white-space: normal; background: #f4eee0; padding: 48px 24px; max-width: 640px; margin: auto; line-height: 1.5; }
+  /* a case study: a letter in a frame over the scene, and the stamp being carried onto it */
+  #case { position: fixed; inset: 0; z-index: 5; width: 100%; height: 100%; border: 0; background: transparent; color-scheme: light; }
+  body.case #nav, body.case #sound { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+  #fly { position: fixed; left: 0; top: 0; z-index: 6; pointer-events: none; transform-origin: 50% 50%; will-change: transform; }
+  #fly .card { position: absolute; inset: 0; transform-style: preserve-3d; }
+  #fly canvas { position: absolute; inset: 0; width: 100%; height: 100%; backface-visibility: hidden; }
+  #fly canvas.b { transform: rotateY(180deg); }
 </style>
 </head>
 <body>
@@ -164,5 +171,6 @@
 <script src="sound.js"></script>
 <script src="props.js"></script>
 <script src="picnic.js"></script>
+<script src="case.js"></script>
 </body>
 </html>

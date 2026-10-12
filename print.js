@@ -800,5 +800,5 @@ window.Print = (() => {
     return c;
   }
 
-  return { navStamp, rng, paper, stickerSheet, blankSticker, contactSticker, inkStamp, CONTACT_DIMS, testimonial, stampBack, dieCut, cleanSticker, letter, stamp, sticker, front, signature, back, coverStamp, openMark, title, SW, SH, backLayout, SLOT_ROT };
+  return { navStamp, rng, paper, postmark, stickerSheet, blankSticker, contactSticker, inkStamp, CONTACT_DIMS, testimonial, stampBack, dieCut, cleanSticker, letter, stamp, sticker, front, signature, back, coverStamp, openMark, title, SW, SH, backLayout, SLOT_ROT };
 })();

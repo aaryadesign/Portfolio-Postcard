@@ -115,6 +115,9 @@
   let tex = null, cardKey = '', titles = null, fontsReady = false, startAt = 0;
   const stampTex = [];
   let coverBack = null;
+  // the cover stamp as drawn, for carrying it off the mat onto the case study's letter (case.js)
+  const coverArt = { front: null, back: null };
+  let coverObj = null, coverHidden = false;
   let sec = null, testTex = [], testKey = '', titleTex = null, assetsReady = false;
   // "Your logo here": tap it to leave an email, kept in Supabase. The key is the publishable one, and the
   // table only lets this page add a row, never read any back.
@@ -326,9 +329,11 @@
         backPeeled: scene.texture(Print.back({ ...common, peeled: true })),
         cover: scene.texture(cover.inked),
       };
+      coverArt.front = cover.inked;
     }
     if (!stampTex.length) {
-      coverBack = scene.texture(Print.stampBack(COVER, assets.stamps[COVER.id], 0));
+      coverArt.back = Print.stampBack(COVER, assets.stamps[COVER.id], 0);
+      coverBack = scene.texture(coverArt.back);
       PROJECTS.forEach((p, i) => {
         const s = Print.stamp(assets.stamps[p.id], { ...p.pm, top: 'SELECTED WORK', bottom: 'AARYA SHAH', l1: DATE[0], l2: DATE[1], color: p.ink, seed: 20 + i });
         stampTex.push({
@@ -659,7 +664,7 @@
       const p0 = scene.point(card, slotS, slotT);
       const w0 = (sl.w / 1000) * cw;
       const peel = kp * (1 - kt);
-      const onCover = kt >= 1 ? localPointer(Xc, yRow, 1, SWd * grow(0), SHd * grow(0), ROT[0]) : null;
+      const onCover = kt >= 1 && !coverHidden ? localPointer(Xc, yRow, 1, SWd * grow(0), SHd * grow(0), ROT[0]) : null;
       hoverState(coverHover, !!onCover, onCover ? onCover[0] : 0, onCover ? onCover[1] : 0, dt);
       const w = w0 * Math.pow((SWd * grow(0)) / w0, kt);
       const bow = (0.35 * coverHover.bow) / w;
@@ -673,8 +678,11 @@
       if (kt < 1) coverHover.p = 0;
       const up = coverHover.p > 0 ? flipOver(cover, coverHover, coverBack) : 0;
       if (kt >= 1) rest(cover, zc + coverHover.z + up); else cover.pos[2] = zc;
-      objects.push(cover);
-      supports.push({ id: 'cover', obj: cover, stable: kt >= 1 && coverHover.p === 0 });
+      coverObj = kt >= 1 ? cover : null;
+      if (!coverHidden) {
+        objects.push(cover);
+        supports.push({ id: 'cover', obj: cover, stable: kt >= 1 && coverHover.p === 0 });
+      }
     }
 
     // ---- the row of project stamps lying further along the mat ----
@@ -980,7 +988,7 @@
     fall.step(tt, dt, { cam, camY, vw, vh, supports, ptr: it >= 1 ? hand : null }, objects);
 
     objects.sort((a, b) => a.pos[2] - b.pos[2]);
-    cvs.style.cursor = overPage ? 'none' : held.k >= 0 ? 'zoom-out' : contactHover >= 0 || stampHover.some((h) => h.z > 6) || testHover.some((h) => h.z > 6) || coverHover.z > 6 || propHover ? 'pointer' : '';
+    cvs.style.cursor = overPage ? 'none' : held.k >= 0 ? 'zoom-out' : contactHover >= 0 || stampHover.some((h) => h.z > 6) || testHover.some((h) => h.z > 6) || (coverHover.z > 6 && !coverHidden) || propHover ? 'pointer' : '';
 
     // ---- the mat under the cursor: carried along the way the hand moves, then springing back ----
     while (trail.length && now - trail[0].t > 1600) trail.shift();
@@ -1013,6 +1021,10 @@
     if (logo.open) { closeLogo(); return; }
     // a testimonial: tap to pick it up and read it, tap anywhere to put it back
     if (held.k >= 0) { held.open = false; return; }
+    if (coverObj && !coverHidden && localPointer(Xc, yRow, 1, coverObj.size[0], coverObj.size[1], ROT[0], e.clientX, e.clientY)) {
+      if (window.Case) Case.open('goalkeeper');
+      return;
+    }
     const j = contactAt(e.clientX, e.clientY);
     if (j >= 0) return useContact(j);
     const k = cardAt(e.clientX, e.clientY);
@@ -1020,6 +1032,21 @@
     const id = props.pick(e.clientX, e.clientY, camNow, vw, vh, camNowY);
     if (id) props.click(id, performance.now());
   });
+
+  // for case.js: where the cover stamp lies on the screen, how far it has turned over, and hiding it while
+  // a copy of it is carried off the mat
+  window.Picnic = {
+    art: coverArt,
+    flip: () => ease(coverHover.p || 0),
+    coverRect() {
+      if (!coverObj) return null;
+      const o = { ...coverObj, bend: [0, 0] }, [w, h] = o.size;
+      const at = (s, t) => scene.toScreen(scene.point(o, s, t), camNow, camNowY);
+      const c = at(0, 0), a = at(w / 2, 0), b = at(0, h / 2);
+      return { x: c[0], y: c[1], w: 2 * Math.hypot(a[0] - c[0], a[1] - c[1]), h: 2 * Math.hypot(b[0] - c[0], b[1] - c[1]), r: Math.atan2(a[1] - c[1], a[0] - c[0]) };
+    },
+    hideCover(v) { coverHidden = v; if (v) coverHover.p = 0; },
+  };
 
   addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
