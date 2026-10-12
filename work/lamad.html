@@ -60,8 +60,8 @@
   .facts div{padding:20px 0 22px}
   .facts dt{font-size:14px; font-weight:500; color:var(--ink2)}
   .facts dd{margin-top:6px; font-size:16px; font-weight:600; line-height:1.4}
-  .photo{margin-top:48px; border-radius:20px; overflow:hidden; border:1px solid var(--line)}
-  .photo img{width:100%; aspect-ratio:1800/818; object-fit:cover}
+  .photo{margin-top:48px; border-radius:20px; overflow:hidden; background:#eceef2}
+  .photo video{display:block; width:100%; aspect-ratio:16/9; object-fit:cover}
 
   /* ---------- sections ---------- */
   section{padding-top:144px}
@@ -218,7 +218,7 @@
       <div><dt>Timeline</dt><dd>6 months</dd></div>
       <div><dt>Status</dt><dd>In final development</dd></div>
     </dl>
-    <div class="photo"><img src="assets/lamad/hero.jpg" alt="People from LAMAD talking in front of the LAMAD logo"></div>
+    <div class="photo"><video id="intro" src="assets/lamad/intro.mp4" poster="assets/lamad/intro.jpg" muted loop playsinline preload="metadata" aria-label="LAMAD ERP: the departments, sales, procurement, projects and admin"></video></div>
   </header>
 
   <!-- WHERE IT STARTED -->
@@ -425,6 +425,9 @@
 <script src="../print.js"></script>
 <script>
   const $ = (s, r = document) => r.querySelector(s);
+  // the opening video plays only while it's on screen
+  const intro = $('#intro');
+  new IntersectionObserver(([e]) => { if (e.isIntersecting) intro.play().catch(() => {}); else intro.pause(); }, { threshold: 0.4 }).observe(intro);
   const io = new IntersectionObserver((es) => es.forEach((e) => {
     if (!e.isIntersecting) return;
     e.target.classList.add('in');
