@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transporter</title>
+<script>if (/[?&]embed/.test(location.search)) document.documentElement.classList.add('embed');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
+<style>
+  /* Same scale as the other letters:
+     type   h1 48 · h2 40 · h3 24 · body 18 · line 16 · label 14   (700 headings, 600 emphasis, 500 labels, 400 text)
+     space  section 144 · heading to intro 16 · intro to content 48 · inside cards 32 · gaps 24
+     The built pieces use Transporter's own look: a navy header, white panels, one blue. */
+  :root{
+    --paper:#fbf7ec; --cream:#f6f0e0; --ink:#141210; --ink2:#5b554c; --line:#e4d9c2;
+    --blue:#1d3fa6;
+    --t-navy:#0c1d45; --t-blue:#1747e6; --t-bg:#f3f4f6; --t-line:#e5e7eb; --t-dim:#6b7280; --t-text:#111827; --t-green:#16a34a; --t-red:#dc2626;
+    --c1:#1747e6; --c2:#f59e0b; --c3:#10b981;
+    --col:960px;
+    --ease:cubic-bezier(.4,0,.2,1);
+  }
+  *{box-sizing:border-box}
+  body{margin:0; color:var(--ink); font-family:'Geist',system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden}
+  img{display:block; max-width:100%}
+  p, h1, h2, h3, h4, ol, ul, dl, dd, blockquote{margin:0}
+  button{font:inherit}
+
+  body{background-color:#f9d4d5;
+    background-image:linear-gradient(90deg, rgba(204,26,46,.42) 50%, transparent 50%), linear-gradient(rgba(204,26,46,.42) 50%, transparent 50%);
+    background-size:88px 88px}
+  html.embed, html.embed body{background:transparent}
+  .back{position:fixed; top:16px; left:16px; z-index:10; display:inline-flex; gap:8px; align-items:center; height:40px; padding:0 16px; border:0; border-radius:999px; background:var(--paper); color:var(--ink); font:500 15px/1 'Geist',system-ui,sans-serif; cursor:pointer;
+    box-shadow:0 1px 2px rgba(70,20,25,.2), 0 8px 20px rgba(70,20,25,.16); transition:transform .2s var(--ease)}
+  .back:hover{transform:translateY(-1px)}
+
+  .letter{position:relative; width:min(1180px, calc(100vw - 48px)); margin:max(96px, 14vh) auto 120px; padding:80px 80px 112px; background:var(--paper) var(--grain, none);
+    border-radius:3px; box-shadow:0 1px 1px rgba(70,20,25,.18), 0 10px 24px rgba(70,20,25,.18), 0 40px 80px -30px rgba(70,20,25,.35)}
+  .col{max-width:var(--col); margin:0 auto}
+
+  h1{font-weight:700; font-size:clamp(36px,4.4vw,48px); letter-spacing:-.035em; line-height:1.05}
+  h2{font-weight:700; font-size:clamp(30px,3.6vw,40px); letter-spacing:-.03em; line-height:1.15}
+  h3{font-weight:600; font-size:24px; letter-spacing:-.02em; line-height:1.3}
+  .body{font-size:18px; line-height:1.65; color:var(--ink2)}
+  .body + .body{margin-top:16px}
+  .body b{color:var(--ink); font-weight:600}
+
+  /* ---------- hero ---------- */
+  .lt-head{display:grid; grid-template-columns:1fr auto; gap:48px; align-items:start}
+  .lt-head h1{margin-top:48px}
+  .lt-head .lede{margin-top:16px; max-width:560px; font-size:20px; line-height:1.55; color:var(--ink2)}
+  .lt-slot{position:relative; width:clamp(170px,20vw,240px); margin:-16px -16px 0 0}
+  .lt-stamp{display:block; width:100%; aspect-ratio:440/308; transform:rotate(3deg); filter:drop-shadow(0 1px 1px rgba(60,40,0,.25)) drop-shadow(0 3px 6px rgba(60,40,0,.12))}
+  html.embed .lt-stamp{opacity:0}
+  .lt-pm{position:absolute; right:58%; top:52%; width:118%; pointer-events:none; opacity:0; transform:rotate(-9deg); transform-origin:85% 50%}
+  .lt-pm.on{animation:strike .45s cubic-bezier(.3,1.4,.5,1) both}
+  @keyframes strike{from{opacity:0; transform:rotate(-9deg) scale(1.5)} to{opacity:.88; transform:rotate(-9deg) scale(1)}}
+  .facts{margin-top:64px; display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:0 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+  .facts div{padding:20px 0 22px}
+  .facts dt{font-size:14px; font-weight:500; color:var(--ink2)}
+  .facts dd{margin-top:6px; font-size:16px; font-weight:600; line-height:1.4}
+  .photo{margin-top:48px; border-radius:20px; overflow:hidden; border:1px solid var(--line)}
+  .photo img{width:100%; aspect-ratio:1800/769; object-fit:cover}
+
+  /* ---------- sections ---------- */
+  section{padding-top:144px}
+  .head{max-width:680px}
+  .head .body{margin-top:16px}
+  .after{margin-top:48px}
+  .sub{margin-top:96px}
+  .sub .head h3 + .body{margin-top:12px}
+  .side{display:grid; grid-template-columns:minmax(0,1fr) 380px; gap:64px; align-items:center}
+
+  /* controls that sit on the paper, above a built piece */
+  button:focus:not(:focus-visible){outline:none}
+  .cases{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:48px}
+  .cases button{display:flex; flex-direction:column; gap:6px; padding:16px 18px; border-radius:16px; border:1px solid var(--line); background:var(--cream); color:var(--ink); text-align:left; cursor:pointer; transition:background .25s, color .25s, border-color .25s}
+  .cases button:hover{border-color:var(--ink2)}
+  .cases b{font-size:15px; font-weight:600; line-height:1.3}
+  .cases span{font-size:13px; color:var(--ink2); line-height:1.4}
+  .cases button.on{background:var(--ink); border-color:var(--ink); color:var(--paper)}
+  .cases button.on span{color:rgba(251,247,236,.7)}
+  .tog{display:inline-flex; padding:4px; border-radius:999px; background:var(--cream); border:1px solid var(--line)}
+  .tog button{height:32px; padding:0 14px; border:0; border-radius:999px; background:none; color:var(--ink2); font-size:13px; font-weight:500; cursor:pointer; transition:background .25s, color .25s}
+  .tog button.on{background:#fff; color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.12)}
+
+  /* ---------- Transporter, built ---------- */
+  .app{margin-top:20px; background:var(--t-bg); border-radius:16px; overflow:hidden; color:var(--t-text); box-shadow:0 1px 2px rgba(20,18,16,.08), 0 30px 50px -28px rgba(20,18,16,.4); border:1px solid #dfe2e7}
+  .app .top{background:linear-gradient(110deg,#0c1d45 0%,#13306e 100%); color:#fff; padding:18px 24px; display:flex; align-items:center; gap:12px; font-size:16px; font-weight:600}
+  .app .top small{display:block; font-size:12px; font-weight:400; color:rgba(255,255,255,.7); margin-top:2px}
+  .app .top .pill{margin-left:auto; font-size:11px; font-weight:500; padding:4px 10px; border-radius:6px; background:rgba(255,255,255,.12)}
+  .panel{background:#fff; border-radius:12px; border:1px solid var(--t-line)}
+  .lbl{font-size:12px; color:var(--t-dim)}
+
+  /* 1. the trip: what's on the truck, and the order of the stops */
+  .trip .body2{position:relative; padding:24px; display:grid; grid-template-columns:minmax(0,1fr); gap:16px}
+  .trip .tw{overflow-x:auto; scrollbar-width:none}
+  .truck{display:flex; align-items:stretch; gap:6px; height:76px}
+  .tank{flex:1; display:flex; gap:3px; padding:4px; border-radius:38px 14px 14px 38px; background:#d9dde4}
+  .seg{position:relative; flex-basis:0; border-radius:8px; display:flex; flex-direction:column; justify-content:center; padding:0 12px; color:#fff; font-size:12px; line-height:1.3; overflow:hidden; white-space:nowrap; transition:flex-grow .6s var(--ease), opacity .4s, filter .4s}
+  .seg:first-child{border-radius:34px 8px 8px 34px; padding-left:22px}
+  .seg b{font-size:13px; font-weight:600}
+  .seg.no{background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.35) 0 6px, transparent 6px 12px) !important; filter:saturate(.25) brightness(.9)}
+  .cab{flex:none; width:64px; border-radius:10px 26px 10px 10px; background:var(--t-navy); position:relative}
+  .cab::after{content:""; position:absolute; right:10px; top:12px; width:24px; height:20px; border-radius:4px 14px 4px 4px; background:#8fb1ff; opacity:.7}
+  .stops{list-style:none; margin:0; padding:20px 24px 22px; display:grid; grid-auto-flow:column; grid-auto-columns:minmax(0,1fr); gap:12px; position:relative}
+  .stops::before{content:""; position:absolute; left:40px; right:40px; top:33px; height:2px; background:repeating-linear-gradient(90deg,#c7ccd6 0 6px, transparent 6px 11px)}
+  .stops li{position:relative; animation:pop .45s var(--ease) both; animation-delay:calc(var(--i) * 70ms)}
+  @keyframes pop{from{opacity:0; transform:translateY(6px)}}
+  .stops .n{position:relative; width:28px; height:28px; border-radius:50%; background:var(--t-navy); color:#fff; display:grid; place-items:center; font-size:12px; font-weight:600}
+  .stops .n.pick{background:#fff; color:var(--t-navy); box-shadow:inset 0 0 0 2px var(--t-navy)}
+  .stops .pl{margin-top:10px; font-size:13px; font-weight:600}
+  .stops .act{margin-top:6px; display:flex; flex-direction:column; gap:4px}
+  .stops .act span{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--t-dim); transition:opacity .3s}
+  .stops .act i{width:8px; height:8px; border-radius:50%; flex:none}
+  .stops .act span.no{text-decoration:line-through; opacity:.6}
+  .stops .act em{font-style:normal; color:var(--t-red); font-weight:500}
+  .orders{width:100%; border-collapse:collapse; font-size:13px}
+  .orders th{text-align:left; font-weight:500; color:var(--t-dim); font-size:12px; padding:12px 16px; border-bottom:1px solid var(--t-line)}
+  .orders td{padding:12px 16px; border-bottom:1px solid var(--t-line)}
+  .orders tr:last-child td{border-bottom:0}
+  .orders .cu{display:flex; align-items:center; gap:8px; font-weight:500}
+  .orders .cu i{width:10px; height:10px; border-radius:3px}
+  .orders .id{color:var(--t-blue); font-weight:500}
+  .orders .st{font-size:11px; font-weight:500; padding:3px 8px; border-radius:6px; background:#eef2ff; color:#3730a3; white-space:nowrap}
+  .orders .st.no{background:#fee2e2; color:var(--t-red)}
+  .orders button{height:30px; padding:0 12px; border-radius:8px; border:1px solid var(--t-line); background:#fff; color:var(--t-text); font-size:12px; font-weight:500; cursor:pointer; white-space:nowrap}
+  .orders button.undo{color:var(--t-blue)}
+  .trip .note{font-size:13px; color:var(--t-dim); min-height:20px}
+  .trip .note b{color:var(--t-text); font-weight:600}
+
+  /* 2. scheduling: trucks with room first, then a new one */
+  .sched .body2{padding:24px; display:grid; grid-template-columns:minmax(0,1fr) 280px; gap:20px; align-items:start}
+  .trucks{display:flex; flex-direction:column}
+  .trk{display:grid; grid-template-columns:120px minmax(0,1fr) 92px; gap:16px; align-items:center; padding:16px 18px; border-bottom:1px solid var(--t-line)}
+  .trk:last-child{border-bottom:0}
+  .trk .reg{font-size:14px; font-weight:600}
+  .trk .reg small{display:block; margin-top:2px; font-size:11px; font-weight:400; color:var(--t-dim)}
+  .trk .bar{position:relative; height:12px; border-radius:6px; background:#eef0f4; overflow:hidden; display:flex}
+  .trk .bar .had{background:#b9c0cc}
+  .trk .bar .now{background:var(--t-blue); width:0; transition:width .6s var(--ease)}
+  .trk .cap{margin-top:6px; font-size:11px; color:var(--t-dim); display:flex; justify-content:space-between}
+  .trk button{height:34px; border-radius:8px; border:1.5px solid var(--t-blue); background:#fff; color:var(--t-blue); font-size:13px; font-weight:600; cursor:pointer; transition:all .25s}
+  .trk button.on{background:var(--t-blue); color:#fff}
+  .trk button:disabled{opacity:.35; cursor:default}
+  .trk .tag{display:inline-block; margin-left:6px; padding:1px 6px; border-radius:5px; background:#eef2ff; color:#3730a3; font-size:10px; font-weight:600; vertical-align:1px}
+  .sum{padding:18px}
+  .sum h4{font-size:14px; font-weight:600}
+  .sum .two{display:grid; grid-template-columns:1fr 1fr; margin-top:14px}
+  .sum .two div + div{border-left:1px solid var(--t-line); padding-left:14px; text-align:right}
+  .sum .two b{display:block; margin-top:4px; font-size:22px; font-weight:600; letter-spacing:-.02em; font-variant-numeric:tabular-nums}
+  .sum .two b small{font-size:12px; font-weight:500; color:var(--t-dim)}
+  .sum .fill{margin-top:16px; height:8px; border-radius:4px; background:#eef0f4; overflow:hidden}
+  .sum .fill i{display:block; height:100%; width:0; background:var(--t-blue); transition:width .6s var(--ease)}
+  .sum .ok{margin-top:12px; font-size:12px; color:var(--t-dim); min-height:18px}
+  .sum .ok.done{color:var(--t-green); font-weight:500}
+  .rt{margin-top:12px; padding:14px 16px; font-size:12px; line-height:1.5}
+  .rt div{position:relative; padding-left:18px}
+  .rt div + div{margin-top:10px}
+  .rt div::before{content:""; position:absolute; left:0; top:5px; width:8px; height:8px; border-radius:50%; border:2px solid var(--t-navy)}
+  .rt div + div::after{content:""; position:absolute; left:4px; top:-12px; height:16px; border-left:2px dotted #b8bfcc}
+  .rt span{color:var(--t-dim)}
+
+  /* 3. at the pump: the person, and the attendant's phone */
+  .pump{display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:64px; align-items:center}
+  .who{position:relative; margin-top:32px; padding:24px; border-radius:20px; background:var(--cream); border:1px solid var(--line)}
+  .who .tog{margin-bottom:20px}
+  .person{display:grid; grid-template-columns:88px minmax(0,1fr); gap:20px; align-items:center}
+  .face{position:relative; width:88px; height:88px; border-radius:50%; overflow:hidden; background:#d9d2c3}
+  .face img, .face svg{position:absolute; inset:0; width:100%; height:100%; transition:opacity .4s var(--ease)}
+  .plate{display:inline-flex; align-items:center; height:34px; padding:0 12px; border-radius:6px; background:#fff; border:2px solid #1f2937; font-weight:700; font-size:15px; letter-spacing:.06em; color:#1f2937; transition:border-color .3s, color .3s}
+  .person .lbl{margin-bottom:2px; color:var(--ink2); font-size:13px}
+  .person .nm{font-size:17px; font-weight:600; margin-bottom:10px}
+  .match{margin-top:16px; display:flex; flex-direction:column; gap:8px; font-size:14px}
+  .match span{display:flex; align-items:center; gap:10px}
+  .match i{width:20px; height:20px; border-radius:50%; display:grid; place-items:center; font-style:normal; font-size:12px; font-weight:700; color:#fff; background:var(--t-green); transition:background .3s}
+  .who.friend .match i{background:var(--t-red)}
+  .who.friend .plate{border-color:var(--t-red); color:var(--t-red)}
+
+  .phone{position:relative; flex:none; width:300px; height:620px; border-radius:46px; background:#fff; border:10px solid var(--ink); overflow:hidden; box-shadow:0 30px 50px -20px rgba(20,18,16,.35); color:var(--t-text)}
+  .phone::before{content:""; position:absolute; top:10px; left:50%; width:84px; height:22px; margin-left:-42px; background:#000; border-radius:12px; z-index:5}
+  .scr{position:absolute; inset:0; padding:52px 18px 18px; display:flex; flex-direction:column; opacity:0; pointer-events:none; transform:translateX(16px); transition:opacity .35s var(--ease), transform .35s var(--ease)}
+  .scr.on{opacity:1; pointer-events:auto; transform:none}
+  .scr .vid{text-align:center; font-size:16px; font-weight:600; margin-top:6px}
+  .scr .pic{width:84px; height:84px; border-radius:50%; margin:16px auto 0}
+  .scr .dn{text-align:center; font-size:14px; font-weight:600; margin-top:10px}
+  .scr .dc{text-align:center; font-size:11px; color:var(--t-dim); margin-top:2px}
+  .badge{align-self:center; margin-top:8px; padding:3px 10px; border-radius:5px; background:var(--t-green); color:#fff; font-size:11px; font-weight:500}
+  .kv{display:flex; justify-content:space-between; font-size:12px; padding:8px 4px}
+  .kv span{color:#374151}
+  .kv b{font-weight:600}
+  .kv.hi b{padding:1px 6px; margin:-1px -6px; border-radius:4px; transition:background .3s, color .3s}
+  .phone.friend .kv.hi b{background:#fee2e2; color:var(--t-red)}
+  .go{margin-top:auto; height:46px; border:0; border-radius:10px; background:var(--t-blue); color:#fff; font-size:14px; font-weight:600; cursor:pointer; transition:opacity .2s}
+  .go:disabled{opacity:.35; cursor:default}
+  .go.ghost{background:#fff; color:var(--t-blue); box-shadow:inset 0 0 0 1.5px var(--t-blue)}
+  .scr h5{margin:4px 0 0; font-size:15px; font-weight:600}
+  .scr .sl{margin-top:16px; font-size:12px; color:#374151; display:flex; justify-content:space-between}
+  .scr input[type=range]{width:100%; margin:10px 0 4px; accent-color:var(--t-blue)}
+  .rd{align-self:flex-start; margin-top:6px; padding:3px 8px; border-radius:5px; font-size:11px; font-weight:600; background:#e8f7ee; color:var(--t-green)}
+  .rd.part{background:#fff7ed; color:#c2410c}
+  .sig{position:relative; margin-top:8px; height:150px; border-radius:10px; border:1px dashed #b8bfcc; background:#fafafa; touch-action:none; cursor:crosshair}
+  .sig canvas{position:absolute; inset:0; width:100%; height:100%}
+  .sig span{position:absolute; inset:0; display:grid; place-items:center; font-size:12px; color:#9ca3af; pointer-events:none; transition:opacity .2s}
+  .sig.inked span{opacity:0}
+  .clear{align-self:flex-end; margin-top:6px; border:0; background:none; color:var(--t-blue); font-size:12px; cursor:pointer; padding:0}
+  .ok2{align-self:center; margin-top:40px; padding:4px 12px; border-radius:6px; background:#e8f7ee; color:var(--t-green); font-size:12px; font-weight:600}
+
+  /* 4. the odometer: two readings, from two people with no reason to cover */
+  .odo{margin-top:48px; padding:32px; border-radius:20px; background:var(--cream); border:1px solid var(--line)}
+  .road{position:relative; display:grid; grid-template-columns:1fr auto 1fr; gap:16px; align-items:start}
+  .road .end{text-align:center}
+  .road .end b{display:block; margin-top:10px; font-size:15px; font-weight:600}
+  .road .end span{display:block; margin-top:4px; font-size:13px; color:var(--ink2)}
+  .road .end .read{margin-top:10px; font-size:20px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums}
+  .road .dot{width:44px; height:44px; margin:0 auto; border-radius:50%; background:#fff; border:2px solid var(--ink); display:grid; place-items:center; font-size:20px}
+  .road .mid{align-self:center; text-align:center; min-width:260px}
+  .road .mid .line{height:2px; margin:0 0 14px; background:repeating-linear-gradient(90deg,var(--ink2) 0 8px, transparent 8px 14px)}
+  .road .mid b{font-size:28px; font-weight:700; letter-spacing:-.03em; font-variant-numeric:tabular-nums}
+  .road .mid span{display:block; margin-top:4px; font-size:13px; color:var(--ink2)}
+  .road .mid em{display:block; margin-top:6px; font-style:normal; font-size:13px; font-weight:500; color:var(--t-red); min-height:18px}
+  .odo .drv{margin-top:28px; padding-top:20px; border-top:1px solid var(--line); display:flex; gap:12px; align-items:center; font-size:15px; color:var(--ink2)}
+  .odo .drv b{color:var(--ink); font-weight:600; text-decoration:line-through; text-decoration-color:var(--blue); text-decoration-thickness:2px}
+  .odo .tog{margin-bottom:28px}
+
+  /* the order, step by step, with the real screens */
+  .steps{list-style:none; padding:0; display:flex; flex-direction:column; gap:4px}
+  .steps button{display:flex; gap:12px; align-items:center; width:100%; padding:12px 14px; border:0; border-radius:12px; background:none; color:var(--ink2); font-size:15px; font-weight:500; text-align:left; cursor:pointer; transition:background .25s, color .25s}
+  .steps button i{flex:none; width:24px; height:24px; border-radius:50%; border:1.5px solid var(--line); display:grid; place-items:center; font-style:normal; font-size:12px; transition:all .25s}
+  .steps button.on{background:var(--cream); color:var(--ink)}
+  .steps button.on i{background:var(--t-blue); border-color:var(--t-blue); color:#fff}
+  .stack{position:relative}
+  .stack img{position:absolute; inset:0; width:100%; height:100%; object-fit:contain; opacity:0; transition:opacity .45s var(--ease)}
+  .stack img.on{opacity:1}
+  .order{display:grid; grid-template-columns:220px minmax(0,1fr); gap:32px; align-items:center; margin-top:48px}
+  .order .stack{aspect-ratio:1116/690}
+
+  /* the five platforms: every device the same height, each as wide as its shape */
+  .chain{list-style:none; padding:0; margin-top:48px; display:flex; gap:20px; align-items:flex-start}
+  .chain li{flex:var(--a) 1 0; min-width:0}
+  .chain img{width:100%; height:auto; -webkit-mask-image:linear-gradient(#000 78%, transparent); mask-image:linear-gradient(#000 78%, transparent)}
+  .chain h3{margin-top:16px; font-size:16px}
+  .chain p{margin-top:4px; font-size:14px; line-height:1.5; color:var(--ink2)}
+
+  blockquote{margin-top:48px; padding-left:24px; border-left:2px solid var(--ink); max-width:760px}
+  blockquote p{font-size:22px; line-height:1.5; letter-spacing:-.01em; font-weight:500}
+  blockquote footer{margin-top:16px; font-size:14px; font-weight:500; color:var(--ink2)}
+
+  .nextp{margin-top:144px; padding-top:72px; border-top:1px solid var(--line); text-align:center}
+  .nextp a{color:inherit; text-decoration:none; display:inline-flex; flex-direction:column; align-items:center; gap:24px}
+  .nextp img{width:200px; transform:rotate(-3deg); transition:transform .4s var(--ease); filter:drop-shadow(0 2px 2px rgba(60,40,0,.25)) drop-shadow(0 12px 16px rgba(60,40,0,.18))}
+  .nextp a:hover img{transform:rotate(2deg) scale(1.04)}
+  .nextp .t{font-weight:700; font-size:32px; letter-spacing:-.03em}
+
+  .rv{opacity:0; transform:translateY(24px); transition:opacity .8s var(--ease), transform .8s var(--ease)}
+  .rv.in{opacity:1; transform:none}
+
+  @media (max-width: 1000px){
+    .letter{padding:64px 48px 96px}
+    .facts{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .side{grid-template-columns:minmax(0,1fr); gap:40px}
+    .order{grid-template-columns:minmax(0,1fr); gap:20px}
+    .order .steps{flex-direction:row; overflow-x:auto; scrollbar-width:none}
+    .order .steps button{white-space:nowrap; width:auto}
+    .sched .body2{grid-template-columns:minmax(0,1fr)}
+    .cases{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .pump{grid-template-columns:minmax(0,1fr); justify-items:center; gap:40px}
+    .pump > div:first-child{width:100%}
+    .who{width:100%}
+    .chain{flex-wrap:wrap; gap:32px 20px}
+    .chain li:first-child{flex-basis:100%}
+    .chain li{flex-basis:calc(50% - 10px)}
+  }
+  @media (max-width: 760px){
+    .letter{width:calc(100vw - 24px); padding:56px 24px 72px; margin-top:76px}
+    .lt-head{grid-template-columns:1fr; gap:0}
+    .lt-slot{grid-row:1; justify-self:end; width:150px; margin:-32px -8px 0 0}
+    .lt-head h1{margin-top:16px}
+    .lt-head .lede{font-size:18px}
+    .facts{grid-template-columns:1fr 1fr; gap:0 24px}
+    .facts div{padding:16px 0}
+    .photo{border-radius:14px}
+    section{padding-top:96px}
+    .sub{margin-top:72px}
+      .app{margin-left:-12px; margin-right:-12px}
+    .app .top{padding:14px 16px; font-size:14px}
+    .trip .body2{padding:16px}
+    .truck{height:64px}
+    .seg{padding:0 6px; font-size:10px}
+    .seg:first-child{padding-left:12px}
+    .seg b{font-size:11px}
+    .stops{grid-auto-flow:row; grid-auto-columns:auto; padding:16px}
+    .stops::before{left:29px; right:auto; top:30px; bottom:30px; width:2px; height:auto; background:repeating-linear-gradient(180deg,#c7ccd6 0 6px, transparent 6px 11px)}
+    .stops li{display:grid; grid-template-columns:28px minmax(0,1fr); column-gap:12px}
+    .stops .pl{margin-top:4px}
+    .stops .act{grid-column:2}
+    .orders th:nth-child(1), .orders td:nth-child(1), .orders th:nth-child(3), .orders td:nth-child(3), .orders th:nth-child(4), .orders td:nth-child(4){display:none}
+    .orders th, .orders td{padding:10px}
+    .sched .body2{padding:16px}
+    .trk{grid-template-columns:minmax(0,1fr) 80px; gap:10px 12px; padding:14px}
+    .trk .barw{grid-column:1 / -1; grid-row:2}
+    .who{padding:20px}
+    .person{grid-template-columns:88px minmax(0,1fr); gap:16px}
+    .face{width:88px; height:88px}
+    .phone{width:280px; height:580px}
+    .odo{padding:20px}
+    .road{grid-template-columns:minmax(0,1fr)}
+    .road .mid{min-width:0}
+    .road .mid .line{width:2px; height:24px; margin:0 auto 12px; background:repeating-linear-gradient(180deg,var(--ink2) 0 6px, transparent 6px 11px)}
+    blockquote p{font-size:19px}
+  }
+</style>
+</head>
+<body>
+
+<button class="back" type="button" id="back">&larr; Back to the picnic</button>
+
+<article class="letter">
+  <header class="col">
+    <div class="lt-head">
+      <div>
+        <h1>Transporter</h1>
+        <p class="lede">A fuel logistics system for MRS Oil Nigeria: one web portal and four apps, all working on the same trip. I joined a team of four designers mid-project, with no handover.</p>
+      </div>
+      <div class="lt-slot"><canvas class="lt-stamp" id="stamp" aria-label="Transporter stamp" role="img"></canvas><canvas class="lt-pm" id="pm" aria-hidden="true"></canvas></div>
+    </div>
+    <dl class="facts">
+      <div><dt>Client</dt><dd>MRS Oil Nigeria</dd></div>
+      <div><dt>Role</dt><dd>UX designer</dd></div>
+      <div><dt>Team</dt><dd>4 designers</dd></div>
+      <div><dt>Timeline</dt><dd>6 to 8 months</dd></div>
+      <div><dt>Platforms</dt><dd>A portal and four apps</dd></div>
+    </dl>
+    <div class="photo"><img src="assets/transporter/hero.jpg" alt="Fuel tankers lined up under a depot canopy"></div>
+  </header>
+
+  <!-- WHY IT MATTERS -->
+  <section class="col rv">
+    <div class="head">
+      <h2>Why it matters</h2>
+      <p class="body">Nigeria moves over 66 million litres of fuel a day, more than 90% of it by road tanker. Around 200,000 barrels are lost to theft and diversion every day, and tanker explosions have been linked to over 1,800 deaths between 2009 and 2025. So fuel logistics there is a safety problem as much as a money one.</p>
+      <p class="body">The client runs 400+ stations and thousands of trucks a day. Dispatch, checks at the depot, and payment all acted on the same trip, with nothing connecting them. Transporter puts movement, verification and money on one set of facts, from the depot to the delivery.</p>
+    </div>
+  </section>
+
+  <!-- THE CHAIN -->
+  <section class="col rv">
+    <div class="head">
+      <h2>Five platforms, one trip</h2>
+      <p class="body">An order placed in the portal becomes a trip for a driver, with a fuel voucher. An attendant scans the voucher at the depot, the depot manager sees what went out, and the customer tracks the delivery. Every platform acts on the same trip.</p>
+    </div>
+    <ol class="chain">
+      <li style="--a:1.624"><img src="assets/transporter/p_trip.png" alt="The portal's trip page: two orders on one truck, the driver, and the route" loading="lazy">
+        <h3>Portal</h3><p>Orders, trips, invoices, vehicles, drivers and support.</p></li>
+      <li style="--a:.714"><img src="assets/transporter/h_driver.png" alt="The Driver app: today's trip and its next step" loading="lazy">
+        <h3>Driver</h3><p>The trip, its stops, the voucher.</p></li>
+      <li style="--a:.714"><img src="assets/transporter/h_attendant.png" alt="The Fuel Attendant app: vouchers being fueled and redeemed" loading="lazy">
+        <h3>Attendant</h3><p>Scans vouchers at the pump.</p></li>
+      <li style="--a:.714"><img src="assets/transporter/h_depot.png" alt="The Fuel Depot Manager app: vouchers, scanner, fuel station and stock" loading="lazy">
+        <h3>Depot manager</h3><p>Stock in every tank.</p></li>
+      <li style="--a:.714"><img src="assets/transporter/h_customer.png" alt="The Customer app: today's deliveries, by fuel type" loading="lazy">
+        <h3>Customer</h3><p>Orders and deliveries.</p></li>
+    </ol>
+  </section>
+
+  <!-- THE CALL -->
+  <section class="col rv">
+    <div class="head">
+      <h2>The call I made first</h2>
+      <p class="body">The designer who owned the flows had left, and nobody handed anything over. So for a few days I read our Figma file and the client's old system side by side. The old system handled the cases. Our new design didn't have flows for them.</p>
+      <p class="body">Our redesign showed multiple customers, multiple orders and four cargo types on screen, with nothing behind them. Everything designed so far was one customer, one product, wet cargo.</p>
+    </div>
+    <div class="cases" id="cases" role="tablist" aria-label="Trip cases">
+      <button type="button" role="tab" class="on" data-c="0"><b>One customer, one product</b><span>Designed in week one</span></button>
+      <button type="button" role="tab" data-c="1"><b>One customer, many orders</b><span>Added in the 15 days</span></button>
+      <button type="button" role="tab" data-c="2"><b>Many customers, one product</b><span>Added in the 15 days</span></button>
+      <button type="button" role="tab" data-c="3"><b>Many customers, many orders</b><span>Added in the 15 days</span></button>
+    </div>
+    <div class="app trip" id="trip">
+      <div class="top"><div>Trips › MON/TRP/23/09/00012<small>One truck · 100,000 ltrs</small></div><span class="pill" id="tripPill">Wet cargo</span>
+      </div>
+      <div class="body2">
+        <div class="truck"><div class="tank" id="tank"></div><div class="cab"></div></div>
+        <div class="panel"><ol class="stops" id="stops"></ol></div>
+        <div class="panel tw"><table class="orders"><thead><tr><th>Order</th><th>Customer</th><th>Product</th><th>Qty</th><th></th></tr></thead><tbody id="orders"></tbody></table></div>
+        <p class="note" id="tripNote"></p>
+      </div>
+    </div>
+
+    <div class="sub">
+      <div class="side">
+        <div class="head">
+          <h3>Why stopping was hard</h3>
+          <p class="body">Nothing looked broken, the client hadn't raised it, and every Monday the client wanted to see more than the Monday before. Stopping meant reopening an approved flow and admitting we'd missed something.</p>
+          <p class="body">So I argued about cost, not about being right. Orders feed scheduling, scheduling feeds trips, trips feed invoicing, and invoicing wasn't designed yet. It was fifteen days now against maybe two months later. It took several days to land. The client gave us the time without a fight.</p>
+        </div>
+        <img src="assets/transporter/whiteboard.jpg" alt="The whiteboard from the rework: customers, orders and cargo types mapped out by hand" loading="lazy" style="border-radius:20px; border:1px solid var(--line)">
+      </div>
+      <div class="head" style="margin-top:56px">
+        <h3>The 15 days</h3>
+        <p class="body">The senior designer and I owned the rework, on a whiteboard first. We went after the edge cases too. The hardest: on a trip shared by several customers, if one customer's part of the load is contaminated, what happens to everyone else?</p>
+      </div>
+      <p class="body" style="margin-top:16px; max-width:680px">When we presented it, the client had only ever seen one happy path. Now they were looking at their actual business. Every flow after it held up, and invoicing was built on solid ground.</p>
+    </div>
+  </section>
+
+  <!-- DECISIONS -->
+  <section class="col">
+    <div class="head rv"><h2>Key decisions</h2></div>
+
+    <div class="sub rv" style="margin-top:56px">
+      <div class="head">
+        <h3>Fill trucks before adding trucks</h3>
+        <p class="body">A big order rarely fits one truck. Scheduling puts trucks that already have room at the top, so the fleet runs full before anyone sends out another truck. The summary tracks scheduled against remaining litres until the order is covered.</p>
+      </div>
+      <div class="app sched" id="sched">
+        <div class="top"><div>Schedule Order › MON/DO/23/09/00218<small>Choose vehicles</small></div></div>
+        <div class="body2">
+          <div class="panel trucks" id="trucks"></div>
+          <div>
+            <div class="panel sum">
+              <h4>Quantity Summary</h4>
+              <div class="two"><div><span class="lbl">Scheduled</span><b id="sSch">0 <small>ltrs</small></b></div><div><span class="lbl">Remaining</span><b id="sRem">100,000 <small>ltrs</small></b></div></div>
+              <div class="fill"><i id="sFill"></i></div>
+              <p class="ok" id="sOk"></p>
+            </div>
+            <div class="panel rt"><p style="margin-bottom:12px; font-weight:600; font-size:13px">Wet cargo · PMS · 100,000 ltrs</p><div>Aba NNPC Depot<br><span>Est. start 26 Nov, 11:53 am</span></div><div>Maiduguri NNPC Depot<br><span>Est. delivery 28 Nov, 5:07 pm</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub rv">
+      <div class="pump">
+        <div>
+        <div class="head">
+          <h3>The voucher, designed against one kind of fraud</h3>
+          <p class="body">The company pays for the fuel, not the driver, so a driver could hand the voucher to a friend and have the friend's truck filled at the company's cost.</p>
+          <p class="body">So redeeming a voucher is an identity check. The attendant scans the QR and sees the driver's photo and vehicle number from the trip. Then the amount goes in, and the driver signs on the attendant's phone. It can't be submitted without both.</p>
+        </div>
+        <div class="who" id="who">
+          <div class="tog"><button type="button" class="on" data-p="driver">The driver</button><button type="button" data-p="friend">A friend, with the voucher</button></div>
+          <div class="person">
+            <div class="face"><img src="assets/transporter/driver_face.png" alt="" id="faceD"><svg viewBox="0 0 120 120" id="faceF" style="opacity:0" aria-hidden="true"><rect width="120" height="120" fill="#cbbfa6"/><circle cx="60" cy="48" r="22" fill="#8a7a5c"/><path d="M18 120c4-26 22-40 42-40s38 14 42 40z" fill="#8a7a5c"/></svg></div>
+            <div><p class="lbl">At the pump</p><p class="nm" id="pName">Adewale Rasaq B</p><span class="plate" id="pPlate">BUU 599ZD</span></div>
+          </div>
+          <div class="match"><span><i id="m1">✓</i><span id="m1t">The face matches the voucher</span></span><span><i id="m2">✓</i><span id="m2t">The plate matches the voucher</span></span></div>
+        </div>
+        </div>
+        <div class="phone" id="phone">
+          <div class="scr on" data-s="rec">
+            <p class="vid">MON/FV/23/06/00006</p>
+            <img class="pic" src="assets/transporter/driver_face.png" alt="The driver's photo, from the trip">
+            <p class="dn">Adewale Rasaq B</p><p class="dc">Driver Code · 9964</p>
+            <span class="badge">Active</span>
+            <div style="margin-top:16px">
+              <div class="kv hi"><span>Vehicle Number</span><b>BUU 599ZD</b></div>
+              <div class="kv"><span>Voucher Quantity</span><b>PMS | 400 ltrs</b></div>
+              <div class="kv"><span>Voucher Amount</span><b>₦25,000.00</b></div>
+              <div class="kv"><span>Transporter</span><b>KS Transporter</b></div>
+            </div>
+            <button class="go" type="button" data-to="fuel">Start Fueling Process</button>
+          </div>
+          <div class="scr" data-s="fuel">
+            <p class="vid">MON/FV/23/06/00006</p>
+            <span class="badge" style="background:#e0e7ff; color:#4338ca">Fueling In Progress</span>
+            <p class="dc" style="margin-top:20px">Time since start</p>
+            <p class="vid" id="clock" style="font-size:28px; font-variant-numeric:tabular-nums">00:00</p>
+            <div style="margin-top:20px">
+              <div class="kv"><span>Driver</span><b>Adewale Rasaq B</b></div>
+              <div class="kv"><span>Vehicle Number</span><b>BUU 599ZD</b></div>
+              <div class="kv"><span>Fuel Qty</span><b>PMS | 400 ltrs</b></div>
+            </div>
+            <button class="go" type="button" data-to="form">End Fueling</button>
+          </div>
+          <div class="scr" data-s="form">
+            <h5>Fuel Voucher</h5><p class="lbl">Confirmation form</p>
+            <div class="sl"><span>Filled quantity</span><b id="qty">400 ltrs</b></div>
+            <input type="range" min="0" max="400" step="10" value="400" id="qtyIn" aria-label="Filled quantity">
+            <span class="rd" id="rd">Full redemption</span>
+            <div class="sl" style="margin-top:14px"><span>Driver signature</span></div>
+            <div class="sig" id="sig"><canvas></canvas><span>Driver signs here</span></div>
+            <button class="clear" type="button" id="sigClear">Clear</button>
+            <button class="go" type="button" id="submit" disabled data-to="done">Submit</button>
+          </div>
+          <div class="scr" data-s="done">
+            <span class="ok2">Redeemed</span>
+            <p class="vid" style="margin-top:16px">Voucher redeemed</p>
+            <p class="dc" id="doneT" style="margin-top:6px; font-size:13px">400 ltrs of PMS to BUU 599ZD</p>
+            <div style="margin-top:24px">
+              <div class="kv"><span>Driver</span><b>Adewale Rasaq B</b></div>
+              <div class="kv"><span>Signed</span><b>Yes</b></div>
+            </div>
+            <button class="go ghost" type="button" data-to="rec">Next voucher</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub rv">
+      <div class="head">
+        <h3>The driver never reports the distance</h3>
+        <p class="body">The driver isn't paying for fuel either, so nothing stops a personal detour on company fuel. So the distance comes from two people who have no reason to cover for the driver.</p>
+      </div>
+      <div class="odo" id="odo">
+        <div class="tog"><button type="button" class="on" data-r="0">Straight to the customer</button><button type="button" data-r="1">With a side trip</button></div>
+        <div class="road">
+          <div class="end"><div class="dot"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M6 9h6M14 8h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0V8l-3-3"/></svg></div><b>The attendant</b><span>reads it at the pump</span><span class="read">91,308 km</span></div>
+          <div class="mid"><div class="line"></div><b id="km">1,040 km</b><span>between the two readings</span><em id="kmNote"></em></div>
+          <div class="end"><div class="dot"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/></svg></div><b>The customer</b><span>reads it at delivery, and both sign</span><span class="read" id="odoEnd">92,348 km</span></div>
+        </div>
+        <p class="drv"><b>The driver</b> reports nothing about their own distance.</p>
+      </div>
+    </div>
+
+    <div class="sub rv">
+      <div class="head">
+        <h3>An order in five steps, because five things are decided</h3>
+        <p class="body">The rebuild made ordering longer, so a summary sits beside every step: cargo, parties, route and times. You always see what you've already decided while you fill in the next part. Cargo type decides everything after it, so it's a big card with a photo, not a dropdown. (That one was already there when I joined.)</p>
+      </div>
+      <div class="order" id="order">
+        <ol class="steps">
+          <li><button type="button" class="on" data-i="0"><i>1</i>Companies</button></li>
+          <li><button type="button" data-i="1"><i>2</i>Cargo</button></li>
+          <li><button type="button" data-i="2"><i>3</i>Route</button></li>
+          <li><button type="button" data-i="3"><i>4</i>Insurance and documents</button></li>
+          <li><button type="button" data-i="4"><i>5</i>Payment</button></li>
+        </ol>
+        <div class="stack">
+          <img class="on" src="assets/transporter/ao_companies.png" alt="Step 1: the customer, service provider and transporter" loading="lazy">
+          <img src="assets/transporter/ao_cargo.png" alt="Step 2: cargo type picked from photos, wet, dry, bulk or container, then the product and quantity" loading="lazy">
+          <img src="assets/transporter/ao_route.png" alt="Step 3: pickup, delivery and dates, with the summary beside" loading="lazy">
+          <img src="assets/transporter/ao_docs.png" alt="Step 4: insurance and documents, with the summary beside" loading="lazy">
+          <img src="assets/transporter/ao_payment.png" alt="Step 5: payment terms, one or several" loading="lazy">
+        </div>
+      </div>
+    </div>
+
+    <div class="sub rv">
+      <div class="head">
+        <h3>Showing the handoff, not the apps</h3>
+        <p class="body">Five apps that talk to each other are almost impossible to review one screen at a time. So for fueling, we showed the client the exchange itself: the driver's screen beside the attendant's, every step down the side. The client responded to it better than anything else we showed, because they could follow the whole exchange instead of imagining it.</p>
+        <p class="body">And before every client call, I spent an hour clicking through the whole prototype, so the client never hit a dead end in a demo and their feedback stayed on the product.</p>
+      </div>
+      <img src="assets/transporter/combined_flow.png" alt="The fueling handoff as presented: the driver's screens and the attendant's screens side by side, with each step listed" loading="lazy" class="after" style="border-radius:16px; border:1px solid var(--line)">
+    </div>
+  </section>
+
+  <!-- WHAT I COULDN'T DO -->
+  <section class="col rv">
+    <div class="head">
+      <h2>What I couldn't do</h2>
+      <p class="body">I never spoke to a single user: no drivers, attendants, depot managers or customers. Our team spoke to our founder, the founder spoke to the client's CEO, and everything came down that line. Nobody on the team watched a driver use the app.</p>
+      <p class="body">With the same access I'd design it the same way, but it wasn't tested with users, and I won't say it was. One day at a depot would have been worth more than a month of client calls, and I'd push harder for that now.</p>
+    </div>
+  </section>
+
+  <!-- OUTCOME -->
+  <section class="col rv">
+    <div class="head">
+      <h2>Outcome</h2>
+      <p class="body">The system went live, and it held as the fleet grew 50%, from about 10,000 to 15,000 trucks. Around ₦40 billion in transport value runs through it every day. I won't claim the design grew the fleet. What I can stand behind is that the foundation we rebuilt in those first weeks held.</p>
+    </div>
+    <blockquote>
+      <p>"Implementing Transporter has been a game-changer for our fleet management. It's like having a digital co-pilot that ensures safety, efficiency, and control every step of the way."</p>
+      <footer>CEO, MRS Oil Nigeria</footer>
+    </blockquote>
+  </section>
+
+  <section class="col rv">
+    <div class="head">
+      <h2>What I learned</h2>
+      <p class="body">The most important decision here came before I designed a single screen, and it wasn't design. It was convincing three people senior to me to reopen work they'd already approved. What worked was dropping the argument about being right and making it about cost.</p>
+      <p class="body">And when the product is fuel moving through Nigeria, a design mistake can mean stolen fuel, lost money, or worse. Almost every hard decision here exists because someone in the chain has a reason to lie. That's a different problem from designing something people enjoy, and it's one I've come to enjoy.</p>
+    </div>
+  </section>
+
+  <div class="nextp">
+    <a href="quickmart.html" data-go="quickmart">
+      <img src="../stamps/quickmart.webp" alt="QuickMart stamp">
+      <span class="t">QuickMart &rarr;</span>
+    </a>
+  </div>
+</article>
+
+<script src="../print.js"></script>
+<script>
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const L = (n) => n.toLocaleString('en-US');
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    io.unobserve(e.target);
+  }), { threshold: 0.12 });
+  $$('.rv').forEach((el) => io.observe(el));
+  const radio = (root, fn) => $$('button', root).forEach((b) => b.addEventListener('click', () => {
+    $$('button', root).forEach((x) => x.classList.toggle('on', x === b)); fn(b);
+  }));
+
+  // 1. the trip: what's on the truck, in what order it's picked up and dropped, and what a declined share does
+  {
+    const CU = { apex: ['Apex Transportation', 'var(--c1)'], js: ['JS Transportations', 'var(--c2)'], hb: ['HB Logistics', 'var(--c3)'] };
+    // each case: the orders on the truck, then the stops in the order the driver is told
+    const CASES = [
+      { o: [['00218', 'apex', 'PMS', 100000]],
+        s: [['Aba NNPC Depot', [['+', 0]]], ['Maiduguri', [['−', 0]]]] },
+      { o: [['00218', 'apex', 'PMS', 60000], ['00219', 'apex', 'AGO', 40000]],
+        s: [['Aba NNPC Depot', [['+', 0], ['+', 1]]], ['Damaturu', [['−', 1]]], ['Maiduguri', [['−', 0]]]] },
+      { o: [['00218', 'apex', 'PMS', 30000], ['00219', 'js', 'PMS', 70000]],
+        s: [['Aba NNPC Depot', [['+', 0], ['+', 1]]], ['Kano', [['−', 1]]], ['Maiduguri', [['−', 0]]]] },
+      { o: [['00218', 'apex', 'PMS', 30000], ['00219', 'js', 'AGO', 40000], ['00220', 'hb', 'PMS', 30000]],
+        s: [['Aba NNPC Depot', [['+', 0], ['+', 1]]], ['Kano', [['−', 1]]], ['Kano NNPC Depot', [['+', 2]]], ['Bauchi', [['−', 2]]], ['Maiduguri', [['−', 0]]]] },
+    ];
+    let c = 0, declined = new Set();
+    const trip = $('#trip'), tank = $('#tank'), stops = $('#stops'), orders = $('#orders'), note = $('#tripNote');
+    function draw() {
+      const C = CASES[c], many = new Set(C.o.map((x) => x[1])).size > 1;
+      $('#tripPill').textContent = 'Wet cargo · ' + C.o.length + (C.o.length > 1 ? ' orders' : ' order');
+      tank.innerHTML = C.o.map((o, i) => `<div class="seg${declined.has(i) ? ' no' : ''}" style="flex-grow:${o[3]}; background:${CU[o[1]][1]}"><b>${L(o[3])} L</b>${o[2]} · ${CU[o[1]][0].split(' ')[0]}</div>`).join('');
+      stops.innerHTML = C.s.map(([pl, acts], i) => {
+        const pick = acts[0][0] === '+';
+        return `<li style="--i:${i}"><span class="n${pick ? ' pick' : ''}">${i + 1}</span><p class="pl">${pl}</p><div class="act">${acts.map(([k, oi]) => {
+          const o = C.o[oi], no = declined.has(oi) && k === '−';
+          return `<span class="${no ? 'no' : ''}"><i style="background:${CU[o[1]][1]}"></i>${k === '+' ? 'Load' : 'Deliver'} ${L(o[3])} L ${o[2]}</span>${no ? '<span><em>Declined</em></span>' : ''}`;
+        }).join('')}</div></li>`;
+      }).join('');
+      orders.innerHTML = C.o.map((o, i) => `<tr><td class="id">MON/DO/23/09/${o[0]}</td><td><span class="cu"><i style="background:${CU[o[1]][1]}"></i>${CU[o[1]][0]}</span></td><td>${o[2]}</td><td>${L(o[3])} L</td><td style="text-align:right">${
+        many ? (declined.has(i) ? `<button type="button" class="undo" data-i="${i}">Undo</button>` : `<button type="button" data-i="${i}">Contaminated</button>`) : '<span class="st">On trip</span>'}</td></tr>`).join('');
+      $$('button', orders).forEach((b) => b.addEventListener('click', () => {
+        const i = +b.dataset.i;
+        declined.has(i) ? declined.delete(i) : (declined.clear(), declined.add(i));
+        draw();
+      }));
+      if (declined.size) {
+        const d = C.o[[...declined][0]], rest = C.o.filter((_, i) => !declined.has(i));
+        const names = [...new Set(rest.map((o) => CU[o[1]][0]))];
+        const who = CU[d[1]][0]; note.innerHTML = `<b>${who}${who.endsWith('s') ? "'" : "'s"} share is declined at delivery.</b> ${names.join(' and ')} ${names.length > 1 ? 'are' : 'is'} still delivered, and the trip carries on.`;
+      } else note.textContent = '';
+    }
+    radio($('#cases'), (b) => { c = +b.dataset.c; declined.clear(); draw(); });
+    draw();
+  }
+
+  // 2. scheduling: trucks that already have room come first; an empty truck is the last resort
+  {
+    const ORDER = 100000;
+    const TRUCKS = [['BUU 599ZD', 100000, 70000, '24–27 Aug'], ['KSF 218LX', 60000, 15000, '25–28 Aug'], ['ABJ 904TR', 100000, 0, 'Free']];
+    const pick = new Map();
+    const box = $('#trucks');
+    box.innerHTML = TRUCKS.map(([reg, cap, had, d], i) => `<div class="trk"><div class="reg">${reg}${had ? '' : '<span class="tag">Empty</span>'}<small>${d}</small></div>
+      <div class="barw"><div class="bar"><span class="had" style="width:${(had / cap) * 100}%"></span><span class="now" data-i="${i}"></span></div><div class="cap"><span>${had ? L(had) + ' ltrs on it' : 'Nothing on it'}</span><span>${L(cap - had)} ltrs free</span></div></div>
+      <button type="button" data-i="${i}">Select</button></div>`).join('');
+    function draw() {
+      let sch = 0; pick.forEach((v) => (sch += v));
+      const rem = ORDER - sch;
+      $('#sSch').innerHTML = `${L(sch)} <small>ltrs</small>`; $('#sRem').innerHTML = `${L(rem)} <small>ltrs</small>`;
+      $('#sFill').style.width = (sch / ORDER) * 100 + '%';
+      const ok = $('#sOk'); ok.classList.toggle('done', rem === 0);
+      ok.textContent = rem === 0 ? `Covered by ${pick.size} truck${pick.size > 1 ? 's' : ''}${pick.has(2) ? '' : ', without a new one'}.` : (sch ? `${L(rem)} ltrs still to schedule.` : '');
+      TRUCKS.forEach(([, cap], i) => {
+        const b = $(`.trk button[data-i="${i}"]`, box);
+        b.classList.toggle('on', pick.has(i)); b.textContent = pick.has(i) ? 'Selected' : 'Select';
+        b.disabled = !pick.has(i) && rem === 0;
+        $(`.now[data-i="${i}"]`, box).style.width = ((pick.get(i) || 0) / cap) * 100 + '%';
+      });
+    }
+    $$('button', box).forEach((b) => b.addEventListener('click', () => {
+      const i = +b.dataset.i;
+      if (pick.has(i)) pick.delete(i);
+      else { let sch = 0; pick.forEach((v) => (sch += v)); pick.set(i, Math.min(TRUCKS[i][1] - TRUCKS[i][2], ORDER - sch)); }
+      // anything picked after a removal is topped up again, in the order picked
+      let left = ORDER; const order = [...pick.keys()]; pick.clear();
+      order.forEach((k) => { const v = Math.min(TRUCKS[k][1] - TRUCKS[k][2], left); if (v > 0) { pick.set(k, v); left -= v; } });
+      draw();
+    }));
+    draw();
+  }
+
+  // 3. at the pump: the attendant matches the face and the plate; then fueling, the amount, the signature
+  {
+    const who = $('#who'), phone = $('#phone');
+    radio($('.tog', who), (b) => {
+      const f = b.dataset.p === 'friend';
+      who.classList.toggle('friend', f); phone.classList.toggle('friend', f);
+      $('#faceD').style.opacity = f ? 0 : 1; $('#faceF').style.opacity = f ? 1 : 0;
+      $('#pName').textContent = f ? 'Someone else' : 'Adewale Rasaq B';
+      $('#pPlate').textContent = f ? 'KJA 233XY' : 'BUU 599ZD';
+      $('#m1').textContent = $('#m2').textContent = f ? '✕' : '✓';
+      $('#m1t').textContent = f ? 'Not the face on the voucher' : 'The face matches the voucher';
+      $('#m2t').textContent = f ? 'Not the truck on the voucher, so no fuel' : 'The plate matches the voucher';
+      $('.scr[data-s=rec] .go', phone).disabled = f;
+      show('rec');
+    });
+    let timer = null;
+    function show(s) {
+      $$('.scr', phone).forEach((x) => x.classList.toggle('on', x.dataset.s === s));
+      clearInterval(timer);
+      if (s === 'fuel') {
+        let t = 0; $('#clock').textContent = '00:00';
+        timer = setInterval(() => { t++; $('#clock').textContent = `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`; }, 1000);
+      }
+      if (s === 'form') { clearSig(); $('#qtyIn').value = 400; qty(); }
+      if (s === 'done') { const q = +$('#qtyIn').value; $('#doneT').textContent = `${q} ltrs of PMS to BUU 599ZD${q < 400 ? ', a partial redemption' : ''}`; }
+    }
+    $$('[data-to]', phone).forEach((b) => b.addEventListener('click', () => show(b.dataset.to)));
+    const sub = $('#submit');
+    let signed = false;
+    function gate() { sub.disabled = !(signed && +$('#qtyIn').value > 0); }
+    function qty() {
+      const q = +$('#qtyIn').value;
+      $('#qty').textContent = q + ' ltrs';
+      const rd = $('#rd'); rd.textContent = q === 400 ? 'Full redemption' : q === 0 ? 'Nothing filled' : 'Partial redemption'; rd.classList.toggle('part', q < 400);
+      gate();
+    }
+    $('#qtyIn').addEventListener('input', qty);
+    // the signature pad
+    const pad = $('#sig'), cv = $('canvas', pad), g = cv.getContext('2d');
+    let drawing = false, last = null;
+    function size() { const r = pad.getBoundingClientRect(); if (!r.width) return; cv.width = r.width * 2; cv.height = r.height * 2; g.scale(2, 2); g.lineWidth = 2; g.lineCap = g.lineJoin = 'round'; g.strokeStyle = '#111827'; }
+    function clearSig() { size(); g.clearRect(0, 0, cv.width, cv.height); signed = false; pad.classList.remove('inked'); gate(); }
+    const at = (e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    pad.addEventListener('pointerdown', (e) => { if (!cv.width) size(); drawing = true; last = at(e); try { pad.setPointerCapture(e.pointerId); } catch (_) {} });
+    pad.addEventListener('pointermove', (e) => {
+      if (!drawing) return;
+      const p = at(e); g.beginPath(); g.moveTo(...last); g.lineTo(...p); g.stroke(); last = p;
+      if (!signed) { signed = true; pad.classList.add('inked'); gate(); }
+    });
+    addEventListener('pointerup', () => (drawing = false));
+    $('#sigClear').addEventListener('click', clearSig);
+  }
+
+  // 4. the odometer: the attendant's reading and the customer's; a side trip shows up as distance
+  radio($('#odo .tog'), (b) => {
+    const side = b.dataset.r === '1', end = side ? 92571 : 92348, km = end - 91308;
+    $('#odoEnd').textContent = L(end) + ' km'; $('#km').textContent = L(km) + ' km';
+    $('#kmNote').textContent = side ? `${L(km - 1040)} km more than the route` : '';
+  });
+
+  // the order: one step at a time, the real screens crossfade
+  {
+    const bs = $$('#order .steps button'), imgs = $$('#order .stack img');
+    bs.forEach((b) => b.addEventListener('click', () => {
+      bs.forEach((x) => x.classList.toggle('on', x === b));
+      imgs.forEach((im, j) => im.classList.toggle('on', j === +b.dataset.i));
+    }));
+  }
+
+  // ---- the letter ----
+  const embed = document.documentElement.classList.contains('embed');
+  const host = embed && parent !== window ? parent : null;
+  const stampEl = document.getElementById('stamp'), pmEl = document.getElementById('pm');
+  const today = new Date();
+  const DATE = [`${today.toLocaleString('en', { month: 'short' }).toUpperCase()} ${today.getDate()}`, String(today.getFullYear())];
+
+  try {
+    const g = document.createElement('canvas'); g.width = g.height = 360;
+    Print.paper(g.getContext('2d'), 360, 360, '#fbf7ec', 41, 10);
+    document.querySelector('.letter').style.setProperty('--grain', `url(${g.toDataURL()})`);
+  } catch (e) {}
+
+  // the stamp: the very one from the mat inside the picnic, otherwise drawn the same way (as picnic.js does)
+  function drawStamp(src) {
+    stampEl.width = src.width; stampEl.height = src.height;
+    stampEl.getContext('2d').drawImage(src, 0, 0);
+  }
+  const art = host && host.Picnic && host.Picnic.art('transporter').front;
+  if (art) drawStamp(art);
+  else {
+    const img = new Image();
+    img.onload = () => document.fonts.ready.then(() => drawStamp(Print.stamp(img, { x: 352, y: 222, R: 40, top: 'SELECTED WORK', bottom: 'AARYA SHAH', l1: DATE[0], l2: DATE[1], color: '#2a3a7a', seed: 24 }).inked));
+    img.src = '../stamps/transporter.webp';
+  }
+  document.fonts.ready.then(() => {
+    const pm = Print.postmark({ R: 60, top: 'SELECTED WORK', bottom: 'AARYA SHAH', l1: DATE[0], l2: DATE[1], color: '#2a3a7a', waves: -1, waveLen: 150, seed: 16, k: 3 });
+    pmEl.width = pm.canvas.width; pmEl.height = pm.canvas.height;
+    pmEl.getContext('2d').drawImage(pm.canvas, 0, 0);
+    if (!embed) setTimeout(() => pmEl.classList.add('on'), 500);
+  });
+
+  window.Letter = {
+    slot() {
+      const r = stampEl.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: stampEl.offsetWidth, h: stampEl.offsetHeight, r: (3 * Math.PI) / 180 };
+    },
+    hideStamp() { stampEl.style.opacity = 0; pmEl.classList.remove('on'); },
+    land() { stampEl.style.opacity = 1; pmEl.classList.add('on'); },
+    toTop() {
+      return new Promise((done) => {
+        if (scrollY < 2) return done();
+        scrollTo({ top: 0, behavior: 'smooth' });
+        const t0 = performance.now();
+        const check = () => (scrollY < 2 || performance.now() - t0 > 900 ? done() : setTimeout(check, 30));
+        setTimeout(check, 30);
+      });
+    },
+  };
+  const leave = () => (host && host.Case ? host.Case.close() : (location.href = '../'));
+  document.getElementById('back').addEventListener('click', leave);
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') leave(); });
+  document.querySelectorAll('[data-go]').forEach((a) => a.addEventListener('click', (e) => {
+    if (host && host.Case) { e.preventDefault(); host.Case.go(a.dataset.go); }
+  }));
+</script>
+</body>
+</html>

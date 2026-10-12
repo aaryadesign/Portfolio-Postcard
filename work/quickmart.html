@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QuickMart</title>
+<script>if (/[?&]embed/.test(location.search)) document.documentElement.classList.add('embed');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Same scale as the other letters:
+     type   h1 48 · h2 40 · h3 24 · body 18 · line 16 · label 14   (700 headings, 600 emphasis, 500 labels, 400 text)
+     space  section 144 · heading to intro 16 · intro to content 48 · inside cards 32 · gaps 24
+     The built pieces use QuickMart's own look: a navy bar, white panels, pill tabs. */
+  :root{
+    --paper:#fbf7ec; --cream:#f6f0e0; --ink:#141210; --ink2:#5b554c; --line:#e4d9c2;
+    --blue:#1d3fa6;
+    --q-navy:#1c2452; --q-blue:#2c3aa8; --q-bg:#f5f6f8; --q-line:#e6e8ec; --q-dim:#6b7280; --q-text:#111827;
+    --ok:#15803d; --okb:#e3f5e8; --warn:#a16207; --warnb:#fbf3d5; --bad:#b91c1c; --badb:#fde4e4; --lav:#3730a3; --lavb:#e5e7fb; --org:#c2410c; --orgb:#ffedd5; --grey:#4b5563; --greyb:#eceef1;
+    --col:960px;
+    --ease:cubic-bezier(.4,0,.2,1);
+  }
+  *{box-sizing:border-box}
+  body{margin:0; color:var(--ink); font-family:'Geist',system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden}
+  img{display:block; max-width:100%}
+  p, h1, h2, h3, h4, ol, ul, dl, dd{margin:0}
+  button, input{font:inherit}
+  button:focus:not(:focus-visible){outline:none}
+
+  body{background-color:#f9d4d5;
+    background-image:linear-gradient(90deg, rgba(204,26,46,.42) 50%, transparent 50%), linear-gradient(rgba(204,26,46,.42) 50%, transparent 50%);
+    background-size:88px 88px}
+  html.embed, html.embed body{background:transparent}
+  .back{position:fixed; top:16px; left:16px; z-index:10; display:inline-flex; gap:8px; align-items:center; height:40px; padding:0 16px; border:0; border-radius:999px; background:var(--paper); color:var(--ink); font:500 15px/1 'Geist',system-ui,sans-serif; cursor:pointer;
+    box-shadow:0 1px 2px rgba(70,20,25,.2), 0 8px 20px rgba(70,20,25,.16); transition:transform .2s var(--ease)}
+  .back:hover{transform:translateY(-1px)}
+
+  .letter{position:relative; width:min(1180px, calc(100vw - 48px)); margin:max(96px, 14vh) auto 120px; padding:80px 80px 112px; background:var(--paper) var(--grain, none);
+    border-radius:3px; box-shadow:0 1px 1px rgba(70,20,25,.18), 0 10px 24px rgba(70,20,25,.18), 0 40px 80px -30px rgba(70,20,25,.35)}
+  .col{max-width:var(--col); margin:0 auto}
+
+  h1{font-weight:700; font-size:clamp(36px,4.4vw,48px); letter-spacing:-.035em; line-height:1.05}
+  h2{font-weight:700; font-size:clamp(30px,3.6vw,40px); letter-spacing:-.03em; line-height:1.15}
+  h3{font-weight:600; font-size:24px; letter-spacing:-.02em; line-height:1.3}
+  .body{font-size:18px; line-height:1.65; color:var(--ink2)}
+  .body + .body{margin-top:16px}
+
+  /* ---------- hero ---------- */
+  .lt-head{display:grid; grid-template-columns:1fr auto; gap:48px; align-items:start}
+  .lt-head h1{margin-top:48px}
+  .lt-head .lede{margin-top:16px; max-width:560px; font-size:20px; line-height:1.55; color:var(--ink2)}
+  .lt-slot{position:relative; width:clamp(170px,20vw,240px); margin:-16px -16px 0 0}
+  .lt-stamp{display:block; width:100%; aspect-ratio:440/308; transform:rotate(3deg); filter:drop-shadow(0 1px 1px rgba(60,40,0,.25)) drop-shadow(0 3px 6px rgba(60,40,0,.12))}
+  html.embed .lt-stamp{opacity:0}
+  .lt-pm{position:absolute; right:58%; top:52%; width:118%; pointer-events:none; opacity:0; transform:rotate(-9deg); transform-origin:85% 50%}
+  .lt-pm.on{animation:strike .45s cubic-bezier(.3,1.4,.5,1) both}
+  @keyframes strike{from{opacity:0; transform:rotate(-9deg) scale(1.5)} to{opacity:.88; transform:rotate(-9deg) scale(1)}}
+  .facts{margin-top:64px; display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:0 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+  .facts div{padding:20px 0 22px}
+  .facts dt{font-size:14px; font-weight:500; color:var(--ink2)}
+  .facts dd{margin-top:6px; font-size:16px; font-weight:600; line-height:1.4}
+  .photo{margin-top:48px; border-radius:20px; overflow:hidden; border:1px solid var(--line)}
+  .photo img{width:100%; aspect-ratio:1800/819; object-fit:cover}
+
+  /* ---------- sections ---------- */
+  section{padding-top:144px}
+  .head{max-width:680px}
+  .head .body{margin-top:16px}
+  .sub{margin-top:96px}
+  .sub .head h3 + .body{margin-top:12px}
+  .side{display:grid; grid-template-columns:minmax(0,1fr) 380px; gap:64px; align-items:center}
+
+  /* big choice cards on the paper, the one control above a built piece */
+  .pick{display:grid; grid-template-columns:repeat(var(--n,3),minmax(0,1fr)); gap:12px; margin-top:40px}
+  .pick button{display:flex; flex-direction:column; gap:6px; padding:16px 18px; border-radius:16px; border:1px solid var(--line); background:var(--cream); color:var(--ink); text-align:left; cursor:pointer; transition:background .25s, color .25s, border-color .25s}
+  .pick button:hover{border-color:var(--ink2)}
+  .pick b{font-size:15px; font-weight:600; line-height:1.3}
+  .pick span{font-size:13px; color:var(--ink2); line-height:1.45}
+  .pick button.on{background:var(--ink); border-color:var(--ink); color:var(--paper)}
+  .pick button.on span{color:rgba(251,247,236,.7)}
+
+  /* ---------- QuickMart, built ---------- */
+  .app{margin-top:16px; background:var(--q-bg); border-radius:16px; overflow:hidden; color:var(--q-text); border:1px solid #dfe2e7; box-shadow:0 1px 2px rgba(20,18,16,.08), 0 30px 50px -28px rgba(20,18,16,.4)}
+  .app .top{background:var(--q-navy); color:#fff; padding:16px 22px; font-size:15px; font-weight:500; display:flex; align-items:center; gap:10px}
+  .app .top span{color:rgba(255,255,255,.55)}
+  .app .in{padding:20px}
+  .pnl{background:#fff; border:1px solid var(--q-line); border-radius:12px}
+  .lbl{font-size:12px; color:var(--q-dim)}
+  .chip{display:inline-flex; align-items:center; height:24px; padding:0 9px; border-radius:6px; font-size:11px; font-weight:600; white-space:nowrap}
+  .st-pending{background:var(--warnb); color:var(--warn)} .st-ready{background:var(--okb); color:var(--ok)} .st-pred{background:#dcf2f7; color:#0e7490}
+  .st-red{background:var(--lavb); color:var(--lav)} .st-pdec{background:var(--orgb); color:var(--org)} .st-dec{background:var(--badb); color:var(--bad)}
+  .st-exp{background:var(--greyb); color:var(--grey)} .st-ref{background:#f3e8ff; color:#7e22ce}
+
+  /* 1. reading the records: the old system on the left, my notebook on the right */
+  .read{display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:24px; margin-top:40px; align-items:stretch}
+  .old{border-radius:12px; overflow:hidden; border:1px solid #c9ccd2; background:#fff; display:grid; grid-template-columns:150px minmax(0,1fr); grid-template-rows:auto 1fr; min-height:360px; font-size:13px; color:#222}
+  .old .bar{grid-column:1 / -1; background:#e9ebee; border-bottom:1px solid #c9ccd2; padding:8px 12px; font-size:12px; color:#555}
+  .old ul{list-style:none; margin:0; padding:0; border-right:1px solid #e0e2e6; background:#fafbfc}
+  .old li button{display:block; width:100%; padding:12px; border:0; border-bottom:1px solid #eceef1; background:none; text-align:left; font-size:13px; color:#222; cursor:pointer}
+  .old li button small{display:block; margin-top:2px; font-size:11px; color:#888}
+  .old li button.on{background:#e7ecff}
+  .old li button.seen::after{content:" ✓"; color:#6b7280}
+  .old .rec{padding:14px 16px}
+  .old .rec div{display:grid; grid-template-columns:130px minmax(0,1fr); gap:10px; padding:5px 0; border-bottom:1px dotted #e5e7eb}
+  .old .rec div span{color:#777}
+  .old .rec .none{padding:40px 0; text-align:center; color:#999; border:0; display:block}
+  .note{position:relative; border-radius:6px; background:#fffdf6 repeating-linear-gradient(transparent 0 27px, #dfe6f3 27px 28px); background-position:0 14px; border:1px solid var(--line); padding:14px 18px 18px 40px; box-shadow:0 10px 20px -14px rgba(60,40,0,.35)}
+  .note::before{content:""; position:absolute; left:28px; top:0; bottom:0; width:1px; background:#efb2b2}
+  .note h4{font-size:14px; font-weight:600; line-height:28px; color:#1e3a8a}
+  .note ol{list-style:none; padding:0; margin:0; columns:1}
+  .note li{font-size:14px; line-height:28px; color:#1e3a8a; animation:write .5s var(--ease) both}
+  .note li.new{background:linear-gradient(transparent 60%, #fde68a 60%)}
+  @keyframes write{from{opacity:0; transform:translateX(-6px)}}
+  .note p{font-size:13px; line-height:28px; color:#64748b}
+
+  /* 2. the voucher list: every voucher in a different state */
+  .vou .in{display:grid; grid-template-columns:300px minmax(0,1fr); gap:16px; align-items:start}
+  .vlist{padding:6px}
+  .vlist button{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 10px; align-items:center; width:100%; padding:11px 12px; border:0; border-radius:9px; background:none; text-align:left; cursor:pointer; transition:background .2s}
+  .vlist button:hover{background:var(--q-bg)}
+  .vlist button.on{background:#eef0fb}
+  .vlist b{font-size:13px; font-weight:500; color:var(--q-blue)}
+  .vlist small{grid-column:1; font-size:11px; color:var(--q-dim)}
+  .vlist .chip{grid-row:span 2}
+  .vd{padding:18px; min-height:420px}
+  .vd .ban{padding:12px 14px; border-radius:9px; font-size:13px; line-height:1.45}
+  .vd .row{display:flex; justify-content:space-between; align-items:center; margin-top:16px}
+  .vd .row b{font-size:15px; font-weight:600}
+  .items{margin-top:14px; border:1px solid var(--q-line); border-radius:10px; overflow:hidden}
+  .items .ih, .items .it{display:grid; grid-template-columns:44px minmax(0,1fr) 54px 54px 54px; gap:10px; align-items:center; padding:10px 12px}
+  .items .ih{background:var(--q-bg); font-size:11px; color:var(--q-dim)}
+  .items .ih span:nth-child(n+3), .items .it span:nth-child(n+3){text-align:center}
+  .items .it{border-top:1px solid var(--q-line); font-size:13px}
+  .items .it img{width:40px; height:40px; border-radius:8px; object-fit:cover}
+  .items .it b{display:block; font-weight:500; color:var(--q-blue)}
+  .items .it small{font-size:11px; color:var(--q-dim)}
+  .items .it .z{color:#c0c4cc}
+  .items .it .x{color:var(--bad); font-weight:600}
+  .terms{margin-top:14px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; font-size:12px}
+  .terms div{padding:10px 12px; border-radius:9px; background:var(--q-bg)}
+  .terms b{display:block; margin-top:2px; font-size:13px; font-weight:500; color:var(--q-text)}
+  .sum8{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px 16px; padding:14px 16px; font-size:12px; color:var(--q-dim); margin-bottom:16px}
+  .sum8 b{color:var(--q-text); font-weight:600; font-size:14px; margin-right:6px; font-variant-numeric:tabular-nums}
+
+  /* 3. stock: one flag or two thresholds, over two weeks */
+  .stock .in{display:grid; grid-template-columns:minmax(0,1fr); gap:14px}
+  .stock .hd{display:flex; align-items:center; gap:14px; padding:14px 16px}
+  .stock .hd img{width:44px; height:44px; border-radius:8px; object-fit:cover}
+  .stock .hd b{font-size:14px; font-weight:600}
+  .stock .hd small{display:block; font-size:12px; color:var(--q-dim)}
+  .stock .hd .out{margin-left:auto; text-align:right; font-size:12px; color:var(--q-dim)}
+  .stock .hd .out b{display:block; font-size:22px; letter-spacing:-.02em; color:var(--q-text); font-variant-numeric:tabular-nums}
+  .stock .hd .out.bad b{color:var(--bad)}
+  .chart{padding:14px 16px 10px}
+  .chart svg{display:block; width:100%; height:auto; overflow:visible}
+  .chart text{font:500 11px 'Geist',system-ui,sans-serif; fill:#6b7280}
+  .chart .ln{fill:none; stroke:var(--q-blue); stroke-width:2.5; stroke-linejoin:round}
+  .chart .ar{fill:rgba(44,58,168,.08)}
+  .chart .zero{fill:rgba(185,28,28,.12)}
+  .chart .th{stroke-width:1.5; stroke-dasharray:5 5}
+  .chart .ev circle{stroke:#fff; stroke-width:2}
+  .chart .grid line{stroke:#eef0f3}
+  .chart .draw{stroke-dasharray:var(--len); stroke-dashoffset:var(--len); animation:draw 1.2s var(--ease) forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .chart .fade{opacity:0; animation:fadein .4s var(--ease) forwards; animation-delay:var(--dl, .9s)}
+  @keyframes fadein{to{opacity:1}}
+
+  /* 4. pricing: nudge, don't retype */
+  .price .in{display:grid; grid-template-columns:minmax(0,1fr); gap:14px}
+  .tw{overflow-x:auto; scrollbar-width:none}
+  .ctrls{display:flex; flex-wrap:wrap; gap:14px 22px; align-items:flex-end; padding:16px}
+  .ctrls .g{display:flex; flex-direction:column; gap:6px}
+  .seg{display:inline-flex; padding:3px; border-radius:9px; background:var(--q-bg); border:1px solid var(--q-line)}
+  .seg button{height:30px; padding:0 12px; border:0; border-radius:7px; background:none; color:var(--q-dim); font-size:13px; font-weight:500; cursor:pointer; white-space:nowrap}
+  .seg button.on{background:#fff; color:var(--q-text); box-shadow:0 1px 2px rgba(0,0,0,.12)}
+  .amt{display:flex; align-items:center; gap:6px}
+  .amt input{width:72px; height:36px; padding:0 10px; border:1px solid var(--q-line); border-radius:9px; font-size:14px; color:var(--q-text); background:#fff}
+  .apply{height:36px; padding:0 18px; border:0; border-radius:9px; background:var(--q-navy); color:#fff; font-size:13px; font-weight:600; cursor:pointer}
+  .reset{height:36px; padding:0 4px; border:0; background:none; color:var(--q-blue); font-size:13px; cursor:pointer}
+  .ptab{width:100%; border-collapse:collapse; font-size:13px}
+  .ptab th{text-align:left; font-weight:500; color:var(--q-dim); font-size:12px; padding:12px 16px; border-bottom:1px solid var(--q-line)}
+  .ptab th:not(:first-child), .ptab td:not(:first-child){text-align:right}
+  .ptab td{padding:12px 16px; border-bottom:1px solid var(--q-line); font-variant-numeric:tabular-nums}
+  .ptab tr:last-child td{border-bottom:0}
+  .ptab .pr{display:flex; align-items:center; gap:10px}
+  .ptab .pr img{width:32px; height:32px; border-radius:7px; object-fit:cover}
+  .ptab td s{color:#9ca3af; margin-right:6px; font-size:12px}
+  .ptab td.ch{background:#fffbe6}
+  .ptab td.ch b{font-weight:600}
+  .ptab td.off{color:#c0c4cc}
+  .pnote{padding:0 4px; font-size:13px; color:var(--q-dim); min-height:20px}
+
+  /* the customer types: the real screens */
+  .stack{position:relative; aspect-ratio:1100/666; margin-top:24px}
+  .stack img{position:absolute; inset:0; width:100%; height:100%; object-fit:contain; opacity:0; transition:opacity .45s var(--ease)}
+  .stack img.on{opacity:1}
+  .pair{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; margin-top:40px; align-items:start}
+
+  blockquote{margin:0}
+
+  .nextp{margin-top:144px; padding-top:72px; border-top:1px solid var(--line); text-align:center}
+  .nextp a{color:inherit; text-decoration:none; display:inline-flex; flex-direction:column; align-items:center; gap:24px}
+  .nextp img{width:200px; transform:rotate(-3deg); transition:transform .4s var(--ease); filter:drop-shadow(0 2px 2px rgba(60,40,0,.25)) drop-shadow(0 12px 16px rgba(60,40,0,.18))}
+  .nextp a:hover img{transform:rotate(2deg) scale(1.04)}
+  .nextp .t{font-weight:700; font-size:32px; letter-spacing:-.03em}
+
+  .rv{opacity:0; transform:translateY(24px); transition:opacity .8s var(--ease), transform .8s var(--ease)}
+  .rv.in{opacity:1; transform:none}
+
+  @media (max-width: 1000px){
+    .letter{padding:64px 48px 96px}
+    .facts{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .side{grid-template-columns:minmax(0,1fr); gap:40px}
+    .read{grid-template-columns:minmax(0,1fr)}
+    .vou .in{grid-template-columns:minmax(0,1fr)}
+    .vlist{display:flex; overflow-x:auto; scrollbar-width:none; gap:4px}
+    .vlist button{flex:none; width:auto; grid-template-columns:auto}
+    .vlist .chip{grid-row:auto}
+    .vd{min-height:0}
+  }
+  @media (max-width: 760px){
+    .letter{width:calc(100vw - 24px); padding:56px 24px 72px; margin-top:76px}
+    .lt-head{grid-template-columns:1fr; gap:0}
+    .lt-slot{grid-row:1; justify-self:end; width:150px; margin:-32px -8px 0 0}
+    .lt-head h1{margin-top:16px}
+    .lt-head .lede{font-size:18px}
+    .facts{grid-template-columns:1fr 1fr; gap:0 24px}
+    .facts div{padding:16px 0}
+    .photo{border-radius:14px}
+    section{padding-top:96px}
+    .sub{margin-top:72px}
+    .pick{grid-template-columns:minmax(0,1fr)}
+    .pick button{padding:12px 14px}
+    .pair{grid-template-columns:minmax(0,1fr)}
+    .app{margin-left:-12px; margin-right:-12px}
+    .app .in{padding:12px}
+    .old{grid-template-columns:minmax(0,1fr); grid-template-rows:auto auto 1fr}
+    .old ul{display:flex; overflow-x:auto; border-right:0; border-bottom:1px solid #e0e2e6}
+    .old li button{white-space:nowrap; border-bottom:0; border-right:1px solid #eceef1}
+    .old .rec div{grid-template-columns:110px minmax(0,1fr)}
+    .items .ih, .items .it{grid-template-columns:36px minmax(0,1fr) 34px 34px 34px; gap:8px; padding:10px}
+    .items .it img{width:34px; height:34px}
+    .terms{grid-template-columns:minmax(0,1fr)}
+    .sum8{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .ptab th, .ptab td{padding:10px 8px}
+    .ptab .pr img{display:none}
+  }
+</style>
+</head>
+<body>
+
+<button class="back" type="button" id="back">&larr; Back to the picnic</button>
+
+<article class="letter">
+  <header class="col">
+    <div class="lt-head">
+      <div>
+        <h1>QuickMart</h1>
+        <p class="lede">The backend for a chain of 200+ stores and fuel stations across Nigeria, rebuilt from a system that had never been designed. Same client company as Transporter.</p>
+      </div>
+      <div class="lt-slot"><canvas class="lt-stamp" id="stamp" aria-label="QuickMart stamp" role="img"></canvas><canvas class="lt-pm" id="pm" aria-hidden="true"></canvas></div>
+    </div>
+    <dl class="facts">
+      <div><dt>Client</dt><dd>QuickMart</dd></div>
+      <div><dt>Role</dt><dd>Product designer</dd></div>
+      <div><dt>Team</dt><dd>3 designers</dd></div>
+      <div><dt>Timeline</dt><dd>6 to 8 months</dd></div>
+      <div><dt>Status</dt><dd>Live across the network</dd></div>
+    </dl>
+    <div class="photo"><img src="assets/quickmart/hero.jpg" alt="A QuickMart store front, open 24/7"></div>
+  </header>
+
+  <!-- WHERE IT STARTED -->
+  <section class="col rv">
+    <div class="head">
+      <h2>Where this started</h2>
+      <p class="body">QuickMart is a convenience store attached to a petrol station, in every state of Nigeria. It's run by the same company as Transporter, and it came with the same problem: a backend built by developers with no designer involved. No documentation, no contact with the developers, and one person on the client side, the CEO, who I could only reach through my founder.</p>
+      <p class="body">I'd just come off Transporter, so I knew the shape of the problem. QuickMart was worse. Transporter had broken flows. QuickMart had whole sections of data with no forms behind them.</p>
+    </div>
+  </section>
+
+  <!-- READING -->
+  <section class="col rv">
+    <div class="head">
+      <h2>Reading a system with no manual</h2>
+      <p class="body">The account we were given was a dummy, and every customer in it looked different. There was no "add customer" flow, which is what would normally tell you what a customer is made of. So I opened record after record and wrote every field I saw into my notebook, until I had a full customer.</p>
+    </div>
+    <div class="read" id="read">
+      <div class="old">
+        <div class="bar">Customers · old system</div>
+        <ul id="recs"></ul>
+        <div class="rec" id="rec"></div>
+      </div>
+      <div class="note"><h4>Customer</h4><ol id="nb"></ol><p id="nbc"></p></div>
+    </div>
+    <div class="head" style="margin-top:40px">
+      <p class="body">The differences turned out to be useful: a customer who'd bought something had purchases, one with vouchers had vouchers, a business had delegates. Before Jay could design a screen, someone had to work out what it should contain, and that was my job. When something was unclear and I couldn't reach the CEO, we designed it the way we thought it should work, and the client confirmed it or added a field or two.</p>
+    </div>
+  </section>
+
+  <!-- MONDAY -->
+  <section class="col rv">
+    <div class="side">
+      <div class="head">
+        <h2>The Monday demo</h2>
+        <p class="body">The client didn't want our process. Every Monday they wanted to open a prototype and see more than the week before. So we finished one full flow at a time before showing it: for customers, the form, then the list, then the three types, then one type end to end.</p>
+        <p class="body">The prototypes behaved like real software. Every form had an empty and a filled state, every dropdown opened, every list filtered. The client's feedback landed on how it worked, and a hole in a flow showed up while we wired the prototype, before a developer built on it.</p>
+      </div>
+      <img src="assets/quickmart/zoomed.png" alt="The whole prototype zoomed out in Figma: hundreds of connected frames" loading="lazy" style="border-radius:16px">
+    </div>
+  </section>
+
+  <!-- DECISIONS -->
+  <section class="col">
+    <div class="head rv"><h2>Key decisions</h2></div>
+
+    <div class="sub rv" style="margin-top:56px">
+      <div class="head">
+        <h3>Three kinds of customer, kept apart</h3>
+        <p class="body">Three pricing models, three permission models and three ways of redeeming, in one product. The risk is staff acting on the wrong one. So the account type is tagged everywhere, the three never share a screen, and the layout stays the same so nobody relearns the product.</p>
+      </div>
+      <div class="pick" id="ctype" style="--n:3">
+        <button type="button" class="on" data-i="0"><b>Individual</b><span>Buys in store or online, and collects in person. QuickMart doesn't deliver.</span></button>
+        <button type="button" data-i="1"><b>Corporate</b><span>Gives employees fuel and product allowances by grade, locked to stores near the office.</span></button>
+        <button type="button" data-i="2"><b>Business</b><span>A credit account with delegates, each with a spending limit and allowed stores.</span></button>
+      </div>
+      <div class="stack" id="cstack">
+        <img class="on" src="assets/quickmart/c_individual.png" alt="An individual customer's voucher: the products, the terms and the pickup store" loading="lazy">
+        <img src="assets/quickmart/c_corporate.png" alt="A corporate customer: employees, allowances, vouchers and subsidiary companies" loading="lazy">
+        <img src="assets/quickmart/c_business.png" alt="A business account, MTN Nigeria: vouchers, 290 delegates, activity, and a credit limit" loading="lazy">
+      </div>
+    </div>
+
+    <div class="sub rv">
+      <div class="head">
+        <h3>One voucher list, every state</h3>
+        <p class="body">A voucher here is a full transaction, and it moves through 8 states. Redemption works per item, so a customer can collect some products and leave the rest. I found the states by reading the old system. In the demo, instead of showing one and asking the client to imagine the rest, we built the list so every voucher was in a different state, and opened them one by one.</p>
+      </div>
+      <div class="app vou">
+        <div class="top"><span>QuickMart ›</span> Product Voucher</div>
+        <div class="in">
+          <div style="grid-column:1 / -1" class="pnl sum8">
+            <span><b>250</b>Pending</span><span><b>268</b>Partially Redeemed</span><span><b>21</b>Partially Declined</span><span><b>25</b>Refunded</span>
+            <span><b>51</b>Ready to Use</span><span><b>234</b>Redeemed</span><span><b>18</b>Declined</span><span><b>12</b>Expired</span>
+          </div>
+          <div class="pnl vlist" id="vlist"></div>
+          <div class="pnl vd" id="vd"></div>
+        </div>
+      </div>
+      <div class="head" style="margin-top:40px">
+        <p class="body">Voucher transfer was the client's idea. With no delivery, someone who ordered online but couldn't collect was stuck. Now the voucher moves to someone who can, with their ID recorded, and the order location and the pickup store are shown as two maps, since they're often different places. My part was making it clear where the voucher stands.</p>
+      </div>
+      <div class="pair">
+        <img src="assets/quickmart/xfer_form.png" alt="Sharing a voucher: the new person's name, phone, ID document and photo" loading="lazy">
+        <img src="assets/quickmart/xfer_detail.png" alt="The voucher after sharing: the customer, the person collecting, and both locations" loading="lazy">
+      </div>
+    </div>
+
+    <div class="sub rv">
+      <div class="head">
+        <h3>Two stock thresholds, so a store never runs dry</h3>
+        <p class="body">The old system had nothing to stop a store running out. Restocking isn't instant: a store reorders from a hub, and the hub takes days to deliver. So a single "out of stock" flag fires far too late. Jay and I added two thresholds. The first is an early warning and the point to reorder. The second means refill now. Between them, the order has time to arrive.</p>
+      </div>
+      <div class="pick" id="smode" style="--n:2">
+        <button type="button" data-m="flag"><b>One out-of-stock flag</b><span>Fires when the shelf is already empty</span></button>
+        <button type="button" class="on" data-m="two"><b>Two thresholds</b><span>Reorder early, refill before zero</span></button>
+      </div>
+      <div class="app stock">
+        <div class="top"><span>Store Management › Alaka Store ›</span> MRS Polo T-Shirt</div>
+        <div class="in">
+          <div class="pnl hd"><img src="assets/quickmart/p_polo.png" alt=""><div><b>MRS Polo T-Shirt</b><small>CP-2450-3-3421 · Daily needs, Clothing</small></div><div class="out" id="sOut"><b>0 days</b>with nothing on the shelf</div></div>
+          <div class="pnl chart" id="chart"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub rv">
+      <div class="head">
+        <h3>Pricing without an MRP</h3>
+        <p class="body">Nigeria has no MRP, so every store sets its own price for every product, and it varies by region, by store and by customer type. Prices here don't get rewritten, they drift: up ₦2 or ₦3, or a small percentage. So we designed around adjusting, not retyping. Pick a region or a store, pick a product or everything, and move the price by a percentage or a naira amount.</p>
+      </div>
+      <div class="app price">
+        <div class="top"><span>Pricing ›</span> Lagos</div>
+        <div class="in">
+          <div class="pnl ctrls">
+            <div class="g"><span class="lbl">Where</span><div class="seg" id="pWhere"><button type="button" class="on" data-v="region">All of Lagos</button><button type="button" data-v="store">Alaka Store</button></div></div>
+            <div class="g"><span class="lbl">What</span><div class="seg" id="pWhat"><button type="button" class="on" data-v="one">Maggi 100gm</button><button type="button" data-v="all">All products</button></div></div>
+            <div class="g"><span class="lbl">Change</span><div class="amt"><div class="seg" id="pDir"><button type="button" class="on" data-v="1">Up</button><button type="button" data-v="-1">Down</button></div><input id="pVal" type="number" min="0" step="1" value="3" aria-label="Amount"><div class="seg" id="pUnit"><button type="button" class="on" data-v="naira">₦</button><button type="button" data-v="pct">%</button></div></div></div>
+            <button type="button" class="apply" id="pApply">Apply</button><button type="button" class="reset" id="pReset">Reset</button>
+          </div>
+          <div class="pnl tw"><table class="ptab"><thead><tr><th>Product</th><th>Alaka Store</th><th>MRS Creek Road</th><th>Victoria Island</th></tr></thead><tbody id="ptab"></tbody></table></div>
+          <p class="pnote" id="pnote"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HARD -->
+  <section class="col rv">
+    <div class="head">
+      <h2>What was hard</h2>
+      <p class="body">Nothing broke the way the order flow did on Transporter. The hard part was understanding the business: SKUs and variants, bundles, three kinds of customer in one store, prices per customer and per region, restocking from hubs. Learning it took as long as designing for it.</p>
+      <p class="body">And as on Transporter, I never spoke to a user: not a store manager, a corporate admin, a delegate or a customer. Everything came from the client's CEO through my founder. The rules came from the client. What we owned was making them usable.</p>
+    </div>
+  </section>
+
+  <!-- OUTCOME -->
+  <section class="col rv">
+    <div class="side">
+      <div class="head">
+        <h2>Outcome</h2>
+        <p class="body">The system is live across QuickMart's stores. I left shortly after, so I don't have usage numbers. What shipped: three customer systems, 200+ stores pricing on their own, and an 8-state voucher system with per-item redemption, rebuilt in 6 to 8 months from a dummy account and no documentation.</p>
+      </div>
+      <img src="assets/quickmart/store_summary.png" alt="A store's summary: vouchers, attendants, ratings, products, the operator and services" loading="lazy">
+    </div>
+  </section>
+
+  <section class="col rv">
+    <div class="head">
+      <h2>What I learned</h2>
+      <p class="body">This project tested one skill: reading a system nobody could explain and rebuilding it from the inside. Most of my real work happened in a notebook, opening record after record until the model showed itself. Having done Transporter for the same client first is why I could move fast. At this size, the whole job is keeping it clear enough for a team to run.</p>
+    </div>
+  </section>
+
+  <div class="nextp">
+    <a href="goalkeeper.html" data-go="goalkeeper">
+      <img src="../stamps/goalkeeper.webp" alt="Goalkeeper stamp">
+      <span class="t">Goalkeeper &rarr;</span>
+    </a>
+  </div>
+</article>
+
+<script src="../print.js"></script>
+<script>
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const N = (n) => '₦' + n.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    if (e.target.querySelector('#chart') && window.drawStock) drawStock();
+    io.unobserve(e.target);
+  }), { threshold: 0.12 });
+  $$('.rv').forEach((el) => io.observe(el));
+  const radio = (root, fn) => $$('button', root).forEach((b) => b.addEventListener('click', () => {
+    $$('button', root).forEach((x) => x.classList.toggle('on', x === b)); fn(b);
+  }));
+
+  // 1. reading the records: each one shows some fields; the notebook keeps every field it has seen
+  {
+    const RECS = [
+      ['Adman Amin', 'Customer 1', [['Name', 'Adman Amin'], ['Phone', '+234 803 112 4410'], ['Customer Type', 'Individual']]],
+      ['Isah Jubril', 'Customer 2', [['Name', 'Isah Jubril'], ['Customer ID', 'CU/2023/12/19/02932/MT'], ['Gender', 'Male'], ['Phone', '+234 807 698 4115'], ['Email', 'mtn@gmail.com'], ['Location', 'Victoria Island, Lagos'], ['Customer Type', 'Individual'], ['Purchases', '3'], ['Vouchers', '2']]],
+      ['(no name)', 'Customer 3', []],
+      ['MTN Nigeria', 'Customer 4', [['Name', 'MTN Nigeria'], ['Customer ID', 'CU/2023/12/19/02932/MT'], ['Phone', '+234 807 698 4115'], ['Email', 'mtn@gmail.com'], ['Customer Type', 'Business'], ['Business Owner', 'Abio Ubuntu'], ['Business Type', 'Private Limited Company'], ['Industry Type', 'IT Software'], ['Service State', 'LA'], ['Registered On', '05/03/2024'], ['Incorporated', '07/11/2024'], ['Credit Limit', '$1,000,000.00'], ['Delegates', '290'], ['Vouchers', '879']]],
+    ];
+    const seen = [], opened = new Set();
+    const ul = $('#recs'), rec = $('#rec'), nb = $('#nb'), nbc = $('#nbc');
+    ul.innerHTML = RECS.map(([n, c], i) => `<li><button type="button" data-i="${i}">${n}<small>${c}</small></button></li>`).join('');
+    function open(i) {
+      $$('button', ul).forEach((b) => b.classList.toggle('on', +b.dataset.i === i));
+      $(`button[data-i="${i}"]`, ul).classList.add('seen');
+      const f = RECS[i][2];
+      rec.innerHTML = f.length ? f.map(([k, v]) => `<div><span>${k}</span>${v}</div>`).join('') : '<span class="none">No details on this record</span>';
+      $$('li', nb).forEach((li) => li.classList.remove('new'));
+      f.forEach(([k]) => { if (!seen.includes(k)) { seen.push(k); const li = document.createElement('li'); li.textContent = k; li.className = 'new'; nb.appendChild(li); } });
+      opened.add(i);
+      nbc.textContent = `${seen.length} fields, from ${opened.size} of ${RECS.length} records`;
+    }
+    ul.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) open(+b.dataset.i); });
+    open(0);
+  }
+
+  // the customer types: the real screens crossfade
+  radio($('#ctype'), (b) => $$('#cstack img').forEach((im, j) => im.classList.toggle('on', j === +b.dataset.i)));
+
+  // 2. vouchers: one in each state, each with its items' ordered, redeemed and pending counts
+  {
+    const P = [['p_maggi', 'Maggi 100gm', 'CP-2450-3-0456', 200], ['p_shades', 'Green Shades', 'CP-2450-3-0452', 1200], ['p_polo', 'MRS Polo T-Shirt', 'CP-2450-3-0451', 12200]];
+    // [state, class, code, banner tone, banner, [redeemed per item], [declined per item], payment]
+    const V = [
+      ['Pending', 'pending', 'VOC/9642/ESIW1', 'warn', 'Payment is still pending. Nothing can be collected yet.', [0, 0, 0], [0, 0, 0], 'Pending'],
+      ['Ready to Use', 'ready', 'VOC/9642/ESIW2', 'ok', 'Paid and in stock. The customer is told it is ready for pickup.', [0, 0, 0], [0, 0, 0], 'Paid'],
+      ['Partially Redeemed', 'pred', 'VOC/9642/ESIW3', 'pred', 'Some items have been collected. The rest can still be collected.', [2, 1, 0], [0, 0, 0], 'Paid'],
+      ['Redeemed', 'red', 'VOC/9642/ESIW4', 'red', 'Every item has been collected.', [2, 2, 2], [0, 0, 0], 'Paid'],
+      ['Partially Declined', 'pdec', 'VOC/9642/ESIW5', 'pdec', 'One item was declined. The others can still be collected.', [0, 0, 0], [0, 2, 0], 'Paid'],
+      ['Declined', 'dec', 'VOC/9642/ESIW6', 'bad', 'The voucher VOC/9642/ESIW6 has been declined and you can no longer redeem this voucher.', [0, 0, 0], [2, 2, 2], 'Paid'],
+      ['Expired', 'exp', 'VOC/9642/ESIW7', 'grey', 'This voucher expired on 04/11/2023 at 08:00 PM before it was collected.', [0, 0, 0], [0, 0, 0], 'Paid'],
+      ['Refunded', 'ref', 'VOC/9642/ESIW8', 'ref', 'The amount has been refunded to the customer.', [0, 0, 0], [0, 0, 0], 'Refunded'],
+    ];
+    const TONE = { warn: 'st-pending', ok: 'st-ready', pred: 'st-pred', red: 'st-red', pdec: 'st-pdec', bad: 'st-dec', grey: 'st-exp', ref: 'st-ref' };
+    const list = $('#vlist'), vd = $('#vd');
+    list.innerHTML = V.map((v, i) => `<button type="button" data-i="${i}"><b>${v[2]}</b><span class="chip st-${v[1]}">${v[0]}</span><small>Isah Jubril · ₦27,200.00</small></button>`).join('');
+    function show(i) {
+      const v = V[i];
+      $$('button', list).forEach((b) => b.classList.toggle('on', +b.dataset.i === i));
+      const rows = P.map((p, k) => {
+        const r = v[5][k], d = v[6][k], pend = 2 - r - d;
+        return `<div class="it"><img src="assets/quickmart/${p[0]}.png" alt=""><span><b>${p[1]}</b><small>${N(p[3])}</small></span><span>2</span><span class="${r ? '' : 'z'}">${r}</span><span class="${d ? 'x' : pend ? '' : 'z'}">${d ? d + ' declined' : pend}</span></div>`;
+      }).join('');
+      vd.innerHTML = `<div class="ban ${TONE[v[3]]}">${v[4]}</div>
+        <div class="row"><b>${v[2]}</b><span class="chip st-${v[1]}">${v[0]}</span></div>
+        <div class="items"><div class="ih"><span></span><span>Product</span><span>Order</span><span>Redeem</span><span>Pending</span></div>${rows}</div>
+        <div class="terms"><div>Customer<b>Isah Jubril · Individual</b></div><div>Payment<b>${v[7]}</b></div><div>Expiry<b>04/11/2023 08:00 PM</b></div></div>`;
+    }
+    list.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) show(+b.dataset.i); });
+    show(2);
+  }
+
+  // 3. stock over two weeks: 20 sold a day, the hub takes 4 days to deliver
+  {
+    const DAYS = 14, START = 200, SOLD = 20, LEAD = 4, WARN = 100, CRIT = 40, REFILL = 200;
+    let mode = 'two';
+    function series(m) {
+      const pts = []; let s = START, due = -1, ordered = -1, empty = 0;
+      for (let d = 0; d <= DAYS; d++) {
+        if (d === due) { s += REFILL; due = -1; }
+        pts.push(s);
+        if (d > 0 && s === 0) empty++;
+        const trigger = m === 'two' ? s <= WARN : s <= 0;
+        if (trigger && due < 0 && ordered < 0) { ordered = d; due = d + LEAD; }
+        s = Math.max(0, s - SOLD);
+      }
+      return { pts, ordered, arrive: ordered + LEAD, empty };
+    }
+    const W = 880, H = 260, L = 40, R = 16, T = 16, B = 32, MAX = 260;
+    const x = (d) => L + (d / DAYS) * (W - L - R), y = (v) => T + (1 - v / MAX) * (H - T - B);
+    window.drawStock = function () {
+      const s = series(mode), two = mode === 'two';
+      const path = s.pts.map((v, d) => `${d ? 'L' : 'M'}${x(d).toFixed(1)} ${y(v).toFixed(1)}`).join(' ');
+      let len = 0; for (let d = 1; d <= DAYS; d++) len += Math.hypot(x(d) - x(d - 1), y(s.pts[d]) - y(s.pts[d - 1]));
+      const zeros = s.pts.map((v, d) => (v === 0 && d < DAYS ? `<rect class="zero fade" x="${x(d)}" y="${T}" width="${x(1) - x(0)}" height="${H - T - B}" style="--dl:1s"/>` : '')).join('');
+      const grid = [0, 100, 200].map((v) => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`).join('');
+      const days = [0, 2, 4, 6, 8, 10, 12, 14].map((d) => `<text x="${x(d)}" y="${H - 10}" text-anchor="middle">Day ${d}</text>`).join('');
+      const th = two
+        ? `<line class="th fade" style="--dl:.2s" stroke="#d97706" x1="${L}" x2="${W - R}" y1="${y(WARN)}" y2="${y(WARN)}"/><text class="fade" style="--dl:.2s" x="${W - R}" y="${y(WARN) - 6}" text-anchor="end" fill="#b45309">Warning, reorder · ${WARN} pcs</text>
+           <line class="th fade" style="--dl:.3s" stroke="#dc2626" x1="${L}" x2="${W - R}" y1="${y(CRIT)}" y2="${y(CRIT)}"/><text class="fade" style="--dl:.3s" x="${W - R}" y="${y(CRIT) - 6}" text-anchor="end" fill="#b91c1c">Critical, refill now · ${CRIT} pcs</text>`
+        : `<text class="fade" style="--dl:.2s" x="${L + 8}" y="${y(0) - 8}" fill="#b91c1c">Out of stock flag · 0 pcs</text>`;
+      const ev = (d, label, c) => `<g class="ev fade" style="--dl:1s"><circle cx="${x(d)}" cy="${y(s.pts[d])}" r="5" fill="${c}"/><text x="${x(d)}" y="${y(s.pts[d]) - 12}" text-anchor="middle" fill="${c}">${label}</text></g>`;
+      $('#chart').innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Stock over two weeks">
+        <g class="grid">${grid}</g>${zeros}${th}
+        <path class="ar fade" style="--dl:.8s" d="${path} L${x(DAYS)} ${y(0)} L${x(0)} ${y(0)} Z"/>
+        <path class="ln draw" style="--len:${len.toFixed(0)}" d="${path}"/>
+        ${ev(s.ordered, 'Reorder', '#b45309')}${ev(Math.min(s.arrive, DAYS), 'Stock arrives', '#15803d')}${days}</svg>`;
+      const out = $('#sOut');
+      out.classList.toggle('bad', s.empty > 0);
+      out.innerHTML = `<b>${s.empty} day${s.empty === 1 ? '' : 's'}</b>with nothing on the shelf`;
+    };
+    radio($('#smode'), (b) => { mode = b.dataset.m; drawStock(); });
+    drawStock();
+  }
+
+  // 4. pricing: move prices by an amount or a percentage, never retype them
+  {
+    const ROWS = [['p_maggi', 'Maggi 100gm', [500, 510, 520]], ['p_polo', 'MRS Polo T-Shirt', [680, 680, 700]], ['p_shades', 'Green Shades', [1200, 1250, 1250]]];
+    const st = { where: 'region', what: 'one', dir: 1, unit: 'naira' };
+    let prices = ROWS.map((r) => r[2].slice()), changed = new Set();
+    const tb = $('#ptab');
+    function draw(before) {
+      tb.innerHTML = ROWS.map((r, i) => `<tr><td><span class="pr"><img src="assets/quickmart/${r[0]}.png" alt="">${r[1]}</span></td>${prices[i].map((p, j) => {
+        const k = i + ':' + j, ch = changed.has(k);
+        return `<td class="${ch ? 'ch' : ''}">${ch && before ? `<s>${N(before[i][j])}</s>` : ''}${ch ? `<b>${N(p)}</b>` : N(p)}</td>`;
+      }).join('')}</tr>`).join('');
+    }
+    radio($('#pWhere'), (b) => (st.where = b.dataset.v));
+    radio($('#pWhat'), (b) => (st.what = b.dataset.v));
+    radio($('#pDir'), (b) => (st.dir = +b.dataset.v));
+    radio($('#pUnit'), (b) => (st.unit = b.dataset.v));
+    $('#pApply').addEventListener('click', () => {
+      const v = Math.max(0, +$('#pVal').value || 0), before = prices.map((r) => r.slice());
+      changed = new Set();
+      prices = prices.map((row, i) => row.map((p, j) => {
+        if (st.what === 'one' && i !== 0) return p;
+        if (st.where === 'store' && j !== 0) return p;
+        const np = Math.max(0, Math.round((st.unit === 'pct' ? p * (1 + (st.dir * v) / 100) : p + st.dir * v) * 100) / 100);
+        if (np !== p) changed.add(i + ':' + j);
+        return np;
+      }));
+      draw(before);
+      $('#pnote').textContent = changed.size ? `${changed.size} price${changed.size > 1 ? 's' : ''} moved. None retyped.` : '';
+    });
+    $('#pReset').addEventListener('click', () => { prices = ROWS.map((r) => r[2].slice()); changed = new Set(); draw(); $('#pnote').textContent = ''; });
+    draw();
+  }
+
+  // ---- the letter ----
+  const embed = document.documentElement.classList.contains('embed');
+  const host = embed && parent !== window ? parent : null;
+  const stampEl = document.getElementById('stamp'), pmEl = document.getElementById('pm');
+  const today = new Date();
+  const DATE = [`${today.toLocaleString('en', { month: 'short' }).toUpperCase()} ${today.getDate()}`, String(today.getFullYear())];
+
+  try {
+    const g = document.createElement('canvas'); g.width = g.height = 360;
+    Print.paper(g.getContext('2d'), 360, 360, '#fbf7ec', 41, 10);
+    document.querySelector('.letter').style.setProperty('--grain', `url(${g.toDataURL()})`);
+  } catch (e) {}
+
+  // the stamp: the very one from the mat inside the picnic, otherwise drawn the same way (as picnic.js does)
+  function drawStamp(src) {
+    stampEl.width = src.width; stampEl.height = src.height;
+    stampEl.getContext('2d').drawImage(src, 0, 0);
+  }
+  const art = host && host.Picnic && host.Picnic.art('quickmart').front;
+  if (art) drawStamp(art);
+  else {
+    const img = new Image();
+    img.onload = () => document.fonts.ready.then(() => drawStamp(Print.stamp(img, { x: 90, y: 220, R: 40, top: 'SELECTED WORK', bottom: 'AARYA SHAH', l1: DATE[0], l2: DATE[1], color: '#7a1f2a', seed: 25 }).inked));
+    img.src = '../stamps/quickmart.webp';
+  }
+  document.fonts.ready.then(() => {
+    const pm = Print.postmark({ R: 60, top: 'SELECTED WORK', bottom: 'AARYA SHAH', l1: DATE[0], l2: DATE[1], color: '#7a1f2a', waves: -1, waveLen: 150, seed: 17, k: 3 });
+    pmEl.width = pm.canvas.width; pmEl.height = pm.canvas.height;
+    pmEl.getContext('2d').drawImage(pm.canvas, 0, 0);
+    if (!embed) setTimeout(() => pmEl.classList.add('on'), 500);
+  });
+
+  window.Letter = {
+    slot() {
+      const r = stampEl.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: stampEl.offsetWidth, h: stampEl.offsetHeight, r: (3 * Math.PI) / 180 };
+    },
+    hideStamp() { stampEl.style.opacity = 0; pmEl.classList.remove('on'); },
+    land() { stampEl.style.opacity = 1; pmEl.classList.add('on'); },
+    toTop() {
+      return new Promise((done) => {
+        if (scrollY < 2) return done();
+        scrollTo({ top: 0, behavior: 'smooth' });
+        const t0 = performance.now();
+        const check = () => (scrollY < 2 || performance.now() - t0 > 900 ? done() : setTimeout(check, 30));
+        setTimeout(check, 30);
+      });
+    },
+  };
+  const leave = () => (host && host.Case ? host.Case.close() : (location.href = '../'));
+  document.getElementById('back').addEventListener('click', leave);
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') leave(); });
+  document.querySelectorAll('[data-go]').forEach((a) => a.addEventListener('click', (e) => {
+    if (host && host.Case) { e.preventDefault(); host.Case.go(a.dataset.go); }
+  }));
+</script>
+</body>
+</html>

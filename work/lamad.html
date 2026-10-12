@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LAMAD ERP</title>
+<script>if (/[?&]embed/.test(location.search)) document.documentElement.classList.add('embed');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
+<style>
+  /* Same scale as the other letters:
+     type   h1 48 · h2 40 · h3 24 · body 18 · line 16 · label 14   (700 headings, 600 emphasis, 500 labels, 400 text)
+     space  section 144 · heading to intro 16 · intro to content 48 · inside cards 32 · gaps 24
+     The app pieces use LAMAD's own light theme and blue. */
+  :root{
+    --paper:#fbf7ec; --cream:#f6f0e0; --ink:#141210; --ink2:#5b554c; --line:#e4d9c2;
+    --blue:#1d3fa6;
+    --l-blue:#1462f5; --l-line:#e6e8ec; --l-dim:#6b7280; --l-bg:#f7f8fa; --l-red:#e5484d; --l-green:#16a34a;
+    --col:960px;
+    --ease:cubic-bezier(.4,0,.2,1);
+  }
+  *{box-sizing:border-box}
+  body{margin:0; color:var(--ink); font-family:'Geist',system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden}
+  img{display:block; max-width:100%}
+  p, h1, h2, h3, h4, ol, ul, dl, dd{margin:0}
+  button, textarea{font:inherit}
+
+  body{background-color:#f9d4d5;
+    background-image:linear-gradient(90deg, rgba(204,26,46,.42) 50%, transparent 50%), linear-gradient(rgba(204,26,46,.42) 50%, transparent 50%);
+    background-size:88px 88px}
+  html.embed, html.embed body{background:transparent}
+  .back{position:fixed; top:16px; left:16px; z-index:10; display:inline-flex; gap:8px; align-items:center; height:40px; padding:0 16px; border:0; border-radius:999px; background:var(--paper); color:var(--ink); font:500 15px/1 'Geist',system-ui,sans-serif; cursor:pointer;
+    box-shadow:0 1px 2px rgba(70,20,25,.2), 0 8px 20px rgba(70,20,25,.16); transition:transform .2s var(--ease)}
+  .back:hover{transform:translateY(-1px)}
+
+  .letter{position:relative; width:min(1180px, calc(100vw - 48px)); margin:max(96px, 14vh) auto 120px; padding:80px 80px 112px; background:var(--paper) var(--grain, none);
+    border-radius:3px; box-shadow:0 1px 1px rgba(70,20,25,.18), 0 10px 24px rgba(70,20,25,.18), 0 40px 80px -30px rgba(70,20,25,.35)}
+  .col{max-width:var(--col); margin:0 auto}
+
+  h1{font-weight:700; font-size:clamp(36px,4.4vw,48px); letter-spacing:-.035em; line-height:1.05}
+  h2{font-weight:700; font-size:clamp(30px,3.6vw,40px); letter-spacing:-.03em; line-height:1.15}
+  h3{font-weight:600; font-size:24px; letter-spacing:-.02em; line-height:1.3}
+  .body{font-size:18px; line-height:1.65; color:var(--ink2)}
+  .body + .body{margin-top:16px}
+  .body b{color:var(--ink); font-weight:600}
+  .num{font-family:'Yellowtail',cursive; color:var(--blue); font-size:32px; line-height:1}
+
+  /* ---------- hero ---------- */
+  .lt-head{display:grid; grid-template-columns:1fr auto; gap:48px; align-items:start}
+  .lt-head h1{margin-top:48px}
+  .lt-head .lede{margin-top:16px; max-width:560px; font-size:20px; line-height:1.55; color:var(--ink2)}
+  .lt-slot{position:relative; width:clamp(170px,20vw,240px); margin:-16px -16px 0 0}
+  .lt-stamp{display:block; width:100%; aspect-ratio:440/308; transform:rotate(3deg); filter:drop-shadow(0 1px 1px rgba(60,40,0,.25)) drop-shadow(0 3px 6px rgba(60,40,0,.12))}
+  html.embed .lt-stamp{opacity:0}
+  .lt-pm{position:absolute; right:58%; top:52%; width:118%; pointer-events:none; opacity:0; transform:rotate(-9deg); transform-origin:85% 50%}
+  .lt-pm.on{animation:strike .45s cubic-bezier(.3,1.4,.5,1) both}
+  @keyframes strike{from{opacity:0; transform:rotate(-9deg) scale(1.5)} to{opacity:.88; transform:rotate(-9deg) scale(1)}}
+  .facts{margin-top:64px; display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:0 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+  .facts div{padding:20px 0 22px}
+  .facts dt{font-size:14px; font-weight:500; color:var(--ink2)}
+  .facts dd{margin-top:6px; font-size:16px; font-weight:600; line-height:1.4}
+  .photo{margin-top:48px; border-radius:20px; overflow:hidden; border:1px solid var(--line)}
+  .photo img{width:100%; aspect-ratio:1800/818; object-fit:cover}
+
+  /* ---------- sections ---------- */
+  section{padding-top:144px}
+  .head{max-width:680px}
+  .head .body{margin-top:16px}
+  .after{margin-top:48px}
+  .sub{margin-top:96px}
+  .sub .head h3 + .body{margin-top:12px}
+  .card{background:var(--cream); border:1px solid var(--line); border-radius:20px; padding:32px}
+  .card h3{font-size:20px}
+  .card p{margin-top:8px; font-size:16px; line-height:1.6; color:var(--ink2)}
+  .grid2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px}
+  .shot{margin-top:40px}
+  .shot img{width:100%}
+  .pair{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; margin-top:40px; align-items:start}
+  .side{display:grid; grid-template-columns:minmax(0,1fr) 380px; gap:64px; align-items:center}
+
+  /* before and after, row by row */
+  .ba{border-top:1px solid var(--ink)}
+  .ba div{display:grid; grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr); gap:16px; align-items:baseline; padding:16px 0; border-bottom:1px solid var(--line); font-size:16px; line-height:1.5}
+  .ba span:first-child{color:var(--ink2)}
+  .ba i{font-style:normal; color:var(--ink2)}
+  .ba b{font-weight:600}
+  .ba .hd{padding:12px 0; font-size:14px; font-weight:500; color:var(--ink2)}
+
+  /* the app pieces, in LAMAD's light theme */
+  .app{background:#fff; border:1px solid var(--l-line); border-radius:16px; box-shadow:0 1px 2px rgba(20,18,16,.06), 0 24px 40px -24px rgba(20,18,16,.25); color:#111827}
+
+  /* 1. the PO, step by step */
+  .po{display:grid; grid-template-columns:200px minmax(0,1fr); gap:32px; align-items:center; margin-top:48px}
+  .po .steps{list-style:none; padding:0; display:flex; flex-direction:column; gap:4px}
+  .po .steps button{display:flex; gap:12px; align-items:center; width:100%; padding:12px 14px; border:0; border-radius:12px; background:none; color:var(--ink2); font-size:15px; font-weight:500; text-align:left; cursor:pointer; transition:background .25s, color .25s}
+  .po .steps button i{flex:none; width:24px; height:24px; border-radius:50%; border:1.5px solid var(--line); display:grid; place-items:center; font-style:normal; font-size:12px; transition:all .25s}
+  .po .steps button.on{background:var(--cream); color:var(--ink)}
+  .po .steps button.on i{background:var(--l-blue); border-color:var(--l-blue); color:#fff}
+  .po .stage{position:relative; aspect-ratio:984/630}
+  .po .stage img{position:absolute; inset:0; width:100%; height:100%; opacity:0; transition:opacity .45s var(--ease)}
+  .po .stage img.on{opacity:1}
+
+  /* 2. the vendor: anyone but L1 needs a reason */
+  .rfq{padding:24px}
+  .rfq h4{font-size:15px; font-weight:600}
+  .rfq .sub2{margin-top:4px; font-size:13px; color:var(--l-dim)}
+  .rfq .rows{margin-top:16px; border:1px solid var(--l-line); border-radius:12px; overflow:hidden}
+  .rfq label{display:grid; grid-template-columns:20px minmax(0,1fr) auto; gap:12px; align-items:center; padding:14px 16px; font-size:14px; cursor:pointer; transition:background .2s}
+  .rfq label + label{border-top:1px solid var(--l-line)}
+  .rfq label:hover{background:var(--l-bg)}
+  .rfq input{position:absolute; opacity:0; pointer-events:none}
+  .rfq .dot{width:18px; height:18px; border-radius:50%; border:1.5px solid #c4c8cf; transition:all .2s}
+  .rfq input:checked + .dot{border:5px solid var(--l-blue)}
+  .rfq input:focus-visible + .dot{outline:2px solid var(--l-blue); outline-offset:2px}
+  .rfq .v b{font-weight:500}
+  .rfq .tag{margin-left:6px; padding:1px 6px; border-radius:5px; background:#e8f7ee; color:var(--l-green); font-size:11px; font-weight:600}
+  .rfq .q{text-align:right; font-variant-numeric:tabular-nums; font-weight:500}
+  .rfq .q small{display:block; font-size:11px; font-weight:400; color:var(--l-red)}
+  .rfq .q small.l1{color:var(--l-green)}
+  .rfq .why{display:grid; grid-template-rows:0fr; transition:grid-template-rows .4s var(--ease)}
+  .rfq .why > div{overflow:hidden}
+  .rfq.off .why{grid-template-rows:1fr}
+  .rfq .why p{margin-top:16px; font-size:13px; color:#111827}
+  .rfq textarea{display:block; width:100%; margin-top:8px; min-height:72px; padding:10px 12px; border:1px solid var(--l-line); border-radius:10px; resize:none; font-size:13px; color:#111827; background:#fff; outline:none}
+  .rfq textarea:focus{border-color:var(--l-blue)}
+  .rfq .acts{display:flex; justify-content:flex-end; gap:8px; margin-top:16px}
+  .rfq .acts button{height:38px; padding:0 16px; border-radius:9px; border:0; background:var(--l-blue); color:#fff; font-size:13px; font-weight:600; cursor:pointer; transition:opacity .2s}
+  .rfq .acts button:disabled{opacity:.4; cursor:default}
+  .rfq .done{display:none; margin-top:16px; padding:12px 14px; border-radius:10px; background:var(--l-bg); font-size:13px; color:#111827}
+  .rfq.sent .done{display:block}
+  .rfq.sent .acts{display:none}
+
+  /* 3. the pipeline: the ends stay, the middle is the team's */
+  .pipe{padding:20px; overflow-x:auto; scrollbar-width:none}
+  .pipe::-webkit-scrollbar{display:none}
+  .pipe .cols{display:flex; gap:12px}
+  .pipe .c{flex:1 0 136px; min-width:0}
+  .pipe .h{display:flex; align-items:center; gap:6px; height:34px; padding:0 8px 0 12px; border-radius:9px; font-size:13px; font-weight:500}
+  .pipe .h span{flex:1; outline:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .pipe .fixed .h{background:#eef2ff; color:#3730a3}
+  .pipe .mid .h{background:#fff7ed; color:#9a3412; box-shadow:inset 0 0 0 1px #fed7aa}
+  .pipe .mid .h span{cursor:text}
+  .pipe .mid .h span:focus{text-overflow:clip}
+  .pipe .x{flex:none; width:22px; height:22px; border:0; border-radius:6px; background:none; color:inherit; cursor:pointer; opacity:.6; font-size:15px; line-height:1}
+  .pipe .x:hover{opacity:1; background:rgba(0,0,0,.06)}
+  .pipe .card2{margin-top:10px; height:64px; border-radius:10px; border:1px solid var(--l-line); background:#fff; padding:10px 12px}
+  .pipe .card2 i{display:block; height:7px; border-radius:4px; background:#eceef2}
+  .pipe .card2 i + i{margin-top:8px; width:60%}
+  .pipe .add{flex:none; align-self:flex-start; width:44px; height:34px; border-radius:9px; border:1.5px dashed #c4c8cf; background:none; color:var(--l-dim); font-size:18px; cursor:pointer}
+  .pipe .add:disabled{opacity:.35; cursor:default}
+  .pipe .c.new{animation:grow .4s var(--ease)}
+  @keyframes grow{from{opacity:0; transform:translateY(6px)}}
+
+  /* the logistics miss: one step became two */
+  .flows{display:grid; gap:24px; margin-top:40px}
+  .flows h4{font-size:14px; font-weight:500; color:var(--ink2); margin-bottom:12px}
+  .flow{list-style:none; padding:0; display:flex; flex-wrap:wrap; gap:10px 8px; align-items:center}
+  .flow li{display:flex; align-items:center; gap:8px; font-size:15px; font-weight:500}
+  .flow li span{padding:8px 14px; border-radius:999px; border:1px solid var(--line); background:var(--cream)}
+  .flow li.key span{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+  .flow li + li::before{content:"→"; color:var(--ink2)}
+  .flow.was li span{opacity:.7}
+
+  .nextp{margin-top:144px; padding-top:72px; border-top:1px solid var(--line); text-align:center}
+  .nextp a{color:inherit; text-decoration:none; display:inline-flex; flex-direction:column; align-items:center; gap:24px}
+  .nextp img{width:200px; transform:rotate(-3deg); transition:transform .4s var(--ease); filter:drop-shadow(0 2px 2px rgba(60,40,0,.25)) drop-shadow(0 12px 16px rgba(60,40,0,.18))}
+  .nextp a:hover img{transform:rotate(2deg) scale(1.04)}
+  .nextp .t{font-weight:700; font-size:32px; letter-spacing:-.03em}
+
+  .rv{opacity:0; transform:translateY(24px); transition:opacity .8s var(--ease), transform .8s var(--ease)}
+  .rv.in{opacity:1; transform:none}
+
+  @media (max-width: 1000px){
+    .letter{padding:64px 48px 96px}
+    .facts{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .side{grid-template-columns:minmax(0,1fr); gap:40px}
+    .po{grid-template-columns:minmax(0,1fr); gap:20px}
+    .po .steps{flex-direction:row; overflow-x:auto; scrollbar-width:none}
+    .po .steps button{white-space:nowrap; width:auto}
+  }
+  @media (max-width: 760px){
+    .letter{width:calc(100vw - 24px); padding:56px 24px 72px; margin-top:76px}
+    .lt-head{grid-template-columns:1fr; gap:0}
+    .lt-slot{grid-row:1; justify-self:end; width:150px; margin:-32px -8px 0 0}
+    .lt-head h1{margin-top:16px}
+    .lt-head .lede{font-size:18px}
+    .facts{grid-template-columns:1fr 1fr; gap:0 24px}
+    .facts div{padding:16px 0}
+    .photo{border-radius:14px}
+    section{padding-top:96px}
+    .grid2, .pair{grid-template-columns:minmax(0,1fr)}
+    .sub{margin-top:72px}
+    .ba div{grid-template-columns:minmax(0,1fr); gap:4px}
+    .ba i{display:none}
+    .ba .hd{display:none}
+    .rfq{padding:18px}
+  }
+</style>
+</head>
+<body>
+
+<button class="back" type="button" id="back">&larr; Back to the picnic</button>
+
+<article class="letter">
+  <header class="col">
+    <div class="lt-head">
+      <div>
+        <h1>LAMAD ERP</h1>
+        <p class="lede">An ERP for a company that ran five departments on paper, Excel and email. I designed it on my own, end to end, over six months.</p>
+      </div>
+      <div class="lt-slot"><canvas class="lt-stamp" id="stamp" aria-label="LAMAD stamp" role="img"></canvas><canvas class="lt-pm" id="pm" aria-hidden="true"></canvas></div>
+    </div>
+    <dl class="facts">
+      <div><dt>Client</dt><dd>LAMAD LLC</dd></div>
+      <div><dt>Role</dt><dd>Solo product designer</dd></div>
+      <div><dt>Where</dt><dd>Muscat and Dubai</dd></div>
+      <div><dt>Timeline</dt><dd>6 months</dd></div>
+      <div><dt>Status</dt><dd>In final development</dd></div>
+    </dl>
+    <div class="photo"><img src="assets/lamad/hero.jpg" alt="People from LAMAD talking in front of the LAMAD logo"></div>
+  </header>
+
+  <!-- WHERE IT STARTED -->
+  <section class="col rv">
+    <div class="head">
+      <h2>Where this started</h2>
+      <p class="body">LAMAD is an ISO-certified metering company in Oman's oil and gas sector, with clients like PDO. When they opened in Dubai, they suddenly had two legal entities, two VAT setups, five departments, and nothing connecting them. Sales visits lived in notebooks, procurement requests went by email, and every purchase order was a PDF written from scratch.</p>
+      <p class="body">Nobody at LAMAD had used SAP, Zoho, Odoo or anything like them. But each team knew its own work perfectly. What nobody had seen was <b>all of it joined up</b>: five departments working from one set of facts, with access drawn so not everyone sees everything. A junior accountant shouldn't see a client's budget. Procurement shouldn't see live sales figures. Making that work without making it heavy for first-time users was the real job.</p>
+    </div>
+  </section>
+
+  <!-- RESEARCH -->
+  <section class="col rv">
+    <div class="side">
+      <div class="head">
+        <h2>Finding out what it needed to do</h2>
+        <p class="body">Their processes were mostly undocumented, or scattered across email and Teams. So I put <b>50+ pages of their internal documents</b> into NotebookLM, then filled the gaps by interviewing the heads of Procurement, Logistics and Project Management.</p>
+        <p class="body">Most of those pages were policy written for LAMAD's staff. What I needed was buried inside: how procurement runs, how logistics gets scheduled, how vendor quotes are handled. So I told NotebookLM what I was looking for and had it pull those parts out.</p>
+        <p class="body">Then, with each head of department, I asked: do you do this because the business needs it, or because that's how it's always been done? Those turned out to be very different lists.</p>
+      </div>
+      <img src="assets/lamad/notion-map.png" alt="LAMAD's documents feeding into one map: structured workflow, a unified data directory, cross-module dependencies and user flows per module" loading="lazy" style="border-radius:20px; border:1px solid var(--line)">
+    </div>
+  </section>
+
+  <!-- BEFORE AND AFTER -->
+  <section class="col rv">
+    <div class="head"><h2>Before and after</h2></div>
+    <div class="ba after">
+      <div class="hd"><span>Before</span><i></i><span>After</span></div>
+      <div><span>Sales visits in notebooks and Excel</span><i>→</i><b>Visit reports in the system</b></div>
+      <div><span>Follow-ups tracked by hand, or forgotten</span><i>→</i><b>Follow-ups with a date and a next step</b></div>
+      <div><span>Procurement requests over email</span><i>→</i><b>Requests tied to the project</b></div>
+      <div><span>Logistics briefed separately</span><i>→</i><b>Logistics called from Procurement</b></div>
+      <div><span>Vendors picked on personal judgement</span><i>→</i><b>The lowest bidder, unless management approves</b></div>
+      <div><span>Every PO written from scratch</span><i>→</i><b>A three-step PO</b></div>
+      <div><span>No branch on documents</span><i>→</i><b>Every record belongs to Oman or Dubai from the start</b></div>
+      <div><span>No view of the pipeline</span><i>→</i><b>A live sales dashboard across both branches</b></div>
+    </div>
+  </section>
+
+  <!-- DECISIONS -->
+  <section class="col">
+    <div class="head rv"><h2>Key decisions</h2></div>
+
+    <div class="sub rv" style="margin-top:56px">
+      <div class="head">
+        <h3>One record per client visit</h3>
+        <p class="body">When a client signed, sales used to rewrite everything to brief the project team. Now every visit, follow-up, document and next step lives in one record, newest first. When a prospect converts, <b>the visit report becomes an Inquiry, and then a Project</b>. Nobody types anything twice, and the manager sees it all without chasing anyone.</p>
+      </div>
+      <div class="pair">
+        <img src="assets/lamad/svr-2-listing.png" alt="Sales visit reports, listed with branch, company, reporter, status and follow-up" loading="lazy">
+        <img src="assets/lamad/svr-1-detail.png" alt="One visit report: the client, the purpose of the visit, what was discussed, and the follow-ups" loading="lazy">
+      </div>
+    </div>
+
+    <div class="sub rv">
+      <div class="head">
+        <h3>A purchase order in three steps</h3>
+        <p class="body">These people were coming straight from paper. Give them one long form and you lose them on day one. So a PO takes three steps, each about one kind of decision, in the order you think in. That matters most at items, because a PO can have one line or twenty.</p>
+        <p class="body">The part I pushed hardest for is <b>the preview before you submit</b>. On paper, they always looked at the finished document before sending it, so I kept that moment. It looks exactly like the printed PO, and you can jump back to any step to fix something.</p>
+      </div>
+      <div class="po" id="po">
+        <ol class="steps">
+          <li><button type="button" class="on" data-i="0"><i>1</i>Parties and addresses</button></li>
+          <li><button type="button" data-i="1"><i>2</i>Order items</button></li>
+          <li><button type="button" data-i="2"><i>3</i>Terms and conditions</button></li>
+          <li><button type="button" data-i="3"><i>✓</i>Preview</button></li>
+        </ol>
+        <div class="stage">
+          <img class="on" src="assets/lamad/po-1-parties.png" alt="Step 1: who's ordering (Lamad Dubai or Oman), who it's ordered from, and where to pick up" loading="lazy">
+          <img src="assets/lamad/po-2-items.png" alt="Step 2: the order items" loading="lazy">
+          <img src="assets/lamad/po-3-terms.png" alt="Step 3: dates, scope, delivery and payment terms" loading="lazy">
+          <img src="assets/lamad/po-4-preview.png" alt="The preview: the purchase order exactly as it will print" loading="lazy">
+        </div>
+      </div>
+    </div>
+
+    <div class="sub rv">
+      <div class="side">
+        <div class="head">
+          <h3>Approval, not a warning</h3>
+          <p class="body">The client wanted vendor selection to be fair and auditable. How to enforce it was up to me.</p>
+          <p class="body">A warning when someone skips L1, the lowest qualified bidder, was the lightest option. I dropped it quickly: a warning you can click past doesn't stop anyone who has already decided. So <b>if you pick anyone but L1, you write a reason, and management approves it</b> before the PO moves.</p>
+          <p class="body">That one line makes approval faster, not slower. The reason is right there, so nobody chases messages to find out why, and every decision leaves a record.</p>
+        </div>
+        <div class="app rfq" id="rfq">
+          <h4>Choose vendor</h4>
+          <p class="sub2">Flow computer / flow data logger · Qty 1</p>
+          <div class="rows">
+            <label><input type="radio" name="v" value="nova"><span class="dot"></span><span class="v"><b>NovaTech Inc.</b></span><span class="q">2,010 USD<small>+510</small></span></label>
+            <label><input type="radio" name="v" value="petro"><span class="dot"></span><span class="v"><b>PetroSolutions Ltd.</b></span><span class="q">1,750 USD<small>+250</small></span></label>
+            <label><input type="radio" name="v" value="apex" checked><span class="dot"></span><span class="v"><b>Apex Oilfield Services</b><span class="tag">L1</span></span><span class="q">1,500 USD<small class="l1">lowest</small></span></label>
+          </div>
+          <div class="why"><div>
+            <p>Why did you choose this vendor and not L1?</p>
+            <textarea id="why" placeholder="Write a reason" aria-label="Why did you choose this vendor and not L1?"></textarea>
+          </div></div>
+          <div class="acts"><button type="button" id="rfqGo">Confirm</button></div>
+          <div class="done" id="rfqDone"></div>
+        </div>
+      </div>
+      <div class="pair">
+        <img src="assets/lamad/vg-1-rfq.png" alt="The vendor quotes in a project, with a note that the chosen vendor isn't the lowest bidder" loading="lazy">
+        <img src="assets/lamad/vg-2-confirm.png" alt="Confirm vendor, asking why this vendor and not L1, with Send for Approval" loading="lazy">
+      </div>
+    </div>
+
+    <div class="sub rv">
+      <div class="head">
+        <h3>A pipeline the team can change themselves</h3>
+        <p class="body">LAMAD is growing. Today it's Oman and Dubai; tomorrow it could be India or Saudi Arabia, and the sales cycle will change with each market. Fixed stages would mean waiting on a developer every time.</p>
+        <p class="body">So <b>the first and last stages stay put, and everything between them is the team's</b> to add, remove or rename. The dashboard above it adds branch toggles, time filters, revenue trends and a breakdown by category, so management can see the pipeline across both offices.</p>
+      </div>
+      <div class="app pipe after" id="pipe"><div class="cols" id="cols"></div></div>
+      <div class="pair">
+        <img src="assets/lamad/sp-1-kanban.png" alt="The sales pipeline as a Kanban board, from New to Won" loading="lazy">
+        <img src="assets/lamad/sp-2-dashboard.png" alt="The sales dashboard: Oman and Dubai toggles, revenue, a sales trend and a breakdown by category" loading="lazy">
+      </div>
+    </div>
+
+    <div class="sub rv">
+      <div class="head">
+        <h3>Access follows the role, not the person</h3>
+        <p class="body">The obvious answer is a permissions table per person. I tied access to the org structure instead. You make a role, say Account Manager 1, and the role gets the rights. Account Manager 1 and Account Manager 2 can have completely different rights, and someone who needs the same access just joins the role.</p>
+        <p class="body"><b>Add an employee, place them in the structure, and their access comes with the seat.</b> It works at any team size, and the client thinks in roles they already know.</p>
+      </div>
+      <div class="pair">
+        <img src="assets/lamad/ac-1-org.png" alt="The organisational structure, from Admin and CEO down to each department's roles" loading="lazy">
+        <img src="assets/lamad/ac-2-edit.png" alt="Editing a role: which modules it can read, write, update or delete" loading="lazy">
+      </div>
+    </div>
+
+    <div class="sub rv">
+      <div class="side">
+        <div class="head">
+          <h3>Two companies, without anyone noticing</h3>
+          <p class="body">Oman and Dubai have different VAT numbers, addresses and rules. Every module knows which branch a record belongs to from the moment it's created. Nobody has to think about which company they're working in, and <b>every document comes out legally correct</b>.</p>
+        </div>
+        <img src="assets/lamad/entities.png" alt="Branch settings, with Oman and Dubai" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- THE MEETING -->
+  <section class="col rv">
+    <div class="side">
+      <div class="head">
+        <h2>The meeting where I held the line</h2>
+        <p class="body">I presented the whole structure before designing a single screen. The client's answer was immediate: "We don't understand this. Just start designing."</p>
+        <p class="body">I didn't. Design and development were running side by side, so screens without an agreed structure meant redoing work mid-build. I told them plainly that understanding this now would save time and money later, and asked for a second try.</p>
+        <p class="body">The second time, I opened with what we'd cover: Sales and Proposal, through Procurement and Logistics, to Finance, with Project Management alongside. And I used <b>the exact words from their own documents</b>. They were following their own process, not decoding a designer's diagram.</p>
+      </div>
+      <img src="assets/lamad/ia.png" alt="The information architecture, from Sales and Proposals through Procurement and Logistics to Finance" loading="lazy" style="max-width:360px; justify-self:center">
+    </div>
+
+    <div class="sub">
+      <div class="head">
+        <h3>And the time I didn't check</h3>
+        <p class="body">Midway through, a stakeholder who hadn't been in that meeting said the Logistics flow was wrong. They were right, and it wasn't small. I had folded two steps into one, and everything after it had to be rebuilt.</p>
+      </div>
+      <div class="flows">
+        <div><h4>What I'd designed</h4>
+          <ol class="flow was"><li><span>Vendor chosen</span></li><li><span>Goods arrive at LAMAD</span></li><li class="key"><span>Logistics</span></li><li><span>Client</span></li></ol></div>
+        <div><h4>What it needed</h4>
+          <ol class="flow"><li><span>Vendor chosen</span></li><li class="key"><span>Logistics: vendor to LAMAD</span></li><li><span>Built at LAMAD</span></li><li class="key"><span>Logistics: LAMAD to client</span></li></ol></div>
+      </div>
+      <p class="body" style="margin-top:32px; max-width:680px">I had sign-off, but from whoever was in the room, not from the person who owned it. After that, for every module, <b>I checked who owned it before moving on</b>.</p>
+    </div>
+  </section>
+
+  <!-- CHECKS AND HATS -->
+  <section class="col rv">
+    <div class="grid2">
+      <div class="card"><h3>How it was checked</h3><p>There was no budget or access for usability testing, and the users were still moving over as it was built. So I walked each head of department through every flow in their own words, and handed modules to developers one at a time, so problems came up while they were cheap to fix. Next time I'd push to watch someone actually use it.</p></div>
+      <div class="card"><h3>Every hat</h3><p>Development ran alongside, so I ran the handoff: when developers had a question, they tagged me and I walked them through it. When I needed a decision, I tagged the right person on Teams, got on a call, and confirmed before building further. No PM, no researcher. It all came through me.</p></div>
+    </div>
+  </section>
+
+  <!-- OUTCOME -->
+  <section class="col rv">
+    <div class="head">
+      <h2>Outcome</h2>
+      <p class="body">The design is done and handed off. The system is in its last phase of development, with the final changes going in before it goes live in both countries. Because modules were handed off one at a time, most flows are already built and checked against the designs.</p>
+      <p class="body">Once the team is using it daily, I plan to go back for numbers: how many POs are made in the system, and how much faster a visit turns into an inquiry.</p>
+    </div>
+  </section>
+
+  <section class="col rv">
+    <div class="head">
+      <h2>What I learned</h2>
+      <p class="body">People would open this every day to do their jobs. Someone who has managed fine with notebooks and Excel for years won't put up with a system that slows them down, so it had to be faster than what they had, without burying anyone. Each screen shows what that person needs right then, with everything else one step away.</p>
+      <p class="body">The other half was protecting the business from its own system. There couldn't be a loophole anyone could quietly use for themselves. So every big action, like a vendor override or a major change to a record, goes through an approval, and everything is logged. Easy for honest daily work, with no room for misuse: that's what I'd take into the next project.</p>
+    </div>
+  </section>
+
+  <div class="nextp">
+    <a href="transporter.html" data-go="transporter">
+      <img src="../stamps/transporter.webp" alt="Transporter stamp">
+      <span class="t">Transporter &rarr;</span>
+    </a>
+  </div>
+</article>
+
+<script src="../print.js"></script>
+<script>
+  const $ = (s, r = document) => r.querySelector(s);
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    io.unobserve(e.target);
+  }), { threshold: 0.15 });
+  document.querySelectorAll('.rv').forEach((el) => io.observe(el));
+
+  // 1. the PO: one step at a time, the screens crossfade
+  {
+    const bs = [...document.querySelectorAll('#po .steps button')], imgs = [...document.querySelectorAll('#po .stage img')];
+    bs.forEach((b) => b.addEventListener('click', () => {
+      const i = +b.dataset.i;
+      bs.forEach((x) => x.classList.toggle('on', x === b));
+      imgs.forEach((im, j) => im.classList.toggle('on', j === i));
+    }));
+  }
+
+  // 2. the vendor: L1 confirms straight away; anyone else needs a reason, and goes to management
+  {
+    const rfq = $('#rfq'), why = $('#why'), go = $('#rfqGo'), done = $('#rfqDone');
+    const NAME = { nova: 'NovaTech Inc.', petro: 'PetroSolutions Ltd.', apex: 'Apex Oilfield Services' };
+    const pick = () => rfq.querySelector('input:checked').value;
+    function sync() {
+      const l1 = pick() === 'apex';
+      rfq.classList.toggle('off', !l1);
+      rfq.classList.remove('sent');
+      go.textContent = l1 ? 'Confirm' : 'Send for Approval';
+      go.disabled = !l1 && why.value.trim().length < 3;
+    }
+    rfq.querySelectorAll('input').forEach((r) => r.addEventListener('change', sync));
+    why.addEventListener('input', sync);
+    go.addEventListener('click', () => {
+      const l1 = pick() === 'apex';
+      done.textContent = l1 ? `${NAME.apex} confirmed. The PO can move ahead.` : `${NAME[pick()]} sent to management. The PO waits until they approve.`;
+      rfq.classList.add('sent');
+    });
+    sync();
+  }
+
+  // 3. the pipeline: New and Won stay put; the stages between are the team's to rename, add or remove
+  {
+    const cols = $('#cols');
+    let mid = ['Proposal Sent', 'In Review', 'Negotiation'];
+    const MAX = 6;
+    const ghost = (n) => '<div class="card2"><i></i><i></i></div>'.repeat(n);
+    function col(name, fixed, i, fresh) {
+      const c = document.createElement('div');
+      c.className = 'c ' + (fixed ? 'fixed' : 'mid') + (fresh ? ' new' : '');
+      c.innerHTML = `<div class="h"><span ${fixed ? '' : 'contenteditable="true" spellcheck="false"'}>${name}</span>${fixed ? '' : '<button class="x" type="button" aria-label="Remove stage">×</button>'}</div>${ghost(fixed ? 2 : 1 + (i % 2))}`;
+      if (!fixed) {
+        const sp = c.querySelector('span');
+        sp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sp.blur(); } });
+        sp.addEventListener('blur', () => { mid[i] = sp.textContent.trim() || 'Stage'; sp.textContent = mid[i]; });
+        c.querySelector('.x').addEventListener('click', () => { mid.splice(i, 1); draw(); });
+      }
+      return c;
+    }
+    function draw(freshAt = -1) {
+      cols.innerHTML = '';
+      cols.appendChild(col('New', true, 0));
+      mid.forEach((m, i) => cols.appendChild(col(m, false, i, i === freshAt)));
+      const add = document.createElement('button');
+      add.className = 'add'; add.type = 'button'; add.textContent = '+'; add.setAttribute('aria-label', 'Add a stage');
+      add.disabled = mid.length >= MAX;
+      add.addEventListener('click', () => {
+        mid.push('New stage'); draw(mid.length - 1);
+        const sp = cols.querySelectorAll('.mid span')[mid.length - 1];
+        sp.focus(); document.getSelection().selectAllChildren(sp);
+      });
+      cols.appendChild(add);
+      cols.appendChild(col('Won', true, 0));
+    }
+    draw();
+  }
+
+  // ---- the letter ----
+  const embed = document.documentElement.classList.contains('embed');
+  const host = embed && parent !== window ? parent : null;
+  const stampEl = document.getElementById('stamp'), pmEl = document.getElementById('pm');
+  const today = new Date();
+  const DATE = [`${today.toLocaleString('en', { month: 'short' }).toUpperCase()} ${today.getDate()}`, String(today.getFullYear())];
+
+  try {
+    const g = document.createElement('canvas'); g.width = g.height = 360;
+    Print.paper(g.getContext('2d'), 360, 360, '#fbf7ec', 41, 10);
+    document.querySelector('.letter').style.setProperty('--grain', `url(${g.toDataURL()})`);
+  } catch (e) {}
+
+  // the stamp: the very one from the mat inside the picnic, otherwise drawn the same way (as picnic.js does)
+  function drawStamp(src) {
+    stampEl.width = src.width; stampEl.height = src.height;
+    stampEl.getContext('2d').drawImage(src, 0, 0);
+  }
+  const art = host && host.Picnic && host.Picnic.art('lamad').front;
+  if (art) drawStamp(art);
+  else {
+    const img = new Image();
+    img.onload = () => document.fonts.ready.then(() => drawStamp(Print.stamp(img, { x: 352, y: 220, R: 40, top: 'SELECTED WORK', bottom: 'AARYA SHAH', l1: DATE[0], l2: DATE[1], color: '#2a3a7a', seed: 23 }).inked));
+    img.src = '../stamps/lamad.webp';
+  }
+  document.fonts.ready.then(() => {
+    const pm = Print.postmark({ R: 60, top: 'SELECTED WORK', bottom: 'AARYA SHAH', l1: DATE[0], l2: DATE[1], color: '#2a3a7a', waves: -1, waveLen: 150, seed: 15, k: 3 });
+    pmEl.width = pm.canvas.width; pmEl.height = pm.canvas.height;
+    pmEl.getContext('2d').drawImage(pm.canvas, 0, 0);
+    if (!embed) setTimeout(() => pmEl.classList.add('on'), 500);
+  });
+
+  window.Letter = {
+    slot() {
+      const r = stampEl.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: stampEl.offsetWidth, h: stampEl.offsetHeight, r: (3 * Math.PI) / 180 };
+    },
+    hideStamp() { stampEl.style.opacity = 0; pmEl.classList.remove('on'); },
+    land() { stampEl.style.opacity = 1; pmEl.classList.add('on'); },
+    toTop() {
+      return new Promise((done) => {
+        if (scrollY < 2) return done();
+        scrollTo({ top: 0, behavior: 'smooth' });
+        const t0 = performance.now();
+        const check = () => (scrollY < 2 || performance.now() - t0 > 900 ? done() : setTimeout(check, 30));
+        setTimeout(check, 30);
+      });
+    },
+  };
+  const leave = () => (host && host.Case ? host.Case.close() : (location.href = '../'));
+  document.getElementById('back').addEventListener('click', leave);
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && !e.target.isContentEditable && e.target.tagName !== 'TEXTAREA') leave(); });
+  document.querySelectorAll('[data-go]').forEach((a) => a.addEventListener('click', (e) => {
+    if (host && host.Case) { e.preventDefault(); host.Case.go(a.dataset.go); }
+  }));
+</script>
+</body>
+</html>

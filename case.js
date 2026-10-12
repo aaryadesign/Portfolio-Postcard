@@ -3,7 +3,7 @@
 // postmarked. The letter is its own page (work/<id>.html) in a frame over the scene, so the mat and
 // everything on it stay just where they were. Closing runs it all backwards.
 window.Case = (() => {
-  const PAGES = { goalkeeper: 'work/goalkeeper.html', phonepe: 'work/phonepe.html', 'ride-through-the-valley': 'work/ride-through-the-valley.html' };
+  const PAGES = { goalkeeper: 'work/goalkeeper.html', phonepe: 'work/phonepe.html', 'ride-through-the-valley': 'work/ride-through-the-valley.html', dayro: 'work/dayro.html', lamad: 'work/lamad.html', transporter: 'work/transporter.html', quickmart: 'work/quickmart.html' };
   let frame = null, openId = null, busy = false;
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 

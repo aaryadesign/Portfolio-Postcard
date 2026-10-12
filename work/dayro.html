@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dayro Smart Home</title>
+<script>if (/[?&]embed/.test(location.search)) document.documentElement.classList.add('embed');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
+<style>
+  /* Same scale as the other letters:
+     type   h1 48 · h2 40 · h3 24 · body 18 · line 16 · label 14   (700 headings, 600 emphasis, 500 labels, 400 text)
+     space  section 144 · heading to intro 16 · intro to content 48 · inside cards 32 · gaps 24
+     The phones use Dayro's own dark theme. */
+  :root{
+    --paper:#fbf7ec; --cream:#f6f0e0; --ink:#141210; --ink2:#5b554c; --line:#e4d9c2;
+    --blue:#1d3fa6;
+    --d-page:#0f1012; --d-tile:#1d1e22; --d-tile2:#2a2b30; --d-line:#34353b; --d-blue:#4b7fe5; --d-dim:#8b8d93; --d-warm:#ffcf7a;
+    --col:960px;
+    --ease:cubic-bezier(.4,0,.2,1);
+  }
+  *{box-sizing:border-box}
+  body{margin:0; color:var(--ink); font-family:'Geist',system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden}
+  img{display:block; max-width:100%}
+  p, h1, h2, h3, h4, ol, ul, dl, dd{margin:0}
+  button{font:inherit}
+
+  body{background-color:#f9d4d5;
+    background-image:linear-gradient(90deg, rgba(204,26,46,.42) 50%, transparent 50%), linear-gradient(rgba(204,26,46,.42) 50%, transparent 50%);
+    background-size:88px 88px}
+  html.embed, html.embed body{background:transparent}
+  .back{position:fixed; top:16px; left:16px; z-index:10; display:inline-flex; gap:8px; align-items:center; height:40px; padding:0 16px; border:0; border-radius:999px; background:var(--paper); color:var(--ink); font:500 15px/1 'Geist',system-ui,sans-serif; cursor:pointer;
+    box-shadow:0 1px 2px rgba(70,20,25,.2), 0 8px 20px rgba(70,20,25,.16); transition:transform .2s var(--ease)}
+  .back:hover{transform:translateY(-1px)}
+
+  .letter{position:relative; width:min(1180px, calc(100vw - 48px)); margin:max(96px, 14vh) auto 120px; padding:80px 80px 112px; background:var(--paper) var(--grain, none);
+    border-radius:3px; box-shadow:0 1px 1px rgba(70,20,25,.18), 0 10px 24px rgba(70,20,25,.18), 0 40px 80px -30px rgba(70,20,25,.35)}
+  .col{max-width:var(--col); margin:0 auto}
+
+  h1{font-weight:700; font-size:clamp(36px,4.4vw,48px); letter-spacing:-.035em; line-height:1.05}
+  h2{font-weight:700; font-size:clamp(30px,3.6vw,40px); letter-spacing:-.03em; line-height:1.15}
+  h3{font-weight:600; font-size:24px; letter-spacing:-.02em; line-height:1.3}
+  .body{font-size:18px; line-height:1.65; color:var(--ink2)}
+  .body + .body{margin-top:16px}
+  .body b{color:var(--ink); font-weight:600}
+  .num{font-family:'Yellowtail',cursive; color:var(--blue); font-size:32px; line-height:1}
+
+  /* ---------- hero ---------- */
+  .lt-head{display:grid; grid-template-columns:1fr auto; gap:48px; align-items:start}
+  .lt-head h1{margin-top:48px}
+  .lt-head .lede{margin-top:16px; max-width:560px; font-size:20px; line-height:1.55; color:var(--ink2)}
+  .lt-slot{position:relative; width:clamp(170px,20vw,240px); margin:-16px -16px 0 0}
+  .lt-stamp{display:block; width:100%; aspect-ratio:440/308; transform:rotate(3deg); filter:drop-shadow(0 1px 1px rgba(60,40,0,.25)) drop-shadow(0 3px 6px rgba(60,40,0,.12))}
+  html.embed .lt-stamp{opacity:0}
+  .lt-pm{position:absolute; right:58%; top:52%; width:118%; pointer-events:none; opacity:0; transform:rotate(-9deg); transform-origin:85% 50%}
+  .lt-pm.on{animation:strike .45s cubic-bezier(.3,1.4,.5,1) both}
+  @keyframes strike{from{opacity:0; transform:rotate(-9deg) scale(1.5)} to{opacity:.88; transform:rotate(-9deg) scale(1)}}
+  .facts{margin-top:64px; display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:0 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+  .facts div{padding:20px 0 22px}
+  .facts dt{font-size:14px; font-weight:500; color:var(--ink2)}
+  .facts dd{margin-top:6px; font-size:16px; font-weight:600; line-height:1.4}
+  .photo{margin-top:48px; border-radius:20px; overflow:hidden; border:1px solid var(--line)}
+  .photo img{width:100%; aspect-ratio:1600/900; object-fit:cover}
+
+  /* ---------- sections ---------- */
+  section{padding-top:144px}
+  .head{max-width:680px}
+  .head .body{margin-top:16px}
+  .after{margin-top:48px}
+  .card{background:var(--cream); border:1px solid var(--line); border-radius:20px; padding:32px}
+  .card h3{font-size:20px}
+  .card p{margin-top:8px; font-size:16px; line-height:1.6; color:var(--ink2)}
+  .card .num{display:block; margin-bottom:20px}
+  .grid2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px}
+  .grid3{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px}
+  .result{margin-top:48px; padding:32px; border-left:3px solid var(--blue); background:var(--cream); border-radius:0 20px 20px 0; font-size:18px; line-height:1.65; color:var(--ink2)}
+  .result b{color:var(--ink); font-weight:600}
+
+  /* mockup + words, side by side */
+  .duo{display:grid; grid-template-columns:auto minmax(0,440px); gap:72px; align-items:center; justify-content:center; margin-top:96px}
+  .head + .duo{margin-top:56px}
+  .duo.flip{grid-template-columns:minmax(0,440px) auto}
+  .duo.flip .shot{order:2}
+  .duo h3{margin-bottom:12px}
+  .shot{display:flex; gap:20px; justify-content:center; align-items:center}
+  .scr-img{width:240px; border-radius:28px}
+
+  /* the home screen, three times: each picture with what happened at that step */
+  .three{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:40px; margin-top:56px}
+  .three img{width:100%; max-width:240px; margin:0 auto 28px; border-radius:24px}
+  .three h3{font-size:20px}
+  .three p{margin-top:8px; font-size:16px; line-height:1.6; color:var(--ink2)}
+
+  .strip{display:flex; gap:20px; overflow-x:auto; scrollbar-width:none; padding:4px 0 8px; margin-top:48px}
+  .strip::-webkit-scrollbar{display:none}
+  .strip img{flex:none; width:200px; border-radius:22px}
+
+  /* ---------- Dayro, in its own dark theme ---------- */
+  .phone{position:relative; flex:none; width:300px; height:620px; border-radius:46px; background:var(--d-page); border:10px solid var(--ink); overflow:hidden; box-shadow:0 30px 50px -20px rgba(20,18,16,.35); color:#fff; font-family:'Geist',system-ui,sans-serif}
+  .phone::before{content:""; position:absolute; top:10px; left:50%; width:84px; height:22px; margin-left:-42px; background:#000; border-radius:12px; z-index:5}
+  .scr{position:absolute; inset:0; padding:52px 14px 18px; display:flex; flex-direction:column}
+  .bar-t{display:flex; align-items:center; justify-content:center; position:relative; font-size:15px; font-weight:500; margin-bottom:16px}
+  .bar-t::before{content:"‹"; position:absolute; left:4px; font-size:22px; line-height:1; color:var(--d-dim)}
+  .ico{width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round}
+
+  /* 1. the wall and the installer's screen, side by side */
+  .mirror{display:flex; gap:56px; align-items:center; justify-content:center; margin-top:56px}
+  .wall{flex:none; width:340px; aspect-ratio:1/1.1; border-radius:20px; background:linear-gradient(160deg,#ece6d8,#ddd5c4); border:1px solid var(--line); display:grid; place-items:center; box-shadow:inset 0 2px 12px rgba(0,0,0,.05)}
+  .board{display:flex; flex-direction:column; gap:16px; padding:18px 16px; border-radius:10px; background:#17181a; box-shadow:0 2px 3px rgba(0,0,0,.25), 0 14px 26px -10px rgba(0,0,0,.4)}
+  .board .row, .inst .row{display:flex; justify-content:center; gap:6px}
+  .grp{display:grid; grid-auto-flow:column; grid-auto-columns:34px; height:62px; border-radius:6px; overflow:hidden; background:#0b0b0c}
+  .sw{position:relative; border:0; padding:0; background:linear-gradient(#232427,#1a1b1d); border-right:1px solid #0b0b0c; cursor:pointer; transition:background .25s}
+  .sw:last-child{border-right:0}
+  .sw::after{content:""; position:absolute; left:50%; bottom:9px; width:6px; height:2px; margin-left:-3px; border-radius:1px; background:#3a3b40; transition:background .25s, box-shadow .25s}
+  .sw.on{background:linear-gradient(#2c2d31,#202124)}
+  .sw.on::after{background:var(--d-warm); box-shadow:0 0 8px var(--d-warm)}
+  .knob{width:68px; height:62px; display:grid; place-items:center; margin:0 3px; border-radius:6px; background:#0b0b0c; border:0; cursor:pointer; padding:0}
+  .knob i{width:44px; height:44px; border-radius:50%; background:radial-gradient(circle at 40% 35%,#3a3b40,#1a1b1d); box-shadow:0 2px 4px rgba(0,0,0,.5); position:relative; transition:transform .5s var(--ease)}
+  .knob i::after{content:""; position:absolute; left:50%; top:5px; width:2px; height:8px; margin-left:-1px; border-radius:1px; background:#55565c; transition:background .25s}
+  .knob.on i{transform:rotate(80deg)}
+  .knob.on i::after{background:var(--d-warm)}
+
+  .inst .panel{display:flex; flex-direction:column; gap:10px; padding:12px 8px; border-radius:14px; background:var(--d-tile)}
+  .inst .pg{display:grid; grid-auto-flow:column; grid-auto-columns:34px; height:64px; gap:2px}
+  .inst .slot{border-radius:5px; background:var(--d-tile2); display:grid; place-items:center; color:var(--d-dim); transition:background .3s, color .3s, box-shadow .3s}
+  .inst .slot .ico{opacity:0; transition:opacity .3s}
+  .inst .slot.set .ico{opacity:1}
+  .inst .slot.set{color:#fff}
+  .inst .slot.now{background:var(--d-blue); color:#fff; box-shadow:0 0 0 2px rgba(75,127,229,.35)}
+  .inst .pk{width:70px; height:64px; border-radius:5px; background:var(--d-tile2); display:grid; place-items:center; color:var(--d-dim); transition:background .3s, color .3s}
+  .inst .pk.now{background:var(--d-blue); color:#fff}
+  .inst .pk.set{color:#fff}
+  .inst .nm{margin-top:14px; height:44px; border-radius:10px; background:var(--d-tile); display:flex; align-items:center; padding:0 14px; font-size:14px; color:#fff}
+  .inst .nm span:empty::before{content:"Name"; color:var(--d-dim)}
+  .inst .nm em{font-style:normal; width:1px; height:16px; background:var(--d-blue); margin-left:1px; animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .inst h4{margin:16px 2px 10px; font-size:12px; font-weight:500; color:var(--d-dim)}
+  .inst .chips{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+  .inst .chips span{height:40px; border-radius:10px; background:var(--d-tile); display:flex; align-items:center; gap:8px; padding:0 12px; font-size:13px; color:#d6d7db; transition:background .3s, color .3s}
+  .inst .chips span.on{background:var(--d-blue); color:#fff}
+  .inst .add{margin-top:auto; height:46px; border-radius:12px; background:var(--d-blue); display:grid; place-items:center; font-size:14px; font-weight:600; transition:transform .15s, filter .15s}
+  .inst .add.press{transform:scale(.97); filter:brightness(1.15)}
+
+  /* 2. the room: drag a switch up across the line, and it's on your home screen */
+  .room .grid{display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:60px; grid-auto-flow:dense; gap:8px; align-content:start}
+  .room .top{min-height:200px}
+  .room .bottom{flex:1}
+  .room .sep{display:flex; align-items:center; gap:10px; margin:14px 0 12px; font-size:10px; color:var(--d-dim); white-space:nowrap}
+  .room .sep::before, .room .sep::after{content:""; flex:1; height:1px; background:var(--d-line)}
+  .tile{position:relative; border-radius:12px; background:var(--d-tile); padding:8px; display:flex; flex-direction:column; justify-content:space-between; font-size:10px; line-height:1.2; color:#e6e7ea; touch-action:none; cursor:grab; user-select:none; -webkit-user-select:none}
+  .tile .ico{width:16px; height:16px}
+  .tile.on{background:var(--d-blue)}
+  .tile.w2{grid-column:span 2}
+  .tile.h2{grid-row:span 2}
+  .tile.drag{z-index:4; cursor:grabbing; box-shadow:0 16px 30px rgba(0,0,0,.5); transition:none}
+  .tile .size{position:absolute; right:4px; bottom:4px; width:18px; height:18px; border:0; padding:0; border-radius:6px; background:rgba(255,255,255,.08); color:#cfd0d4; cursor:pointer; display:none; place-items:center}
+  .top .tile .size{display:grid}
+  .tile .dialmini{position:absolute; inset:22px 12px 12px; display:grid; place-items:center}
+  .tile .dialmini i{width:min(100%,86px); aspect-ratio:1; border-radius:50%; border:6px solid var(--d-tile2); border-top-color:#fff; border-right-color:#fff; transform:rotate(-20deg)}
+  .tile:not(.h2) .dialmini{display:none}
+
+  /* 3. the dial: stepped like the fan's regulator, or smooth like a dimmer */
+  .dial{background:var(--d-page); align-items:center}
+  .dial .seg{display:flex; padding:4px; border-radius:12px; background:var(--d-tile); gap:4px; width:100%}
+  .dial .seg button{flex:1; height:36px; border:0; border-radius:9px; background:none; color:var(--d-dim); font-size:13px; font-weight:500; cursor:pointer; transition:background .25s, color .25s}
+  .dial .seg button.on{background:var(--d-tile2); color:#fff}
+  .dial .dev{margin-top:36px; font-size:13px; color:var(--d-dim)}
+  .dial .val{margin-top:4px; font-size:36px; font-weight:600; letter-spacing:-.03em; font-variant-numeric:tabular-nums}
+  .dial svg{width:230px; height:230px; margin-top:20px; touch-action:none; cursor:grab; outline:none}
+  .dial svg:focus-visible{outline:2px solid var(--d-blue); outline-offset:6px; border-radius:50%}
+  .dial .ticks line{stroke:#55565c; stroke-width:2; stroke-linecap:round; transition:opacity .3s, stroke .2s}
+  .dial .ticks line.lit{stroke:#fff}
+  .dial.smooth .ticks{opacity:0}
+  .dial .ticks{transition:opacity .3s}
+
+  /* energy, as two numbers */
+  .use{border-top:1px solid var(--ink); margin-top:28px}
+  .use div{display:grid; grid-template-columns:110px minmax(0,1fr) 80px; gap:16px; align-items:center; padding:16px 0; border-bottom:1px solid var(--line); font-size:16px}
+  .use span{font-weight:600}
+  .use i{display:block; height:10px; border-radius:5px; background:var(--blue); width:0; transition:width 1.2s var(--ease)}
+  .use .lo i{background:var(--ink2)}
+  .use b{font-weight:600; text-align:right; font-variant-numeric:tabular-nums}
+  .in .use .hi i{width:100%}
+  .in .use .lo i{width:16.8%}
+
+  .outcome{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; margin-top:48px}
+  .outcome img{width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:20px; border:1px solid var(--line)}
+
+  .nextp{margin-top:144px; padding-top:72px; border-top:1px solid var(--line); text-align:center}
+  .nextp a{color:inherit; text-decoration:none; display:inline-flex; flex-direction:column; align-items:center; gap:24px}
+  .nextp img{width:200px; transform:rotate(-3deg); transition:transform .4s var(--ease); filter:drop-shadow(0 2px 2px rgba(60,40,0,.25)) drop-shadow(0 12px 16px rgba(60,40,0,.18))}
+  .nextp a:hover img{transform:rotate(2deg) scale(1.04)}
+  .nextp .t{font-weight:700; font-size:32px; letter-spacing:-.03em}
+
+  .rv{opacity:0; transform:translateY(24px); transition:opacity .8s var(--ease), transform .8s var(--ease)}
+  .rv.in{opacity:1; transform:none}
+
+  @media (max-width: 1000px){
+    .letter{padding:64px 48px 96px}
+    .facts{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .duo, .duo.flip{grid-template-columns:minmax(0,1fr); gap:40px}
+    .duo.flip .shot{order:0}
+    .mirror{flex-direction:column; gap:40px}
+  }
+  @media (max-width: 760px){
+    .letter{width:calc(100vw - 24px); padding:56px 24px 72px; margin-top:76px}
+    .lt-head{grid-template-columns:1fr; gap:0}
+    .lt-slot{grid-row:1; justify-self:end; width:150px; margin:-32px -8px 0 0}
+    .lt-head h1{margin-top:16px}
+    .lt-head .lede{font-size:18px}
+    .facts{grid-template-columns:1fr 1fr; gap:0 24px}
+    .facts div{padding:16px 0}
+    .photo{border-radius:14px}
+    section{padding-top:96px}
+    .grid2, .grid3, .three, .outcome{grid-template-columns:minmax(0,1fr); gap:24px}
+    .three{gap:56px}
+    .duo{margin-top:72px}
+    .shot{flex-wrap:wrap}
+    .scr-img{width:min(240px, 100%)}
+    .wall{width:100%; max-width:320px}
+    .grp{grid-auto-columns:30px}
+    .knob{width:60px}
+    .phone{width:280px; height:580px}
+    .use div{grid-template-columns:90px minmax(0,1fr) 64px; gap:12px}
+    .result{padding:24px}
+  }
+</style>
+</head>
+<body>
+
+<button class="back" type="button" id="back">&larr; Back to the picnic</button>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-light" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></symbol>
+  <symbol id="i-fan" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M12 10c0-4 1-7 4-7 2 0 3 2 1 4l-3 3M14 12c4 0 7 1 7 4 0 2-2 3-4 1l-3-3M12 14c0 4-1 7-4 7-2 0-3-2-1-4l3-3M10 12c-4 0-7-1-7-4 0-2 2-3 4-1l3 3"/></symbol>
+  <symbol id="i-lamp" viewBox="0 0 24 24"><path d="M8 3h8l3 8H5l3-8zM12 11v8M8 21h8"/></symbol>
+  <symbol id="i-ac" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="9" rx="2"/><path d="M7 11h10M8 17v2M12 17v3M16 17v2"/></symbol>
+  <symbol id="i-tv" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M8 3l4 3 4-3M9 21h6"/></symbol>
+  <symbol id="i-oven" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M15 5v14M6 9h6v6H6z"/></symbol>
+  <symbol id="i-scene" viewBox="0 0 24 24"><path d="M12 3v2M12 19v2M5 12H3M21 12h-2M6.3 6.3 4.9 4.9M19.1 19.1l-1.4-1.4M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/><circle cx="12" cy="12" r="4"/></symbol>
+  <symbol id="i-size" viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></symbol>
+</svg>
+
+<article class="letter">
+  <header class="col">
+    <div class="lt-head">
+      <div>
+        <h1>Dayro Smart Home</h1>
+        <p class="lede">A smart home app for Dayro's switches, designed from nothing while the hardware was still being built. I was the lead designer on a team of three.</p>
+      </div>
+      <div class="lt-slot"><canvas class="lt-stamp" id="stamp" aria-label="Dayro stamp" role="img"></canvas><canvas class="lt-pm" id="pm" aria-hidden="true"></canvas></div>
+    </div>
+    <dl class="facts">
+      <div><dt>Client</dt><dd>Dayro Pvt. Ltd.</dd></div>
+      <div><dt>Role</dt><dd>Lead designer</dd></div>
+      <div><dt>Team</dt><dd>3 designers</dd></div>
+      <div><dt>Timeline</dt><dd>2 to 3 months</dd></div>
+      <div><dt>Platforms</dt><dd>Consumer and Installer apps</dd></div>
+    </dl>
+    <div class="photo"><img src="assets/dayro/hero.jpg" alt="Dayro's Experience Center in Ahmedabad: a lit wall with the Dayro name, a TV and switches"></div>
+  </header>
+
+  <!-- CONTEXT -->
+  <section class="col rv">
+    <div class="head">
+      <h2>What Dayro makes</h2>
+      <p class="body">Dayro makes premium smart switches. Instead of being wired to one device each, they connect to a central node. So <b>any switch can control any device</b>, one switch can control many, and many switches can control one. On top of that: Scenes, energy monitoring, Safety Mode, Child Mode, and temperature, humidity and AQI from the nodes.</p>
+      <p class="body">When I joined there was no app, no research and no documentation, and the hardware was still being built. Everything I learned came from client meetings, while the hardware team was still deciding what the switches could do.</p>
+    </div>
+  </section>
+
+  <!-- ONE APP OR TWO -->
+  <section class="col rv">
+    <div class="head">
+      <h2>One app or two</h2>
+      <p class="body">The plan was one app for setting up and for daily use. Then I mapped the setup.</p>
+      <p class="body">First the app connects to the home Wi-Fi so it can find the switches. Then, for every switch, someone goes to the switchboard, toggles it, sees which device responds, and names it. For a typical 3BHK that's <b>1.5 to 2 hours of technical work</b>, and no design could make it shorter. The time comes from how the hardware works.</p>
+      <p class="body">Dayro sells to premium homeowners. Their first hour with the brand couldn't be a two-hour chore. So in a client meeting I didn't argue the point. I walked them through it, switch by switch, room by room. Toggle, connect, name. By about the third room, everyone at the table could see the answer.</p>
+    </div>
+    <p class="result"><b>An Installer app for Dayro's installation team, and a consumer app that opens to a home that's already set up.</b> Most of the good decisions in the consumer app came from this one, because it no longer had to carry a job that was never its own.</p>
+  </section>
+
+  <!-- INSTALLER -->
+  <section class="col rv">
+    <div class="head">
+      <h2>The screen matches the wall</h2>
+      <p class="body">Since I'd proposed taking setup out, the installer's app was mine to design too. On screen, the panel looks exactly like the switchboard in front of the installer: a group of four, a group of two, another two and a knob.</p>
+      <p class="body">The installer taps the switch they just toggled, picks what responded, names it, and moves on. They never translate between the wall and the screen, which matters when you do it 50 times in one home.</p>
+    </div>
+    <div class="mirror" id="mirror">
+      <div class="wall">
+        <div class="board" id="board">
+          <div class="row"><div class="grp"><button class="sw" aria-label="Switch 1"></button><button class="sw" aria-label="Switch 2"></button><button class="sw" aria-label="Switch 3"></button><button class="sw" aria-label="Switch 4"></button></div>
+          <div class="grp"><button class="sw" aria-label="Switch 5"></button><button class="sw" aria-label="Switch 6"></button></div></div>
+          <div class="row"><div class="grp"><button class="sw" aria-label="Switch 7"></button><button class="sw" aria-label="Switch 8"></button></div>
+          <button class="knob" aria-label="Knob"><i></i></button></div>
+        </div>
+      </div>
+      <div class="phone"><div class="scr inst">
+        <div class="bar-t">Living Room</div>
+        <div class="panel" id="ipanel">
+          <div class="row"><div class="pg"><span class="slot"></span><span class="slot"></span><span class="slot"></span><span class="slot"></span></div>
+          <div class="pg"><span class="slot"></span><span class="slot"></span></div></div>
+          <div class="row"><div class="pg"><span class="slot"></span><span class="slot"></span></div>
+          <span class="pk slot"></span></div>
+        </div>
+        <div class="nm"><span id="iname"></span><em></em></div>
+        <h4>Which device responded?</h4>
+        <div class="chips" id="ichips">
+          <span data-k="light"><svg class="ico"><use href="#i-light"/></svg>Light</span>
+          <span data-k="ac"><svg class="ico"><use href="#i-ac"/></svg>AC</span>
+          <span data-k="fan"><svg class="ico"><use href="#i-fan"/></svg>Fan</span>
+          <span data-k="tv"><svg class="ico"><use href="#i-tv"/></svg>TV</span>
+          <span data-k="lamp"><svg class="ico"><use href="#i-lamp"/></svg>Lamp</span>
+          <span data-k="oven"><svg class="ico"><use href="#i-oven"/></svg>Microwave</span>
+        </div>
+        <div class="add" id="iadd">Add Device</div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- DECISIONS -->
+  <section class="col">
+    <div class="head rv">
+      <h2>The home screen, in three versions</h2>
+      <p class="body">One of my teammates had Google Home at home. Watching them use it settled it: they used the same few switches every day and rarely touched the rest. I use my own room's switches, not the kitchen's. For my mom it would be her room, the kitchen and the living room.</p>
+      <p class="body">So the answer wasn't "show fewer devices". It was <b>let each person's home screen follow their routine</b>. You pin your rooms, your switches and your scenes. My app and my mom's would look completely different, and both would be right.</p>
+    </div>
+    <div class="three rv">
+      <div><img src="assets/dayro/home_client.png" alt="The client's reference home screen, with every device and sensor on one screen" loading="lazy">
+        <h3>What the client gave us</h3><p>Every device, every sensor, curtains and fan dials, all drawn like a remote. The instinct was right: it should feel like holding the controls. But it was laid out the way the system is wired, and nobody lives by their switchboard.</p></div>
+      <div><img src="assets/dayro/home_wire.png" alt="The first wireframe: scenes at the top, an upcoming schedule strip, a pinned room and pinned switches" loading="lazy">
+        <h3>The first wireframe</h3><p>Scenes at the top. Below them, what's about to happen ("Night Mode in 30 mins", with Off), so an automation never surprises you. Then the pinned room, then switches pinned from other rooms.</p></div>
+      <div><img src="assets/dayro/home_final.png" alt="The final home screen: a large room card with temperature, humidity and AQI, and its controls" loading="lazy">
+        <h3>What the client changed</h3><p>Their sharpest note: the room card was too small, and the room is what people open the app for. Now it takes most of the first screen, with the room's temperature, humidity, AQI and controls. Swipe it for the next room.</p></div>
+    </div>
+
+    <div class="duo rv">
+      <div class="shot">
+        <div class="phone"><div class="scr room" id="room">
+          <div class="bar-t">Eric's Room</div>
+          <div class="grid top" id="rtop"></div>
+          <div class="sep">Drag any card up to add it in the Custom Panel</div>
+          <div class="grid bottom" id="rbot"></div>
+        </div></div>
+      </div>
+      <div>
+        <h3>Drag a switch up, and it's on your home screen</h3>
+        <p class="body">The home screen only works if people actually pin things, so pinning had to be effortless. We borrowed what people already know from Android and iOS widgets, and Nothing OS in particular.</p>
+        <p class="body">Inside a room, a line splits the screen. Above it is what shows on your home screen. Below it is every switch in the room. To add one, <b>drag it up across the line</b>. No edit mode, no settings, no checklist.</p>
+        <p class="body">Cards come in 1x1, 2x1 and 2x2. A fan you use all the time can be a big dial you can actually turn. A lamp can stay a small toggle.</p>
+      </div>
+    </div>
+
+    <div class="duo flip rv">
+      <div class="shot">
+        <div class="phone"><div class="scr dial" id="dial">
+          <div class="bar-t" style="align-self:stretch">Main Fan</div>
+          <div class="seg"><button type="button" class="on" data-m="step">Stepped</button><button type="button" data-m="smooth">Smooth</button></div>
+          <div class="dev" id="dDev">Speed</div>
+          <div class="val" id="dVal">3</div>
+          <svg viewBox="0 0 230 230" id="dSvg" role="slider" tabindex="0" aria-label="Dial" aria-valuemin="0" aria-valuemax="6" aria-valuenow="3">
+            <path id="dTrack" fill="none" stroke="#2a2b30" stroke-width="14" stroke-linecap="round"/>
+            <path id="dArc" fill="none" stroke="#4b7fe5" stroke-width="14" stroke-linecap="round"/>
+            <g class="ticks" id="dTicks"></g>
+            <circle cx="115" cy="115" r="62" fill="#1d1e22"/>
+            <circle id="dDot" r="6" fill="#fff"/>
+          </svg>
+        </div></div>
+      </div>
+      <div>
+        <h3>The dial works like the knob</h3>
+        <p class="body">Dayro's switches feel deliberate, and the client wanted the app to feel like part of the hardware, not a remote for it. The hardware gave us the rules: the physical knob can have as many steps as you define, and it comes two ways, stepped or smooth.</p>
+        <p class="body">So the app's dial does the same. <b>A fan steps from 0 to 6, with a vibration at each speed</b>, like a regulator. A dimmer glides. Steps can be set per device: tight for precision, none for a glide, and sound for people who prefer it.</p>
+      </div>
+    </div>
+
+    <div class="rv" style="margin-top:96px">
+      <div class="head">
+        <h3>Scenes anyone can set up</h3>
+        <p class="body">A Scene runs several devices at once. Night Light turns on the bedroom and study lamps and warms the main light, with one tap or on its own. Scenes were the client's idea. My part was making them easy to set up.</p>
+        <p class="body">They can trigger on temperature, humidity, light, time, weather or a mix, and repeat on schedules like every night but Sunday at 7 PM. With that much, a scene builder can easily become something only an engineer can use. We kept it simple enough for anyone who can use a phone, without hiding any of it. It was approved in the first round.</p>
+      </div>
+      <div class="strip">
+        <img src="assets/dayro/scene_main.png" alt="A scene: Back to home, with its conditions and devices" loading="lazy">
+        <img src="assets/dayro/scene_add.png" alt="Adding a condition: on or off, weather change, schedule" loading="lazy">
+        <img src="assets/dayro/scene_temp.png" alt="A temperature condition, set with a slider" loading="lazy">
+        <img src="assets/dayro/scene_time.png" alt="A time condition, set on a clock" loading="lazy">
+        <img src="assets/dayro/scene_weather.png" alt="A weather condition: sunny, cloudy, rainy or snowy" loading="lazy">
+      </div>
+    </div>
+
+    <div class="duo rv">
+      <div class="shot">
+        <img class="scr-img" src="assets/dayro/s3_phoneB.png" alt="The room menu, with Child Mode switched on" loading="lazy">
+        <img class="scr-img" src="assets/dayro/s3_phoneA.png" alt="Setting up a switch, with options to add it to Safety Mode and Child Mode" loading="lazy">
+      </div>
+      <div>
+        <h3>Safety Mode and Child Mode</h3>
+        <p class="body">Safety Mode was straightforward: when temperature or electrical load crosses a limit you set, every switch turns off except CCTV, so the home stays watched.</p>
+        <p class="body">Child Mode is where we shaped the idea, around a child playing on the floor near a switchboard. With it on, <b>the switches on the wall stop working</b>, and those devices only respond to the app. You choose which switches it covers. A fridge socket high up on the wall can stay on, since a child can't reach it.</p>
+      </div>
+    </div>
+
+    <div class="duo flip rv">
+      <div class="shot">
+        <img class="scr-img" src="assets/dayro/hw_config.png" alt="The earlier setup: fixed slots for each switch" loading="lazy">
+        <img class="scr-img" src="assets/dayro/hw_assoc.png" alt="The new setup: a list of devices you can keep adding to" loading="lazy">
+      </div>
+      <div>
+        <h3>When the hardware changed</h3>
+        <p class="body">Halfway through, the hardware team lifted the limit on how many devices a switch could control: <b>from four to unlimited</b>. Our setup flow had four slots per switch, and to add a fifth device you had to remove one. So it became a list you can keep adding to.</p>
+        <p class="body">A small change, but it shows what designing next to hardware in progress is like. A decision in another room could undo a flow.</p>
+      </div>
+    </div>
+
+    <div class="duo rv">
+      <div class="shot"><img class="scr-img" src="assets/dayro/energy.png" alt="Energy monitoring: usage over the year, and the highest and lowest consuming devices" loading="lazy"></div>
+      <div>
+        <h3>Energy you can act on</h3>
+        <p class="body">The energy screen leads with the device that uses the most and the one that uses the least. That gives you one place to start, which a graph of everything doesn't.</p>
+        <div class="use">
+          <div class="hi"><span>AC</span><i></i><b>95 Wh</b></div>
+          <div class="lo"><span>Bed lamp</span><i></i><b>16 Wh</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WIREFRAME TO FINAL -->
+  <section class="col rv">
+    <div class="head"><h2>From wireframe to final</h2></div>
+    <div class="grid3 after">
+      <div class="card"><span class="num">1</span><h3>The room drawings stayed</h3><p>Each room card has a drawing of the room. You recognise a room faster than you read its name, especially half asleep, reaching for the fan.</p></div>
+      <div class="card"><span class="num">2</span><h3>Scenes moved to the bottom</h3><p>The top of the screen is a stretch for your thumb, and Scenes are tapped all the time. They moved to the bottom bar. The top is now for things you look at.</p></div>
+      <div class="card"><span class="num">3</span><h3>Upcoming schedules became a popup</h3><p>Inline, it took up space all day for something that matters a few minutes before a scene runs. Now it works like an alarm: it shows up, you cancel or dismiss it, and it's gone.</p></div>
+    </div>
+  </section>
+
+  <!-- OUTCOME -->
+  <section class="col rv">
+    <div class="head">
+      <h2>Outcome</h2>
+      <p class="body">The app runs at Dayro's Experience Center in Ahmedabad, where the whole system is shown to buyers every day. The person who runs the demos told me it runs smoothly and they enjoy showing it, and they see the same reaction from visitors every time. The switches are, physically, ordinary switches. <b>What people respond to is the app.</b></p>
+      <p class="body">Four residential and commercial projects have bought the system. They're still under construction, and installations will follow. I plan to go back for real feedback once the first homes are lived in.</p>
+    </div>
+    <div class="outcome">
+      <img src="assets/dayro/out_store.jpg" alt="The front of Dayro's store, with its name lit up" loading="lazy">
+      <img src="assets/dayro/out_switchboard.jpg" alt="A wall of Dayro switches on display at the Experience Center" loading="lazy">
+    </div>
+  </section>
+
+  <section class="col rv">
+    <div class="head">
+      <h2>What I learned</h2>
+      <p class="body">The biggest decision on this project wasn't a screen. Setup looked like a design problem, but it was a product problem, and the fix was to take installation out of the consumer app entirely. That's what let the app do one thing well. Sometimes the best design decision is to take a whole job out of the app.</p>
+    </div>
+  </section>
+
+  <div class="nextp">
+    <a href="lamad.html" data-go="lamad">
+      <img src="../stamps/lamad.webp" alt="LAMAD stamp">
+      <span class="t">LAMAD ERP &rarr;</span>
+    </a>
+  </div>
+</article>
+
+<script src="../print.js"></script>
+<script>
+  const $ = (s, r = document) => r.querySelector(s);
+  const icon = (k) => `<svg class="ico"><use href="#i-${k}"/></svg>`;
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    io.unobserve(e.target);
+  }), { threshold: 0.2 });
+  document.querySelectorAll('.rv').forEach((el) => io.observe(el));
+
+  // 1. the wall and the screen: toggle a switch, the same place lights up on screen, say what responded, name it
+  {
+    const sws = [...document.querySelectorAll('#board .sw, #board .knob')];
+    const slots = [...document.querySelectorAll('#ipanel .slot')];
+    const chips = [...document.querySelectorAll('#ichips span')];
+    const name = $('#iname'), add = $('#iadd');
+    const DEV = [['light', 'Main Light'], ['fan', 'Ceiling Fan'], ['lamp', 'Bed Lamp'], ['light', 'Window Light'], ['ac', 'AC'], ['tv', 'TV'], ['lamp', 'Study Lamp'], ['light', 'Night Light'], ['fan', 'Main Fan']];
+    let i = -1, timers = [];
+    const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+    function type(text, done) {
+      let n = 0;
+      (function k() { name.textContent = text.slice(0, n); if (n++ < text.length) later(k, 45); else done && done(); })();
+    }
+    function step(to) {
+      timers.forEach(clearTimeout); timers = [];
+      if (to === 0) { slots.forEach((s) => { s.classList.remove('set'); s.innerHTML = ''; }); sws.forEach((s) => s.classList.remove('on')); }
+      i = to;
+      const [k, label] = DEV[i];
+      sws.forEach((s, j) => s.classList.toggle('on', j === i || (j < i && false)));
+      slots.forEach((s, j) => s.classList.toggle('now', j === i));
+      chips.forEach((c) => c.classList.remove('on'));
+      name.textContent = '';
+      later(() => chips.forEach((c) => c.classList.toggle('on', c.dataset.k === k)), 900);
+      later(() => type(label, () => later(() => {
+        add.classList.add('press');
+        later(() => add.classList.remove('press'), 160);
+        slots[i].classList.remove('now'); slots[i].classList.add('set'); slots[i].innerHTML = icon(k);
+        sws[i].classList.remove('on');
+        later(() => step((i + 1) % DEV.length), i === DEV.length - 1 ? 2400 : 700);
+      }, 500)), 1500);
+    }
+    sws.forEach((s, j) => s.addEventListener('click', () => {
+      // going back to an earlier switch starts the wall over from there
+      slots.forEach((x, n) => { if (n >= j) { x.classList.remove('set'); x.innerHTML = ''; } });
+      step(j);
+    }));
+    let started = false;
+    new IntersectionObserver((es) => { if (es[0].isIntersecting && !started) { started = true; step(0); } }, { threshold: 0.3 }).observe($('#mirror'));
+  }
+
+  // 2. the room: drag a card across the line, and it moves; the arrows button changes its size
+  {
+    const top = $('#rtop'), bot = $('#rbot'), sep = $('#room .sep');
+    const T = [['fan', 'Main Fan', 'w2 h2', true], ['light', 'Bed Lamp', '', true], ['light', 'Window Light', ''], ['scene', 'Morning Light', 'w2']];
+    const B = [['lamp', 'Study Lamp'], ['light', 'Rope Light'], ['light', 'Night Light'], ['fan', 'Study Fan'], ['ac', 'AC'], ['tv', 'TV'], ['lamp', 'Bed Lamp 2'], ['light', 'Main Light']];
+    const SIZES = ['', 'w2', 'w2 h2'];
+    const make = ([k, n, sz = '', on]) => {
+      const t = document.createElement('div');
+      t.className = 'tile ' + sz + (on ? ' on' : '');
+      t.innerHTML = `${icon(k)}<span>${n}</span><div class="dialmini"><i></i></div><button class="size" type="button" aria-label="Change size"><svg class="ico" style="width:11px;height:11px"><use href="#i-size"/></svg></button>`;
+      return t;
+    };
+    T.forEach((x) => top.appendChild(make(x)));
+    B.forEach((x) => bot.appendChild(make(x)));
+
+    // every move is animated from where things were to where they end up
+    function flip(mutate) {
+      const tiles = [...document.querySelectorAll('#room .tile')];
+      const before = new Map(tiles.map((t) => [t, t.getBoundingClientRect()]));
+      mutate();
+      tiles.forEach((t) => {
+        const a = before.get(t), b = t.getBoundingClientRect();
+        if (!b.width) return;
+        const dx = a.left - b.left, dy = a.top - b.top, sx = a.width / b.width, sy = a.height / b.height;
+        if (Math.abs(dx) + Math.abs(dy) < 1 && Math.abs(sx - 1) + Math.abs(sy - 1) < 0.01) return;
+        t.animate([{ transformOrigin: '0 0', transform: `translate(${dx}px,${dy}px) scale(${sx},${sy})` }, { transformOrigin: '0 0', transform: 'none' }],
+          { duration: 480, easing: 'cubic-bezier(.2,.8,.2,1)' });
+      });
+    }
+
+    let drag = null;
+    document.getElementById('room').addEventListener('pointerdown', (e) => {
+      const t = e.target.closest('.tile');
+      if (!t || e.target.closest('.size')) return;
+      drag = { t, x: e.clientX, y: e.clientY, moved: false };
+      t.setPointerCapture(e.pointerId);
+    });
+    document.getElementById('room').addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      if (!drag.moved && Math.hypot(dx, dy) < 6) return;
+      drag.moved = true;
+      drag.t.classList.add('drag');
+      drag.t.style.transform = `translate(${dx}px,${dy}px) scale(1.04)`;
+    });
+    const drop = (e) => {
+      if (!drag) return;
+      const { t, moved } = drag; drag = null;
+      const r = t.getBoundingClientRect(), line = sep.getBoundingClientRect();
+      const fromTop = t.parentNode === top;
+      const mid = r.top + r.height / 2;
+      const crossing = moved ? (fromTop ? mid > line.bottom : mid < line.top) : !fromTop;
+      t.classList.remove('drag');
+      flip(() => {
+        t.style.transform = '';
+        if (crossing && fromTop) { t.classList.remove('w2', 'h2', 'on'); bot.prepend(t); }
+        else if (crossing) { top.appendChild(t); }
+      });
+    };
+    document.getElementById('room').addEventListener('pointerup', drop);
+    document.getElementById('room').addEventListener('pointercancel', drop);
+    document.getElementById('room').addEventListener('click', (e) => {
+      const b = e.target.closest('.size');
+      if (!b) return;
+      const t = b.closest('.tile');
+      const now = t.classList.contains('h2') ? 2 : t.classList.contains('w2') ? 1 : 0;
+      flip(() => { t.classList.remove('w2', 'h2'); const s = SIZES[(now + 1) % 3]; if (s) t.classList.add(...s.split(' ')); });
+    });
+  }
+
+  // 3. the dial: stepped with a tick at each speed, or smooth
+  {
+    const root = $('#dial'), svg = $('#dSvg'), C = 115, R = 92, A0 = -135, A1 = 135;
+    const pt = (a, r = R) => [C + r * Math.sin((a * Math.PI) / 180), C - r * Math.cos((a * Math.PI) / 180)];
+    const arc = (a0, a1) => { const [x0, y0] = pt(a0), [x1, y1] = pt(a1); return `M${x0} ${y0} A${R} ${R} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x1} ${y1}`; };
+    $('#dTrack').setAttribute('d', arc(A0, A1));
+    const ticks = $('#dTicks');
+    for (let s = 0; s <= 6; s++) {
+      const a = A0 + (s * 270) / 6, [x0, y0] = pt(a, R + 14), [x1, y1] = pt(a, R + 20);
+      ticks.insertAdjacentHTML('beforeend', `<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}"/>`);
+    }
+    let mode = 'step', v = 0.5, last = 3;
+    function draw() {
+      const a = A0 + v * 270;
+      $('#dArc').setAttribute('d', v > 0.001 ? arc(A0, a) : '');
+      const [x, y] = pt(a); $('#dDot').setAttribute('cx', x); $('#dDot').setAttribute('cy', y);
+      if (mode === 'step') {
+        const s = Math.round(v * 6);
+        $('#dVal').textContent = s;
+        svg.setAttribute('aria-valuenow', s); svg.setAttribute('aria-valuemax', 6);
+        [...ticks.children].forEach((l, j) => l.classList.toggle('lit', j <= s));
+        if (s !== last) { last = s; if (navigator.vibrate) try { navigator.vibrate(8); } catch (e) {} }
+      } else {
+        const p = Math.round(v * 100);
+        $('#dVal').textContent = p + '%';
+        svg.setAttribute('aria-valuenow', p); svg.setAttribute('aria-valuemax', 100);
+      }
+    }
+    function setFrom(e) {
+      const r = svg.getBoundingClientRect();
+      let a = (Math.atan2(e.clientX - (r.left + r.width / 2), -(e.clientY - (r.top + r.height / 2))) * 180) / Math.PI;
+      a = Math.max(A0, Math.min(A1, a));
+      v = (a - A0) / 270;
+      if (mode === 'step') v = Math.round(v * 6) / 6;
+      draw();
+    }
+    let down = false;
+    svg.addEventListener('pointerdown', (e) => { down = true; svg.setPointerCapture(e.pointerId); setFrom(e); });
+    svg.addEventListener('pointermove', (e) => down && setFrom(e));
+    svg.addEventListener('pointerup', () => (down = false));
+    svg.addEventListener('keydown', (e) => {
+      const d = mode === 'step' ? 1 / 6 : 0.02;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') v = Math.min(1, v + d);
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') v = Math.max(0, v - d);
+      else return;
+      e.preventDefault(); if (mode === 'step') v = Math.round(v * 6) / 6; draw();
+    });
+    const LABEL = { step: ['Main Fan', 'Speed'], smooth: ['Main Light', 'Brightness'] };
+    root.querySelectorAll('.seg button').forEach((b) => b.addEventListener('click', () => {
+      mode = b.dataset.m;
+      root.querySelectorAll('.seg button').forEach((x) => x.classList.toggle('on', x === b));
+      root.classList.toggle('smooth', mode === 'smooth');
+      const [dev, what] = LABEL[mode];
+      root.querySelector('.bar-t').textContent = dev; $('#dDev').textContent = what;
+      if (mode === 'step') { v = Math.round(v * 6) / 6; last = Math.round(v * 6); }
+      draw();
+    }));
+    draw();
+  }
+
+  // ---- the letter ----
+  const embed = document.documentElement.classList.contains('embed');
+  const host = embed && parent !== window ? parent : null;
+  const stampEl = document.getElementById('stamp'), pmEl = document.getElementById('pm');
+  const today = new Date();
+  const DATE = [`${today.toLocaleString('en', { month: 'short' }).toUpperCase()} ${today.getDate()}`, String(today.getFullYear())];
+
+  try {
+    const g = document.createElement('canvas'); g.width = g.height = 360;
+    Print.paper(g.getContext('2d'), 360, 360, '#fbf7ec', 41, 10);
+    document.querySelector('.letter').style.setProperty('--grain', `url(${g.toDataURL()})`);
+  } catch (e) {}
+
+  // the stamp: the very one from the mat inside the picnic, otherwise drawn the same way (as picnic.js does)
+  function drawStamp(src) {
+    stampEl.width = src.width; stampEl.height = src.height;
+    stampEl.getContext('2d').drawImage(src, 0, 0);
+  }
+  const art = host && host.Picnic && host.Picnic.art('dayro').front;
+  if (art) drawStamp(art);
+  else {
+    const img = new Image();
+    img.onload = () => document.fonts.ready.then(() => drawStamp(Print.stamp(img, { x: 90, y: 224, R: 40, top: 'SELECTED WORK', bottom: 'AARYA SHAH', l1: DATE[0], l2: DATE[1], color: '#7a1f2a', seed: 22 }).inked));
+    img.src = '../stamps/dayro.webp';
+  }
+  document.fonts.ready.then(() => {
+    const pm = Print.postmark({ R: 60, top: 'SELECTED WORK', bottom: 'AARYA SHAH', l1: DATE[0], l2: DATE[1], color: '#7a1f2a', waves: -1, waveLen: 150, seed: 14, k: 3 });
+    pmEl.width = pm.canvas.width; pmEl.height = pm.canvas.height;
+    pmEl.getContext('2d').drawImage(pm.canvas, 0, 0);
+    if (!embed) setTimeout(() => pmEl.classList.add('on'), 500);
+  });
+
+  window.Letter = {
+    slot() {
+      const r = stampEl.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: stampEl.offsetWidth, h: stampEl.offsetHeight, r: (3 * Math.PI) / 180 };
+    },
+    hideStamp() { stampEl.style.opacity = 0; pmEl.classList.remove('on'); },
+    land() { stampEl.style.opacity = 1; pmEl.classList.add('on'); },
+    toTop() {
+      return new Promise((done) => {
+        if (scrollY < 2) return done();
+        scrollTo({ top: 0, behavior: 'smooth' });
+        const t0 = performance.now();
+        const check = () => (scrollY < 2 || performance.now() - t0 > 900 ? done() : setTimeout(check, 30));
+        setTimeout(check, 30);
+      });
+    },
+  };
+  const leave = () => (host && host.Case ? host.Case.close() : (location.href = '../'));
+  document.getElementById('back').addEventListener('click', leave);
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') leave(); });
+  document.querySelectorAll('[data-go]').forEach((a) => a.addEventListener('click', (e) => {
+    if (host && host.Case) { e.preventDefault(); host.Case.go(a.dataset.go); }
+  }));
+</script>
+</body>
+</html>
