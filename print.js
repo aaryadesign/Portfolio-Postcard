@@ -505,6 +505,44 @@ window.Print = (() => {
     return c;
   }
 
+  // the back of a project stamp, seen when it is turned over: the same gummed paper as the testimonials,
+  // the stamp itself small in the corner, the project's name and what it was
+  function stampBack({ name, summary }, img, n) {
+    const K = 3, W = SW, H = SH, c = canvas(W * K, H * K), ctx = c.getContext('2d');
+    ctx.scale(K, K);
+    paper(ctx, W, H, '#f2ead6', 90 + n, 9);
+    const g = ctx.createLinearGradient(0, 0, W, H);
+    g.addColorStop(0, 'rgba(255,248,225,.35)'); g.addColorStop(0.5, 'rgba(255,248,225,0)'); g.addColorStop(1, 'rgba(210,190,140,.12)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    const m = 30, sw = 118, sh = (sw * SH) / SW;
+    if (img) {
+      ctx.save();
+      ctx.translate(W - m - sw / 2, m + sh / 2); ctx.rotate(0.05);
+      ctx.shadowColor = 'rgba(60,40,20,.25)'; ctx.shadowBlur = 3; ctx.shadowOffsetY = 0.8;
+      ctx.drawImage(img, -sw / 2, -sh / 2, sw, sh);
+      ctx.restore();
+    }
+    ctx.fillStyle = INK; ctx.textBaseline = 'alphabetic';
+    // the name beside the little stamp, as large as fits there
+    const nw = W - m * 2 - sw - 16;
+    let ns = 26, nl;
+    for (; ns > 15; ns -= 1) { font(ctx, 700, ns); nl = wrap(ctx, name, nw); if (nl.length * ns * 1.15 <= sh) break; }
+    const ny = m + sh / 2 - (nl.length * ns * 1.15) / 2 + ns * 0.9;
+    nl.forEach((l, i) => ctx.fillText(l, m, ny + i * ns * 1.15));
+    // and under them both, what it was
+    const top = m + sh + 22, room = H - top - m + 4;
+    let fs = 17, lines, lh;
+    for (; fs > 10; fs -= 0.5) {
+      font(ctx, 400, fs); lh = fs * 1.42;
+      lines = wrap(ctx, summary, W - m * 2);
+      if (lines.length * lh <= room) break;
+    }
+    ctx.fillStyle = '#4a443b';
+    lines.forEach((l, i) => ctx.fillText(l, m, top + fs + i * lh));
+    perforate(ctx, W, H);
+    return c;
+  }
+
   // a die-cut vinyl sticker around any artwork: a white margin following its outline
   function dieCut(img, w, h, border, K = 2) {
     const pad = border + 4, c = canvas((w + pad * 2) * K, (h + pad * 2) * K), ctx = c.getContext('2d');
@@ -747,5 +785,5 @@ window.Print = (() => {
     return c;
   }
 
-  return { navStamp, rng, paper, stickerSheet, blankSticker, contactSticker, inkStamp, CONTACT_DIMS, testimonial, dieCut, cleanSticker, letter, stamp, sticker, front, signature, back, coverStamp, openMark, title, SW, SH, backLayout, SLOT_ROT };
+  return { navStamp, rng, paper, stickerSheet, blankSticker, contactSticker, inkStamp, CONTACT_DIMS, testimonial, stampBack, dieCut, cleanSticker, letter, stamp, sticker, front, signature, back, coverStamp, openMark, title, SW, SH, backLayout, SLOT_ROT };
 })();

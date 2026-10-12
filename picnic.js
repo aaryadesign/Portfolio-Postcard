@@ -16,15 +16,22 @@
 
   // The projects, in order. The first is the stamp on the back of the postcard, which peels off and leads
   // the row; the rest lie along the mat after it. The art is Aarya's own; each gets postmarked as you reach
-  // it, in a corner clear of the picture.
-  const COVER = 'goalkeeper';
+  // it, in a corner clear of the picture. Hovering one turns it over to what it was, written on the back.
+  const COVER = { id: 'goalkeeper', name: 'Goalkeeper',
+    summary: 'A voice assistant for everyday errands. Say what you need and it drafts it, compares prices and opens the right app to finish. The website is live, the app is in testing and 35+ people are on the waitlist.' };
   const PROJECTS = [
-    { id: 'phonepe', ink: '#2a3a7a', pm: { x: 352, y: 224, R: 40 } },
-    { id: 'ride-through-the-valley', ink: '#7a1f2a', pm: { x: 90, y: 220, R: 40 } },
-    { id: 'dayro', ink: '#7a1f2a', pm: { x: 90, y: 224, R: 40 } },
-    { id: 'lamad', ink: '#2a3a7a', pm: { x: 352, y: 220, R: 40 } },
-    { id: 'transporter', ink: '#2a3a7a', pm: { x: 352, y: 222, R: 40 } },
-    { id: 'quickmart', ink: '#7a1f2a', pm: { x: 90, y: 220, R: 40 } },
+    { id: 'phonepe', ink: '#2a3a7a', pm: { x: 352, y: 224, R: 40 }, name: 'PhonePe Car Insurance',
+      summary: 'A case study redesigning the car insurance flow in PhonePe, to make the whole journey clearer and easier to finish.' },
+    { id: 'ride-through-the-valley', ink: '#7a1f2a', pm: { x: 90, y: 220, R: 40 }, name: 'Ride Through the Valley',
+      summary: 'A game I built: a horse rider travels through a valley as the weather changes around them.' },
+    { id: 'dayro', ink: '#7a1f2a', pm: { x: 90, y: 224, R: 40 }, name: 'Dayro',
+      summary: 'A consumer IoT app for running a smart home from your phone.' },
+    { id: 'lamad', ink: '#2a3a7a', pm: { x: 352, y: 220, R: 40 }, name: 'Lamad',
+      summary: 'An ERP for a company that had never used enterprise software before.' },
+    { id: 'transporter', ink: '#2a3a7a', pm: { x: 352, y: 222, R: 40 }, name: 'Transporter',
+      summary: 'Fuel logistics across five connected platforms, from the depot to the road.' },
+    { id: 'quickmart', ink: '#7a1f2a', pm: { x: 90, y: 220, R: 40 }, name: 'QuickMart',
+      summary: 'The backend behind a retail chain of 200 stores.' },
   ];
   const ROT = [-0.035, 0.04, -0.025, 0.05, -0.04, 0.035, -0.03];
   // What people said, each written on the back of a stamp. The first is the last project's stamp, turned over.
@@ -107,6 +114,7 @@
   let vw = 0, vh = 0, dpr = 1, portrait = false, cw, ch, SWd, SHd, spacing, Xc, yRow, maxCam;
   let tex = null, cardKey = '', titles = null, fontsReady = false, startAt = 0;
   const stampTex = [];
+  let coverBack = null;
   let sec = null, testTex = [], testKey = '', titleTex = null, assetsReady = false;
   // "Your logo here": tap it to leave an email, kept in Supabase. The key is the publishable one, and the
   // table only lets this page add a row, never read any back.
@@ -309,7 +317,7 @@
       cardKey = key;
       if (tex) for (const k of ['front', 'sig', 'back', 'backPeeled', 'cover']) gl.deleteTexture(tex[k]);
       const mark = Print.openMark(portrait, DATE);
-      const cover = Print.coverStamp(portrait, mark, assets.stamps[COVER]);
+      const cover = Print.coverStamp(portrait, mark, assets.stamps[COVER.id]);
       const common = { cw, ch, TW, portrait, cover, mark, intro: INTRO, lines: ADDRESS };
       tex = {
         front: scene.texture(Print.front(cw, ch, TW)),
@@ -320,10 +328,11 @@
       };
     }
     if (!stampTex.length) {
+      coverBack = scene.texture(Print.stampBack(COVER, assets.stamps[COVER.id], 0));
       PROJECTS.forEach((p, i) => {
         const s = Print.stamp(assets.stamps[p.id], { ...p.pm, top: 'SELECTED WORK', bottom: 'AARYA SHAH', l1: DATE[0], l2: DATE[1], color: p.ink, seed: 20 + i });
         stampTex.push({
-          plain: scene.texture(s.plain), inked: scene.texture(s.inked),
+          plain: scene.texture(s.plain), inked: scene.texture(s.inked), back: scene.texture(Print.stampBack(p, assets.stamps[p.id], i + 1)),
           stickers: (p.stickers || []).map(([kind, text, bg, fg, w, h, x, y, r]) => {
             const st = Print.sticker(kind, text, bg, fg, w, h);
             return { tex: scene.texture(st.canvas), w: st.w, h: st.h, cx: x + w / 2 - Print.SW / 2, cy: y + h / 2 - Print.SH / 2, r };
@@ -419,7 +428,7 @@
 
   // the stamps are drawn from their art, so nothing is printed until it is here
   const loadImg = (src) => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
-  const stampsLoaded = Promise.all([COVER, ...PROJECTS.map((p) => p.id)].map((id) => loadImg(`stamps/${id}.webp`).then((im) => { assets.stamps[id] = im; }).catch(() => {})));
+  const stampsLoaded = Promise.all([COVER, ...PROJECTS].map((p) => p.id).map((id) => loadImg(`stamps/${id}.webp`).then((im) => { assets.stamps[id] = im; }).catch(() => {})));
   Promise.all([
     document.fonts.load("400 40px 'Geist'"), document.fonts.load("500 40px 'Geist'"), document.fonts.load("600 40px 'Geist'"),
     document.fonts.load("700 40px 'Geist'"), document.fonts.load("800 40px 'Geist'"), document.fonts.load("500 40px 'Geist Mono'"),
@@ -478,7 +487,7 @@
   const cardHover = { z: 0, rx: 0, ry: 0 };
   let props = null, propHover = null;
   let kappa = 0, kappaV = 0, lastTh = 0;
-  const stampHover = PROJECTS.map(() => ({ z: 0, rx: 0, ry: 0 })), coverHover = { z: 0, rx: 0, ry: 0 };
+  const stampHover = PROJECTS.map(() => ({ z: 0, rx: 0, ry: 0, p: 0 })), coverHover = { z: 0, rx: 0, ry: 0, p: 0 };
   const inkAt = PROJECTS.map(() => 0);
   const testHover = TESTIMONIALS.map(() => ({ z: 0, rx: 0, ry: 0 }));
   // a testimonial picked up to read: lifted off the mat toward you until it fills most of the screen
@@ -505,6 +514,15 @@
     h.rx += ((on ? -ly * 0.3 : 0) - h.rx) * k;
     h.ry += ((on ? lx * 0.34 : 0) - h.ry) * k;
     h.bow = (h.bow || 0) + ((on ? 1 : 0) - (h.bow || 0)) * k;
+    // and turns over to its back while the cursor stays, back again when it leaves
+    h.p = clamp((h.p || 0) + ((on ? 1 : -1) * dt) / 0.6);
+  }
+  // a stamp turning over on hover: it rises a little as it goes edge-on and bows with the turn
+  function flipOver(o, h, back) {
+    const f = ease(h.p), arc = Math.sin(Math.PI * f);
+    o.mode = 1; o.texB = back; o.mixB = 0; o.glossBack = 0.1;
+    o.bend = [Math.PI * f, o.bend[1] + (0.9 * arc) / o.size[0]];
+    return 60 * arc;
   }
   // lift a flat object just enough that no part of it dips into the mat
   function rest(o, z) {
@@ -652,9 +670,11 @@
         bend: [-0.45 * peel, (2.4 * peel) / w + bow], texA: tex.cover, gloss: 0.06, sheen: 0.2,
       };
       const zc = lerp(p0[2] + 0.6, 0.8, kt) + peel * 90 + Math.sin(Math.PI * kt) * 230;
-      if (kt >= 1) rest(cover, zc + coverHover.z); else cover.pos[2] = zc;
+      if (kt < 1) coverHover.p = 0;
+      const up = coverHover.p > 0 ? flipOver(cover, coverHover, coverBack) : 0;
+      if (kt >= 1) rest(cover, zc + coverHover.z + up); else cover.pos[2] = zc;
       objects.push(cover);
-      supports.push({ id: 'cover', obj: cover, stable: kt >= 1 });
+      supports.push({ id: 'cover', obj: cover, stable: kt >= 1 && coverHover.p === 0 });
     }
 
     // ---- the row of project stamps lying further along the mat ----
@@ -683,13 +703,18 @@
           texA: stampTex[i].inked, texB: testTex[0], gloss: 0.06, glossBack: 0.1, sheen: 0.2,
         }, 0.8 + arc * 240);
       } else {
-        stamp = rest({
+        const mixB = ik < 0 ? 0 : smooth(clamp((ik - 0.06) / 0.14));
+        stamp = {
           pos: [X, Y, 0], size: [sw, SHd * sc], rot: [r, h.rx, h.ry], bend: [0, bow],
-          texA: stampTex[i].plain, texB: stampTex[i].inked, mixB: ik < 0 ? 0 : smooth(clamp((ik - 0.06) / 0.14)), gloss: 0.06, sheen: 0.2,
-        }, 0.8 + h.z - bump * 0.6);
+          texA: stampTex[i].plain, texB: stampTex[i].inked, mixB, gloss: 0.06, sheen: 0.2,
+        };
+        let up = 0;
+        if (h.p > 0) { stamp.texA = mixB > 0.5 ? stampTex[i].inked : stampTex[i].plain; up = flipOver(stamp, h, stampTex[i].back); }
+        rest(stamp, 0.8 + h.z - bump * 0.6 + up);
       }
+      if (turning) h.p = 0;
       objects.push(stamp);
-      supports.push({ id: 'p' + i, obj: stamp, stable: !turning });
+      supports.push({ id: 'p' + i, obj: stamp, stable: !turning && h.p === 0 });
       // stickers are stuck to the stamp: they ride its tilt and bow, always on its surface
       const k = stamp.size[0] / Print.SW, ky = stamp.size[1] / Print.SH;
       stampTex[i].stickers.forEach((s, j) => {
