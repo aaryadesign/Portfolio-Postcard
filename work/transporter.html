@@ -207,7 +207,7 @@
   .clear{align-self:flex-end; margin-top:6px; border:0; background:none; color:var(--t-blue); font-size:12px; cursor:pointer; padding:0}
   .ok2{align-self:center; margin-top:40px; padding:4px 12px; border-radius:6px; background:#e8f7ee; color:var(--t-green); font-size:12px; font-weight:600}
 
-  /* 4. the odometer: two readings, from two people with no reason to cover */
+  /* 4. the odometer: the driver's reading, checked by two people with no reason to cover */
   .odo{margin-top:48px; padding:32px; border-radius:20px; background:var(--cream); border:1px solid var(--line)}
   .road{position:relative; display:grid; grid-template-columns:1fr auto 1fr; gap:16px; align-items:start}
   .road .end{text-align:center}
@@ -221,7 +221,7 @@
   .road .mid span{display:block; margin-top:4px; font-size:13px; color:var(--ink2)}
   .road .mid em{display:block; margin-top:6px; font-style:normal; font-size:13px; font-weight:500; color:var(--t-red); min-height:18px}
   .odo .drv{margin-top:28px; padding-top:20px; border-top:1px solid var(--line); display:flex; gap:12px; align-items:center; font-size:15px; color:var(--ink2)}
-  .odo .drv b{color:var(--ink); font-weight:600; text-decoration:line-through; text-decoration-color:var(--blue); text-decoration-thickness:2px}
+  .odo .drv b{color:var(--ink); font-weight:600}
   .odo .tog{margin-bottom:28px}
 
   /* the order, step by step, with the real screens */
@@ -500,8 +500,8 @@
 
     <div class="sub rv">
       <div class="head">
-        <h3>The driver never reports the distance</h3>
-        <p class="body">The driver isn't paying for fuel either, so nothing stops a personal detour on company fuel. So the distance comes from two people who have no reason to cover for the driver.</p>
+        <h3>The driver's reading is never the only one</h3>
+        <p class="body">The driver isn't paying for fuel either, so nothing stops a personal detour on company fuel. The driver enters the odometer before a voucher can be redeemed, but the distance doesn't rest on that number. The attendant records it at the pump and the customer at delivery, and neither has a reason to cover for the driver.</p>
       </div>
       <div class="odo" id="odo">
         <div class="tog"><button type="button" class="on" data-r="0">Straight to the customer</button><button type="button" data-r="1">With a side trip</button></div>
@@ -510,7 +510,7 @@
           <div class="mid"><div class="line"></div><b id="km">1,040 km</b><span>between the two readings</span><em id="kmNote"></em></div>
           <div class="end"><div class="dot"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/></svg></div><b>The customer</b><span>reads it at delivery, and both sign</span><span class="read" id="odoEnd">92,348 km</span></div>
         </div>
-        <p class="drv"><b>The driver</b> reports nothing about their own distance.</p>
+        <p class="drv"><b>The driver</b> enters a reading too, before the voucher is redeemed. It's checked by two other people.</p>
       </div>
     </div>
 
