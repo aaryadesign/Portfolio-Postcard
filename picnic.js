@@ -251,8 +251,8 @@
   // Everything is in sheet units (world px) from its top left.
   function sheetLayout(Xs, top, sh, maxW) {
     const P = portrait, W = P ? vw - 24 : clamp(vw * 0.68, 780, 1040), pad = P ? 20 : 40;
-    // the title stacked in the top corner, two lines; the stickers sit below it
-    const titleSize = P ? 50 : 76, band = pad + titleSize * 1.75, head = band + (P ? 22 : 30);
+    // a header band of its own across the top, the title on one line in it; the stickers sit below it
+    const titleSize = P ? 50 : 78, band = P ? 96 : 122, head = band + (P ? 26 : 34);
     const split = W * 0.6, x0 = pad, x1 = P ? W - pad : split - 28, gx = P ? 14 : 24, gy = P ? 18 : 26;
     const items = CLIENTS.map((id) => ({ id, size: clientSize(id, sh, maxW) }));
     items.push({ id: 'you', size: [Math.min(sh * 2.3, maxW), sh] });
@@ -282,9 +282,9 @@
       perf = [pad, py, W - pad, py];
       gTop = py + 28; cx0 = pad; cx1 = W - pad;
     } else {
-      // beside the title too: the contact side runs the full height of the sheet
-      gTop = pad + Math.max(0, (cTop - pad - blockH) / 2); cx0 = split + 28; cx1 = W - pad;
-      perf = [split, pad, split, null];
+      // the contact side runs the rest of the sheet's height, under the header
+      gTop = head - 6 + Math.max(0, (cTop - head - blockH) / 2); cx0 = split + 28; cx1 = W - pad;
+      perf = [split, band + 24, split, null];
     }
     const cw = (cx1 - cx0) / 2, mid = (cx0 + cx1) / 2;
     const top0 = gTop + hiH, contact = CONTACT.map((c, i) => i === 0
@@ -292,7 +292,7 @@
       : { x: cx0 + cw * (((i - 1) % 2) + 0.5), y: top0 + eh + stampRoom + Math.floor((i - 1) / 2) * rowH + rowH / 2 - (P ? 10 : 13) });
     const H = Math.max(cTop, gTop + blockH - (P ? 10 : 13)) + pad;
     if (!P) perf[3] = H - pad;
-    return { x: Xs, y: top + H / 2, W, H, r: P ? -0.008 : -0.012, pad, band, titleSize, titleRoom: x1 - pad, slots, S, contact, perf,
+    return { x: Xs, y: top + H / 2, W, H, r: P ? -0.008 : -0.012, pad, band, titleSize, titleRoom: W - pad * 2, slots, S, contact, perf,
       hi: { text: 'Say hi to me', x: mid, y: gTop + hiSize * 0.82, size: hiSize }, stamp: { x: mid + S * 0.08, y: top0 + eh + stampRoom * 0.45 } };
   }
   // the title, as the die-cut sticker: one line, or two on a phone
@@ -392,7 +392,7 @@
         sh.contact.forEach((c, i) => holes.push({ img: contactTex[i].canvas, x: c.x, y: c.y, w: contactTex[i].w, h: contactTex[i].h }));
         sheetTex = scene.texture(Print.stickerSheet({
           W: sh.W, H: sh.H, K: Math.min(3, Math.max(2, dpr * 1.25)), pad: sh.pad, band: sh.band, titleSize: sh.titleSize,
-          title: 'Be the next\nsticker.', titleRoom: portrait ? 0 : sh.titleRoom, hi: sh.hi, perf: sh.perf, holes,
+          title: 'Be the next sticker.', titleRoom: sh.titleRoom, hi: sh.hi, perf: sh.perf, holes,
         }));
       }
       if (!copiedTex) { const t = Print.inkStamp('COPIED', '#d8322a'); copiedTex = { ...t, tex: scene.texture(t.canvas) }; }
@@ -433,7 +433,7 @@
     document.fonts.load("400 40px 'Geist'"), document.fonts.load("500 40px 'Geist'"), document.fonts.load("600 40px 'Geist'"),
     document.fonts.load("700 40px 'Geist'"), document.fonts.load("800 40px 'Geist'"), document.fonts.load("500 40px 'Geist Mono'"),
     document.fonts.load("400 40px 'Yellowtail'"), document.fonts.load("700 40px 'Source Serif 4'", 'NORISKTY'),
-    document.fonts.load("400 40px 'Kalam'"), document.fonts.load("400 40px 'Cherry Bomb One'", 'Be the next sticker.Say hi to me'), document.fonts.load("italic 400 40px 'DM Serif Display'", '\u201c'),
+    document.fonts.load("400 40px 'Kalam'"), document.fonts.load("400 40px 'Cherry Bomb One'", 'e'), document.fonts.load("italic 400 40px 'DM Serif Display'", '\u201c'),
     ...TITLE.filter((t) => t[1]).map(([ch, sp]) => document.fonts.load(`${sp.style || ''} ${sp.weight || 400} 40px '${sp.family}'`, ch)),
   ]).catch(() => {}).then(() => stampsLoaded).then(() => { fontsReady = true; if (vw) build(); });
 

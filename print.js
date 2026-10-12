@@ -627,7 +627,7 @@ window.Print = (() => {
   // all in sheet units from the top left, centres for holes. Printed like a shop sticker sheet: one warm
   // yellow all over, the title stacked in fat round black letters in the top corner, and a hello over the
   // contact stickers in the same letters.
-  const SHEET = { yellow: '#ffbe12', ink: '#141210', cream: '#fff8e4' };
+  const SHEET = { yellow: '#ffbe12', ink: '#141210', cream: '#fff8e4', red: '#d8402a', redDeep: '#7e1c12' };
   function stickerSheet(s) {
     const { W, H, K, pad } = s, c = canvas(W * K, H * K), ctx = c.getContext('2d');
     paper(ctx, W, H, '#fbfaf5', 131, 5);
@@ -636,16 +636,32 @@ window.Print = (() => {
     ctx.globalCompositeOperation = 'multiply';
     ctx.fillStyle = SHEET.yellow; ctx.fillRect(0, 0, W, H);
     ctx.globalCompositeOperation = 'source-over';
-    // the title, stacked tight, as large as the room allows
-    const blob = (size) => { ctx.font = `400 ${size}px 'Cherry Bomb One', 'Geist', sans-serif`; };
+    // the header: a band of its own colour across the top, its bottom edge scalloped, and the title in a
+    // retro script, cream with a deeper red set behind it, like a printed header card
+    const band = s.band, sc = band > 110 ? 15 : 12, n = Math.max(6, Math.round(W / (sc * 2.2))), step = W / n;
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(W, 0); ctx.lineTo(W, band - sc);
+    for (let i = n - 1; i >= 0; i--) ctx.arc(i * step + step / 2, band - sc, step / 2, 0, Math.PI);
+    ctx.closePath();
+    ctx.fillStyle = SHEET.red; ctx.fill();
+    const script = (size) => { ctx.font = `400 ${size}px 'Yellowtail', cursive`; };
     let fs = s.titleSize;
-    const lines = s.title.split('\n');
-    blob(fs);
-    const tw = Math.max(...lines.map((l) => ctx.measureText(l).width)), room = s.titleRoom || W - pad * 2;
-    if (tw > room) { fs *= room / tw; blob(fs); }
-    ctx.fillStyle = SHEET.ink; ctx.textBaseline = 'alphabetic';
-    lines.forEach((l, i) => ctx.fillText(l, pad - fs * 0.03, pad + fs * 0.8 + i * fs * 0.98));
-    blob(s.hi.size); ctx.textAlign = 'center';
+    script(fs);
+    const tw = ctx.measureText(s.title).width, room = s.titleRoom || W - pad * 2;
+    if (tw > room) { fs *= room / tw; script(fs); }
+    ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+    const ty = (band - sc) / 2 + fs * 0.34, off = Math.max(2, fs * 0.045);
+    ctx.fillStyle = SHEET.redDeep; ctx.fillText(s.title, W / 2 + off, ty + off);
+    ctx.fillStyle = SHEET.cream; ctx.fillText(s.title, W / 2, ty);
+    // a sparkle either side of it
+    const star = (x, y, r) => {
+      ctx.beginPath();
+      for (let i = 0; i < 8; i++) { const a = (i * Math.PI) / 4 - Math.PI / 2, rr2 = i % 2 ? r * 0.28 : r; ctx.lineTo(x + Math.cos(a) * rr2, y + Math.sin(a) * rr2); }
+      ctx.closePath(); ctx.fill();
+    };
+    const half = Math.min(tw, room) / 2, sy = (band - sc) / 2;
+    if (W / 2 - half - fs * 0.5 > pad * 0.6) { star(W / 2 - half - fs * 0.42, sy - fs * 0.08, fs * 0.16); star(W / 2 + half + fs * 0.42, sy + fs * 0.06, fs * 0.13); }
+    // "Say hi to me", in the same hand, in the header's red
+    script(s.hi.size * 1.15); ctx.fillStyle = SHEET.red;
     ctx.fillText(s.hi.text, s.hi.x, s.hi.y);
     ctx.textAlign = 'left';
     // a perforated line to tear the sheet in two
