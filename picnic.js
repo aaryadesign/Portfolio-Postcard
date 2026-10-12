@@ -118,6 +118,9 @@
   // the cover stamp as drawn, for carrying it off the mat onto the case study's letter (case.js)
   const coverArt = { front: null, back: null };
   let coverObj = null, coverHidden = false;
+  // the same for the stamps in the row: each one's two sides, where it lies this frame, and which is lifted off
+  const projArt = {}, projObj = [];
+  let projHidden = -1;
   let sec = null, testTex = [], testKey = '', titleTex = null, assetsReady = false;
   // "Your logo here": tap it to leave an email, kept in Supabase. The key is the publishable one, and the
   // table only lets this page add a row, never read any back.
@@ -336,8 +339,9 @@
       coverBack = scene.texture(coverArt.back);
       PROJECTS.forEach((p, i) => {
         const s = Print.stamp(assets.stamps[p.id], { ...p.pm, top: 'SELECTED WORK', bottom: 'AARYA SHAH', l1: DATE[0], l2: DATE[1], color: p.ink, seed: 20 + i });
+        projArt[p.id] = { front: s.inked, back: Print.stampBack(p, assets.stamps[p.id], i + 1) };
         stampTex.push({
-          plain: scene.texture(s.plain), inked: scene.texture(s.inked), back: scene.texture(Print.stampBack(p, assets.stamps[p.id], i + 1)),
+          plain: scene.texture(s.plain), inked: scene.texture(s.inked), back: scene.texture(projArt[p.id].back),
           stickers: (p.stickers || []).map(([kind, text, bg, fg, w, h, x, y, r]) => {
             const st = Print.sticker(kind, text, bg, fg, w, h);
             return { tex: scene.texture(st.canvas), w: st.w, h: st.h, cx: x + w / 2 - Print.SW / 2, cy: y + h / 2 - Print.SH / 2, r };
@@ -686,6 +690,7 @@
     }
 
     // ---- the row of project stamps lying further along the mat ----
+    projObj.length = 0;
     PROJECTS.forEach((p, i) => {
       const X = Xc + (i + 1) * spacing, Y = yRow + (i % 2 ? 8 : -6), r = ROT[i + 1];
       // out of view (and kept hidden while the welcome shows the wider mat)
@@ -698,7 +703,7 @@
       const turning = i === n - 1 && kf2 > 0;
       if (turning && kf2 >= 1) return;
       const g = grow(i + 1);
-      const h = stampHover[i], on = turning ? null : localPointer(X, Y, 1, SWd * g, SHd * g, r);
+      const h = stampHover[i], on = turning || projHidden === i ? null : localPointer(X, Y, 1, SWd * g, SHd * g, r);
       hoverState(h, !!on, on ? on[0] : 0, on ? on[1] : 0, dt);
       const sc = g * (1 - bump * 0.02), sw = SWd * sc, bow = (0.35 * h.bow) / sw;
       let stamp;
@@ -721,6 +726,9 @@
         rest(stamp, 0.8 + h.z - bump * 0.6 + up);
       }
       if (turning) h.p = 0;
+      if (!turning) projObj[i] = { obj: stamp, X, Y, r };
+      // (lifted off the mat and carried onto its letter)
+      if (projHidden === i) return;
       objects.push(stamp);
       supports.push({ id: 'p' + i, obj: stamp, stable: !turning && h.p === 0 });
       // stickers are stuck to the stamp: they ride its tilt and bow, always on its surface
@@ -1025,6 +1033,9 @@
       if (window.Case) Case.open('goalkeeper');
       return;
     }
+    // a project stamp with a letter of its own
+    const pi = projObj.findIndex((o, i) => o && projHidden !== i && window.Case && Case.has(PROJECTS[i].id) && localPointer(o.X, o.Y, 1, o.obj.size[0], o.obj.size[1], o.r, e.clientX, e.clientY));
+    if (pi >= 0) { Case.open(PROJECTS[pi].id); return; }
     const j = contactAt(e.clientX, e.clientY);
     if (j >= 0) return useContact(j);
     const k = cardAt(e.clientX, e.clientY);
@@ -1035,17 +1046,24 @@
 
   // for case.js: where the cover stamp lies on the screen, how far it has turned over, and hiding it while
   // a copy of it is carried off the mat
+  const projIdx = (id) => PROJECTS.findIndex((p) => p.id === id);
   window.Picnic = {
-    art: coverArt,
-    flip: () => ease(coverHover.p || 0),
-    coverRect() {
-      if (!coverObj) return null;
-      const o = { ...coverObj, bend: [0, 0] }, [w, h] = o.size;
+    art: (id) => (id === COVER.id ? coverArt : projArt[id] || {}),
+    flip: (id) => (id === COVER.id ? ease(coverHover.p || 0) : ease((stampHover[projIdx(id)] || {}).p || 0)),
+    rect(id) {
+      const ob = id === COVER.id ? coverObj : (projObj[projIdx(id)] || {}).obj;
+      if (!ob) return null;
+      const o = { ...ob, bend: [0, 0] }, [w, h] = o.size;
       const at = (s, t) => scene.toScreen(scene.point(o, s, t), camNow, camNowY);
       const c = at(0, 0), a = at(w / 2, 0), b = at(0, h / 2);
       return { x: c[0], y: c[1], w: 2 * Math.hypot(a[0] - c[0], a[1] - c[1]), h: 2 * Math.hypot(b[0] - c[0], b[1] - c[1]), r: Math.atan2(a[1] - c[1], a[0] - c[0]) };
     },
-    hideCover(v) { coverHidden = v; if (v) coverHover.p = 0; },
+    hide(id, v) {
+      if (id === COVER.id) { coverHidden = v; if (v) coverHover.p = 0; return; }
+      const i = projIdx(id);
+      projHidden = v ? i : -1;
+      if (v && stampHover[i]) stampHover[i].p = 0;
+    },
   };
 
   addEventListener('keydown', (e) => {

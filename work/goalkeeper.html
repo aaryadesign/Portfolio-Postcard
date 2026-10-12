@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
 <style>
   /* One scale for the whole letter:
-     type   h1 64 · h2 40 · h3 24 · body 18 · line 16 · label 14   (700 headings, 600 emphasis, 500 labels, 400 text)
+     type   h1 48 · h2 40 · h3 24 · body 18 · line 16 · label 14   (700 headings, 600 emphasis, 500 labels, 400 text)
      space  section 144 · heading to intro 16 · intro to content 48 · inside cards 32 · gaps 24
      colour ink for headings, ink2 for text, line for rules, cream cards; blue only for numbers and the postmark */
   :root{
@@ -42,7 +42,7 @@
   .col{max-width:var(--col); margin:0 auto}
 
   /* ---------- type ---------- */
-  h1{font-weight:700; font-size:clamp(44px,6vw,64px); letter-spacing:-.04em; line-height:1}
+  h1{font-weight:700; font-size:clamp(36px,4.4vw,48px); letter-spacing:-.035em; line-height:1.05}
   h2{font-weight:700; font-size:clamp(30px,3.6vw,40px); letter-spacing:-.03em; line-height:1.15}
   h3{font-weight:600; font-size:24px; letter-spacing:-.02em; line-height:1.3}
   .body{font-size:18px; line-height:1.65; color:var(--ink2)}
@@ -55,6 +55,8 @@
   .lt-head{display:grid; grid-template-columns:1fr auto; gap:48px; align-items:start}
   .lt-head h1{margin-top:48px}
   .lt-head .lede{margin-top:16px; max-width:560px; font-size:20px; line-height:1.55; color:var(--ink2)}
+  .live{margin-top:32px; display:inline-flex; gap:10px; align-items:center; height:52px; padding:0 24px; border-radius:999px; background:var(--ink); color:var(--paper); font-size:16px; font-weight:600; text-decoration:none; transition:transform .2s var(--ease)}
+  .live:hover{transform:translateY(-1px)}
   /* the stamp, stuck down in the top corner, and the postmark struck across it onto the paper */
   .lt-slot{position:relative; width:clamp(170px,20vw,240px); margin:-16px -16px 0 0}
   .lt-stamp{display:block; width:100%; aspect-ratio:440/308; transform:rotate(3deg); filter:drop-shadow(0 1px 1px rgba(60,40,0,.25)) drop-shadow(0 3px 6px rgba(60,40,0,.12))}
@@ -264,6 +266,7 @@
       <div>
         <h1>Goalkeeper</h1>
         <p class="lede">A voice-first assistant for Android that keeps your whole day in one place. I designed it and built it myself with Claude, and it's in testing now.</p>
+        <a class="live" href="https://www.heygoalkeeper.in/" target="_blank" rel="noopener">Visit the live site &nearr;</a>
       </div>
       <div class="lt-slot"><canvas class="lt-stamp" id="stamp" aria-label="Goalkeeper stamp" role="img"></canvas><canvas class="lt-pm" id="pm" aria-hidden="true"></canvas></div>
     </div>
@@ -566,7 +569,7 @@
   </section>
 
   <div class="nextp">
-    <a href="#">
+    <a href="phonepe.html" data-go="phonepe">
       <img src="../stamps/phonepe.webp" alt="PhonePe stamp">
       <span class="t">PhonePe Car Insurance &rarr;</span>
     </a>
@@ -640,7 +643,7 @@
     stampEl.width = src.width; stampEl.height = src.height;
     stampEl.getContext('2d').drawImage(src, 0, 0);
   }
-  const art = host && host.Picnic && host.Picnic.art.front;
+  const art = host && host.Picnic && host.Picnic.art('goalkeeper').front;
   if (art) drawStamp(art);
   else {
     const img = new Image();
@@ -675,6 +678,10 @@
   };
   const leave = () => (host && host.Case ? host.Case.close() : (location.href = '../'));
   document.getElementById('back').addEventListener('click', leave);
+  // the next letter, in place, when inside the picnic
+  document.querySelectorAll('[data-go]').forEach((a) => a.addEventListener('click', (e) => {
+    if (host && host.Case) { e.preventDefault(); host.Case.go(a.dataset.go); }
+  }));
   addEventListener('keydown', (e) => { if (e.key === 'Escape') leave(); });
 </script>
 </body>

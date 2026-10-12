@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ride through the Valley</title>
+<script>if (/[?&]embed/.test(location.search)) document.documentElement.classList.add('embed');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* A short letter: what it is, a picture, and the way in. Same scale as the other letters. */
+  :root{
+    --paper:#fbf7ec; --cream:#f6f0e0; --ink:#141210; --ink2:#5b554c; --line:#e4d9c2;
+    --col:960px;
+    --ease:cubic-bezier(.4,0,.2,1);
+  }
+  *{box-sizing:border-box}
+  body{margin:0; color:var(--ink); font-family:'Geist',system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden}
+  img{display:block; max-width:100%}
+  p, h1{margin:0}
+
+  body{background-color:#f9d4d5;
+    background-image:linear-gradient(90deg, rgba(204,26,46,.42) 50%, transparent 50%), linear-gradient(rgba(204,26,46,.42) 50%, transparent 50%);
+    background-size:88px 88px}
+  html.embed, html.embed body{background:transparent}
+  .back{position:fixed; top:16px; left:16px; z-index:10; display:inline-flex; gap:8px; align-items:center; height:40px; padding:0 16px; border:0; border-radius:999px; background:var(--paper); color:var(--ink); font:500 15px/1 'Geist',system-ui,sans-serif; cursor:pointer;
+    box-shadow:0 1px 2px rgba(70,20,25,.2), 0 8px 20px rgba(70,20,25,.16); transition:transform .2s var(--ease)}
+  .back:hover{transform:translateY(-1px)}
+
+  .letter{position:relative; width:min(1180px, calc(100vw - 48px)); margin:max(96px, 14vh) auto 120px; padding:80px 80px 112px; background:var(--paper) var(--grain, none);
+    border-radius:3px; box-shadow:0 1px 1px rgba(70,20,25,.18), 0 10px 24px rgba(70,20,25,.18), 0 40px 80px -30px rgba(70,20,25,.35)}
+  .col{max-width:var(--col); margin:0 auto}
+
+  h1{font-weight:700; font-size:clamp(36px,4.4vw,48px); letter-spacing:-.035em; line-height:1.05}
+
+  /* ---------- hero ---------- */
+  .lt-head{display:grid; grid-template-columns:1fr auto; gap:48px; align-items:start}
+  .lt-head h1{margin-top:48px}
+  .lt-head .lede{margin-top:16px; max-width:560px; font-size:20px; line-height:1.55; color:var(--ink2)}
+  .lt-slot{position:relative; width:clamp(170px,20vw,240px); margin:-16px -16px 0 0}
+  .lt-stamp{display:block; width:100%; aspect-ratio:440/308; transform:rotate(3deg); filter:drop-shadow(0 1px 1px rgba(60,40,0,.25)) drop-shadow(0 3px 6px rgba(60,40,0,.12))}
+  html.embed .lt-stamp{opacity:0}
+  .lt-pm{position:absolute; right:58%; top:52%; width:118%; pointer-events:none; opacity:0; transform:rotate(-9deg); transform-origin:85% 50%}
+  .lt-pm.on{animation:strike .45s cubic-bezier(.3,1.4,.5,1) both}
+  @keyframes strike{from{opacity:0; transform:rotate(-9deg) scale(1.5)} to{opacity:.88; transform:rotate(-9deg) scale(1)}}
+
+  .cta{margin-top:32px; display:inline-flex; gap:10px; align-items:center; height:52px; padding:0 24px; border-radius:999px; background:var(--ink); color:var(--paper); font-size:16px; font-weight:600; text-decoration:none; transition:transform .2s var(--ease)}
+  .cta:hover{transform:translateY(-1px)}
+
+  /* the picture is a way in too */
+  .thumb{display:block; margin-top:64px; border-radius:20px; overflow:hidden; border:1px solid var(--line); background:#1a1310}
+  .thumb img{width:100%; aspect-ratio:1200/630; object-fit:cover; transition:transform .8s var(--ease)}
+  .thumb:hover img{transform:scale(1.02)}
+
+  .nextp{margin-top:144px; padding-top:72px; border-top:1px solid var(--line); text-align:center}
+  .nextp a{color:inherit; text-decoration:none; display:inline-flex; flex-direction:column; align-items:center; gap:24px}
+  .nextp img{width:200px; transform:rotate(-3deg); transition:transform .4s var(--ease); filter:drop-shadow(0 2px 2px rgba(60,40,0,.25)) drop-shadow(0 12px 16px rgba(60,40,0,.18))}
+  .nextp a:hover img{transform:rotate(2deg) scale(1.04)}
+  .nextp .t{font-weight:700; font-size:32px; letter-spacing:-.03em}
+
+  @media (max-width: 1000px){
+    .letter{padding:64px 48px 96px}
+  }
+  @media (max-width: 760px){
+    .letter{width:calc(100vw - 24px); padding:56px 24px 72px; margin-top:76px}
+    .lt-head{grid-template-columns:1fr; gap:0}
+    .lt-slot{grid-row:1; justify-self:end; width:150px; margin:-32px -8px 0 0}
+    .lt-head h1{margin-top:16px}
+    .lt-head .lede{font-size:18px}
+    .thumb{margin-top:48px; border-radius:14px}
+    .nextp{margin-top:96px}
+  }
+</style>
+</head>
+<body>
+
+<button class="back" type="button" id="back">&larr; Back to the picnic</button>
+
+<article class="letter">
+  <header class="col">
+    <div class="lt-head">
+      <div>
+        <h1>Ride through the Valley</h1>
+        <p class="lede">A game I built: you ride a horse through a valley of meadows, cherry groves, woods, a river and a snowy pass, as day turns to night and the weather changes around you. Made with three.js, and it runs in your browser.</p>
+        <a class="cta" href="https://ride-through-the-valley.vercel.app/" target="_blank" rel="noopener">Visit the live site &nearr;</a>
+      </div>
+      <div class="lt-slot"><canvas class="lt-stamp" id="stamp" aria-label="Ride through the Valley stamp" role="img"></canvas><canvas class="lt-pm" id="pm" aria-hidden="true"></canvas></div>
+    </div>
+    <a class="thumb" href="https://ride-through-the-valley.vercel.app/" target="_blank" rel="noopener">
+      <img src="assets/ride/thumb.jpg" alt="A rider on a horse grazing in a meadow at sunset, with cherry trees and mountains behind">
+    </a>
+  </header>
+
+  <div class="nextp">
+    <a href="goalkeeper.html" data-go="goalkeeper">
+      <img src="../stamps/goalkeeper.webp" alt="Goalkeeper stamp">
+      <span class="t">Goalkeeper &rarr;</span>
+    </a>
+  </div>
+</article>
+
+<script src="../print.js"></script>
+<script>
+  // ---- the letter ----
+  const embed = document.documentElement.classList.contains('embed');
+  const host = embed && parent !== window ? parent : null;
+  const stampEl = document.getElementById('stamp'), pmEl = document.getElementById('pm');
+  const today = new Date();
+  const DATE = [`${today.toLocaleString('en', { month: 'short' }).toUpperCase()} ${today.getDate()}`, String(today.getFullYear())];
+
+  try {
+    const g = document.createElement('canvas'); g.width = g.height = 360;
+    Print.paper(g.getContext('2d'), 360, 360, '#fbf7ec', 41, 10);
+    document.querySelector('.letter').style.setProperty('--grain', `url(${g.toDataURL()})`);
+  } catch (e) {}
+
+  // the stamp: the very one from the mat inside the picnic, otherwise drawn the same way (as picnic.js does)
+  function drawStamp(src) {
+    stampEl.width = src.width; stampEl.height = src.height;
+    stampEl.getContext('2d').drawImage(src, 0, 0);
+  }
+  const art = host && host.Picnic && host.Picnic.art('ride-through-the-valley').front;
+  if (art) drawStamp(art);
+  else {
+    const img = new Image();
+    img.onload = () => document.fonts.ready.then(() => drawStamp(Print.stamp(img, { x: 90, y: 220, R: 40, top: 'SELECTED WORK', bottom: 'AARYA SHAH', l1: DATE[0], l2: DATE[1], color: '#7a1f2a', seed: 21 }).inked));
+    img.src = '../stamps/ride-through-the-valley.webp';
+  }
+  document.fonts.ready.then(() => {
+    const pm = Print.postmark({ R: 60, top: 'SELECTED WORK', bottom: 'AARYA SHAH', l1: DATE[0], l2: DATE[1], color: '#7a1f2a', waves: -1, waveLen: 150, seed: 13, k: 3 });
+    pmEl.width = pm.canvas.width; pmEl.height = pm.canvas.height;
+    pmEl.getContext('2d').drawImage(pm.canvas, 0, 0);
+    if (!embed) setTimeout(() => pmEl.classList.add('on'), 500);
+  });
+
+  window.Letter = {
+    slot() {
+      const r = stampEl.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: stampEl.offsetWidth, h: stampEl.offsetHeight, r: (3 * Math.PI) / 180 };
+    },
+    hideStamp() { stampEl.style.opacity = 0; pmEl.classList.remove('on'); },
+    land() { stampEl.style.opacity = 1; pmEl.classList.add('on'); },
+    toTop() {
+      return new Promise((done) => {
+        if (scrollY < 2) return done();
+        scrollTo({ top: 0, behavior: 'smooth' });
+        const t0 = performance.now();
+        const check = () => (scrollY < 2 || performance.now() - t0 > 900 ? done() : setTimeout(check, 30));
+        setTimeout(check, 30);
+      });
+    },
+  };
+  const leave = () => (host && host.Case ? host.Case.close() : (location.href = '../'));
+  document.getElementById('back').addEventListener('click', leave);
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') leave(); });
+  document.querySelectorAll('[data-go]').forEach((a) => a.addEventListener('click', (e) => {
+    if (host && host.Case) { e.preventDefault(); host.Case.go(a.dataset.go); }
+  }));
+</script>
+</body>
+</html>
