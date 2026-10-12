@@ -38,9 +38,20 @@ window.Case = (() => {
   // a slot on the letter, in the same terms as a stamp on the mat
   const asStamp = (slot, W) => ({ x: slot.x, y: slot.y, r: slot.r, s: slot.w / W });
 
+  // while a letter is open the picnic behind it holds perfectly still: scrolling the letter never runs on into
+  // the page underneath, and nothing that would scroll the page gets through
+  let heldAt = 0;
+  const KEYS = new Set([' ', 'PageUp', 'PageDown', 'Home', 'End', 'ArrowUp', 'ArrowDown']);
+  const stop = (e) => { if (openId) e.preventDefault(); };
+  addEventListener('wheel', stop, { passive: false });
+  addEventListener('touchmove', stop, { passive: false });
+  addEventListener('keydown', (e) => { if (openId && KEYS.has(e.key) && !e.target.closest?.('input, textarea')) e.preventDefault(); });
+  addEventListener('scroll', () => { if (openId && Math.abs(scrollY - heldAt) > 0.5) scrollTo(0, heldAt); });
+  const contain = () => { try { frame.contentDocument.documentElement.style.overscrollBehavior = 'none'; } catch (e) {} };
+
   async function open(id, flyIn = true) {
     if (busy || openId || !PAGES[id]) return;
-    busy = true; openId = id;
+    busy = true; openId = id; heldAt = scrollY;
     if (location.hash !== '#' + id) history.pushState({ case: id }, '', '#' + id);
     const art = window.Picnic ? Picnic.art(id) : {};
     const rect = flyIn && art.front ? onScreen(Picnic.rect(id)) : null;
@@ -64,6 +75,7 @@ window.Case = (() => {
         { duration: 520, easing: 'cubic-bezier(.3,1.1,.5,1)', fill: 'forwards' });
     }
     await loaded;
+    contain();
     const L = frame.contentWindow.Letter;
     if (rect) L.hideStamp();
 
@@ -134,7 +146,7 @@ window.Case = (() => {
     if (window.Picnic) Picnic.hide(openId, false);
     openId = id;
     history.replaceState({ case: id }, '', '#' + id);
-    frame.addEventListener('load', () => { frame.contentWindow.scrollTo(0, 0); frame.contentWindow.Letter.land(); frame.focus(); }, { once: true });
+    frame.addEventListener('load', () => { contain(); frame.contentWindow.scrollTo(0, 0); frame.contentWindow.Letter.land(); frame.focus(); }, { once: true });
     // replace, so the browser's back button still closes the letter rather than turning back a page
     frame.contentWindow.location.replace(new URL(PAGES[id] + '?embed', location.href).href);
   }
