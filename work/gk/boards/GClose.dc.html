@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Close the day, gradient</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Geist,system-ui,sans-serif;color:#1C1C1E;background:#F4F3EF}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;color:inherit}
+.em{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;line-height:1;display:inline-block}
+.num{font-variant-numeric:tabular-nums}
+.gk-scroll{scrollbar-width:none}
+.gk-scroll::-webkit-scrollbar{display:none}
+.gk-press{transition:transform .18s cubic-bezier(.3,.7,.4,1),background-color .3s ease,color .3s ease,border-color .3s ease,opacity .3s ease}
+.gk-press:active{transform:scale(.94)}
+@keyframes gkSpin{to{transform:rotate(360deg)}}
+.gk-spin{animation:gkSpin .8s linear infinite}
+@keyframes gkDot{0%,100%{opacity:.25}50%{opacity:1}}
+.gk-live{animation:gkDot 1.4s ease-in-out infinite}
+@keyframes gkBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(-4deg)}}
+.gk-bob{animation:gkBob 2.8s ease-in-out infinite}
+@keyframes gkRide{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-1.5px) rotate(-3deg)}}
+.gk-ride{animation:gkRide .5s ease-in-out infinite}
+@keyframes gkFlip{0%,70%{transform:rotate(0)}85%,100%{transform:rotate(180deg)}}
+.gk-hourglass{animation:gkFlip 3.2s cubic-bezier(.6,0,.3,1) infinite}
+@keyframes gkPop{0%{transform:scale(1)}35%{transform:scale(1.35)}70%{transform:scale(.92)}100%{transform:scale(1)}}
+.gk-pop{animation:gkPop .5s cubic-bezier(.3,1.5,.5,1)}
+@keyframes gkB1{to{transform:translate(-22px,-18px) scale(.3);opacity:0}}
+@keyframes gkB2{to{transform:translate(22px,-18px) scale(.3);opacity:0}}
+@keyframes gkB3{to{transform:translate(26px,6px) scale(.3);opacity:0}}
+@keyframes gkB4{to{transform:translate(-26px,6px) scale(.3);opacity:0}}
+@keyframes gkB5{to{transform:translate(0,-28px) scale(.3);opacity:0}}
+@keyframes gkB6{to{transform:translate(0,24px) scale(.3);opacity:0}}
+.b1{animation:gkB1 .6s ease-out forwards}.b2{animation:gkB2 .6s ease-out forwards}.b3{animation:gkB3 .6s ease-out forwards}
+.b4{animation:gkB4 .6s ease-out forwards}.b5{animation:gkB5 .6s ease-out forwards}.b6{animation:gkB6 .6s ease-out forwards}
+@keyframes gkBreathe{0%,100%{box-shadow:0 0 0 0 rgba(28,28,30,0)}50%{box-shadow:0 0 0 7px rgba(28,28,30,.08)}}
+.gk-breathe{animation:gkBreathe 3.4s ease-in-out infinite}
+@keyframes gkUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.gk-up{animation:gkUp .6s cubic-bezier(.2,.7,.2,1) both}
+@keyframes gkSheet{from{transform:translateY(100%)}to{transform:none}}
+.gk-sheet{animation:gkSheet .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes gkFade{from{opacity:0}to{opacity:1}}
+.gk-fade{animation:gkFade .3s ease both}
+@keyframes gkRing{0%{transform:scale(.7);opacity:.55}100%{transform:scale(1.9);opacity:0}}
+.gk-ring{animation:gkRing 1.8s cubic-bezier(.2,.6,.3,1) infinite}
+.gk-ring2{animation:gkRing 1.8s cubic-bezier(.2,.6,.3,1) .9s infinite}
+@keyframes gkWave{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}
+.gk-wave{animation:gkWave .9s ease-in-out infinite;transform-origin:50% 50%}
+@keyframes gkWiggle{0%,60%,100%{transform:rotate(0)}66%{transform:rotate(-12deg)}74%{transform:rotate(10deg)}82%{transform:rotate(-6deg)}90%{transform:rotate(3deg)}}
+.gk-wiggle{animation:gkWiggle 1.6s ease-in-out infinite}
+@keyframes gkTwinkle{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
+.gk-twinkle{animation:gkTwinkle 2.4s ease-in-out infinite}
+@keyframes gkStrike{from{background-size:0 1.5px}to{background-size:100% 1.5px}}
+.gk-strike{background-image:linear-gradient(rgba(28,28,30,.5),rgba(28,28,30,.5));background-repeat:no-repeat;background-position:0 55%;background-size:100% 1.5px;animation:gkStrike .5s cubic-bezier(.4,0,.2,1) both}
+@keyframes gkGrow{from{transform:scaleX(var(--from,0))}to{transform:scaleX(1)}}
+.gk-grow{transform-origin:0 50%;animation:gkGrow .9s cubic-bezier(.3,.7,.2,1) .2s both}
+</style>
+
+<style>
+button{border:none;padding:0;margin:0;background:none;cursor:pointer}
+@keyframes gkRec{0%,100%{opacity:1}50%{opacity:.3}}
+.gk-rec{animation:gkRec 1.6s cubic-bezier(.45,0,.55,1) infinite}
+@keyframes gkRip{0%{transform:scale(1,1);opacity:.55}100%{transform:scale(1.07,1.55);opacity:0}}
+.gk-rip{animation:gkRip 2.4s cubic-bezier(.22,1,.36,1) infinite}
+@keyframes gkRipO{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.9);opacity:0}}
+.gk-ripO{animation:gkRipO 1.8s cubic-bezier(.22,1,.36,1) infinite}
+@keyframes gkThink{0%,100%{opacity:.35;transform:translateY(0)}40%{opacity:1;transform:translateY(-4px)}}
+.gk-think{animation:gkThink 1.1s cubic-bezier(.45,0,.55,1) infinite}
+@keyframes gkWaveO{0%,100%{opacity:.25}50%{opacity:1}}
+.gk-waveO{animation:gkWaveO 1.2s cubic-bezier(.45,0,.55,1) infinite}
+
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: {{bg}}; font-family: Geist, system-ui, sans-serif; color: {{ink}}; transition: background-color 1.2s ease, color .8s ease;">
+<sc-for list="{{washes}}" as="w" hint-placeholder-count="7">
+<div style="position: absolute; left: 0; right: 0; top: 0; height: 640px; background: {{w.bg}}; opacity: {{w.op}}; transition: opacity 1.1s ease; pointer-events: none;"></div>
+</sc-for>
+<sc-for list="{{stars}}" as="s" hint-placeholder-count="12">
+<span class="gk-twinkle" style="position: absolute; left: {{s.x}}px; top: {{s.y}}px; width: {{s.r}}px; height: {{s.r}}px; border-radius: 50%; background: #FFFFFF; opacity: {{s.op}}; animation-delay: {{s.d}}s; transition: opacity 1.4s ease {{s.d}}s; pointer-events: none;"></span>
+</sc-for>
+
+<div style="position: absolute; left: 24px; right: 20px; top: 56px; height: 36px; display: flex; align-items: center; gap: 12px; z-index: 30;">
+<span style="font-size: 12px; font-weight: 500; color: {{sub}}; transition: color .8s ease;">Tuesday, 30 September</span>
+<span style="flex-grow: 1;"></span>
+<span style="display: flex; gap: 4px; opacity: {{dotsOp}}; transition: opacity .4s ease;"><sc-for list="{{stepDots}}" as="d" hint-placeholder-count="5"><span style="height: 4px; width: {{d.w}}px; border-radius: 2px; background: {{d.c}}; transition: width .4s cubic-bezier(.3,.7,.2,1), background-color .4s ease;"></span></sc-for></span>
+<a href="GHome.dc.html" aria-label="Close" class="gk-press" style="width: 36px; height: 36px; border-radius: 20px; background: {{chrome}}; color: {{ink}}; display: flex; align-items: center; justify-content: center; transition: background-color .8s ease;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+</div>
+
+<div style="position: absolute; left: 24px; right: 24px; top: 104px; height: 100px; z-index: 20;">
+<sc-for list="{{heads}}" as="h" hint-placeholder-count="7">
+<div aria-hidden="{{h.hidden}}" style="position: absolute; left: 0; right: 0; top: 0; opacity: {{h.op}}; transform: translateY({{h.y}}px); filter: blur({{h.b}}px); transition: opacity .5s ease, transform .6s cubic-bezier(.22,1,.36,1), filter .5s ease;">
+<div style="font-size: 32px; line-height: 38px; font-weight: 600; letter-spacing: -0.7px;">{{h.title}}</div>
+</div>
+</sc-for>
+</div>
+
+<div class="gk-scroll" style="position: absolute; left: 0; right: 0; top: 196px; bottom: 120px; overflow-y: auto; -webkit-mask-image: linear-gradient(#000 0, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(#000 0, #000 calc(100% - 28px), transparent); opacity: {{sum.op}}; transform: translateY({{sum.y}}px); pointer-events: {{sum.pe}}; transition: opacity .5s ease, transform .6s cubic-bezier(.2,.7,.2,1);">
+<div style="padding: 0 24px 28px;">
+<div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;">
+<span style="white-space: nowrap;"><span class="num" style="font-size: 40px; line-height: 44px; font-weight: 600; letter-spacing: -1px;">6</span><span class="num" style="font-size: 24px; font-weight: 600; color: rgba(28,28,30,.4);"> / 8 done</span></span>
+<span style="padding-bottom: 8px; text-align: right; font-size: 12px; line-height: 18px; font-weight: 600;"><span style="display: block; color: #A65A05;">2 missed</span><span style="display: block; color: #B8285F;">1 waiting</span></span>
+</div>
+<div style="display: flex; gap: 4px; margin-top: 16px;"><sc-for list="{{segBar}}" as="g" hint-placeholder-count="8"><span class="gk-fade" style="flex: 1 1 0; height: 8px; border-radius: 3px; background: {{g.c}}; animation-delay: {{g.d}}s;"></span></sc-for></div>
+<div style="margin-top: 20px; padding: 4px 16px; border-radius: 24px; background: #FFFFFF;">
+<sc-for list="{{dayRows}}" as="r" hint-placeholder-count="9">
+<div class="gk-up" style="height: 44px; display: flex; align-items: center; gap: 12px; border-top: 1px solid {{r.line}}; animation-delay: {{r.del}}s;">
+<span class="num" style="width: 60px; flex-shrink: 0; white-space: nowrap; font-size: 12px; font-weight: {{r.tw}}; color: {{r.tc}};">{{r.t}}</span>
+<span style="width: 32px; height: 32px; flex-shrink: 0; border-radius: 16px; background: {{r.circle}}; display: flex; align-items: center; justify-content: center;"><span class="em" style="font-size: 16px; opacity: {{r.eo}};">{{r.e}}</span></span>
+<span style="flex-grow: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 16px; font-weight: {{r.w}}; color: {{r.c}};"><span class="{{r.strike}}" style="animation-delay: {{r.sdel}}s;">{{r.title}}</span></span>
+<sc-if value="{{r.tag}}" hint-placeholder-val="{{false}}"><span style="flex-shrink: 0; height: 24px; padding: 0 8px; border-radius: 12px; background: {{r.tagBg}}; color: {{r.tagFg}}; display: flex; align-items: center; font-size: 12px; font-weight: 600;">{{r.tagText}}</span></sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<sc-for list="{{cards}}" as="c" hint-placeholder-count="3">
+<div aria-hidden="{{c.hidden}}" style="position: absolute; left: 24px; right: 24px; top: 228px; height: 384px; box-sizing: border-box; padding: 20px; border-radius: 28px; background: {{c.wash}}; box-shadow: 0 14px 34px rgba(28,28,30,.10); z-index: {{c.z}}; opacity: {{c.op}}; transform-origin: 50% 100%; transform: translate({{c.tx}}px, {{c.ty}}px) rotate({{c.rot}}deg) scale({{c.sc}}); pointer-events: {{c.pe}}; display: flex; flex-direction: column; transition: transform .65s cubic-bezier(.3,.8,.3,1), opacity .5s ease;">
+<div style="display: flex; flex-direction: column; flex-grow: 1; opacity: {{c.inner}}; transition: opacity .3s ease .1s;">
+<div style="display: flex; gap: 12px;">
+<div style="flex-grow: 1; min-width: 0;">
+<div style="font-size: 24px; line-height: 28px; font-weight: 600; letter-spacing: -0.3px;">{{c.title}}</div>
+<div style="margin-top: 8px; font-size: 16px; line-height: 20px; color: rgba(28,28,30,.6);">{{c.sub}}</div>
+</div>
+<span style="width: 64px; height: 64px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;"><span class="em gk-bob" style="font-size: 40px;">{{c.e}}</span></span>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 12px; margin-top: 16px; padding: 12px 16px; border-radius: 16px; background: {{c.soft}};"><span class="em" style="font-size: 20px; line-height: 21px;">{{c.infoE}}</span><span style="font-size: 16px; line-height: 20px; font-weight: 500;">{{c.info}}</span></div>
+<span style="flex-grow: 1;"></span>
+<button type="button" class="gk-press" onClick="{{c.now.go}}" style="width: 100%; height: 56px; margin-bottom: 8px; padding: 0 16px 0 20px; border-radius: 20px; background: #1C1C1E; color: #FFFFFF; display: flex; align-items: center; justify-content: space-between; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer;"><span style="display: flex; align-items: center; gap: 8px;"><sc-if value="{{c.now.busy}}" hint-placeholder-val="{{false}}"><span class="gk-spin" style="width: 12px; height: 12px; box-sizing: border-box; border-radius: 8px; border: 2px solid rgba(255,255,255,.3); border-top-color: #FFFFFF;"></span></sc-if>{{c.now.text}}</span><span style="display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; color: rgba(255,255,255,.6);"><sc-if value="{{c.now.hasLogo}}" hint-placeholder-val="{{true}}"><img src="{{c.now.logo}}" alt="" style="width: 20px; height: 20px; border-radius: 8px;"></sc-if>{{c.now.app}}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8.5 7H17v8.5"></path></svg></span></button>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+<sc-for list="{{c.opts}}" as="o" hint-placeholder-count="3">
+<button type="button" class="gk-press gk-fade" onClick="{{o.go}}" style="height: 64px; padding: 0 4px; border-radius: 20px; border: 1px solid {{o.edge}}; background: {{o.bg}}; color: {{o.fg}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 12px; font-weight: 600; cursor: pointer;"><span class="em num" style="font-size: 20px; font-weight: 600;">{{o.e}}</span>{{o.text}}</button>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-for>
+
+<div style="position: absolute; left: 24px; right: 24px; top: 216px; opacity: {{pick.op}}; transform: translateY({{pick.y}}px); pointer-events: {{pick.pe}}; transition: opacity .5s ease, transform .6s cubic-bezier(.2,.7,.2,1);">
+<div style="padding: 4px 16px; border-radius: 24px; background: #FFFFFF;">
+<sc-for list="{{tomorrow}}" as="r" hint-placeholder-count="4">
+<button type="button" onClick="{{r.go}}" aria-pressed="{{r.on}}" style="width: 100%; height: 64px; padding: 0; border: none; border-top: 1px solid {{r.line}}; background: transparent; display: flex; align-items: center; gap: 12px; text-align: left; font: inherit; color: inherit; cursor: pointer;">
+<span class="num" style="width: 60px; flex-shrink: 0; font-size: 12px; font-weight: 600; color: rgba(28,28,30,.55);">{{r.t}}</span>
+<span style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 20px; background: {{r.tint}}; display: flex; align-items: center; justify-content: center; transition: background-color .3s ease;"><span class="em {{r.anim}}" style="font-size: 20px;">{{r.e}}</span></span>
+<span style="flex-grow: 1; min-width: 0; font-size: 16px; font-weight: 600;">{{r.title}}</span>
+<span style="width: 28px; height: 28px; flex-shrink: 0; border-radius: 16px; box-sizing: border-box; border: {{r.ring}}; background: {{r.fill}}; display: flex; align-items: center; justify-content: center; transition: background-color .25s ease;"><span class="em" style="font-size: 16px; opacity: {{r.starOp}}; transform: scale({{r.starS}}) rotate({{r.starR}}deg); transition: opacity .25s ease, transform .5s cubic-bezier(.3,1.6,.5,1);">⭐</span></span>
+</button>
+</sc-for>
+</div>
+</div>
+
+<div style="position: absolute; left: 24px; right: 24px; top: 224px; opacity: {{mind.op}}; transform: translateY({{mind.y}}px); pointer-events: {{mind.pe}}; transition: opacity .5s ease, transform .6s cubic-bezier(.2,.7,.2,1);">
+<div style="position: relative; min-height: 64px;">
+<p style="position: absolute; left: 0; right: 0; top: 0; margin: 0; font-size: 24px; line-height: 28px; font-weight: 500; color: rgba(28,28,30,.45); opacity: {{mind.hintOp}}; transition: opacity .5s ease;">{{mind.hint}}</p>
+<p style="margin: 0; font-size: 24px; line-height: 28px; font-weight: 500; letter-spacing: -0.3px;"><sc-for list="{{mind.words}}" as="w" hint-placeholder-count="6"><span style="display: inline-block; white-space: pre; opacity: {{w.op}}; transform: translateY({{w.y}}px); filter: blur({{w.blur}}px); transition: opacity .8s cubic-bezier(.22,1,.36,1), transform 1s cubic-bezier(.16,1,.3,1), filter .8s cubic-bezier(.22,1,.36,1);">{{w.text}}</span></sc-for></p>
+</div>
+<div style="margin: 16px 4px 8px; display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: rgba(28,28,30,.5);"><span>Tomorrow, Wednesday</span><span class="num">{{mind.count}}</span></div>
+<div style="padding: 4px 16px; border-radius: 24px; background: #FFFFFF;">
+<sc-for list="{{mind.rows}}" as="r" hint-placeholder-count="5">
+<div class="{{r.anim}}" style="height: 52px; display: flex; align-items: center; gap: 12px; border-top: 1px solid {{r.line}};">
+<span class="num" style="width: 64px; flex-shrink: 0; white-space: nowrap; font-size: 12px; color: rgba(28,28,30,.5);">{{r.t}}</span>
+<span style="width: 32px; height: 32px; flex-shrink: 0; border-radius: 16px; background: {{r.tint}}; display: flex; align-items: center; justify-content: center;"><span class="em" style="font-size: 20px;">{{r.e}}</span></span>
+<span style="flex-grow: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 16px; font-weight: 600;">{{r.title}}</span>
+<sc-if value="{{r.isNew}}" hint-placeholder-val="{{false}}"><span style="flex-shrink: 0; height: 24px; padding: 0 8px; border-radius: 12px; background: rgba(38,179,122,.14); color: #10603F; display: flex; align-items: center; font-size: 12px; font-weight: 600;">New</span></sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="position: absolute; left: 24px; right: 24px; top: 232px; opacity: {{night.op}}; transform: translateY({{night.y}}px); pointer-events: {{night.pe}}; transition: opacity .9s ease .4s, transform 1s cubic-bezier(.2,.7,.2,1) .4s;">
+<div style="display: flex; justify-content: center;"><span class="em gk-bob" style="font-size: 40px;">🌙</span></div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 28px;">
+<sc-for list="{{tally}}" as="c" hint-placeholder-count="3"><span style="height: 84px; border-radius: 20px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;"><span class="em" style="font-size: 20px;">{{c.e}}</span><span class="num" style="font-size: 24px; font-weight: 600;">{{c.n}}</span><span style="font-size: 12px; color: rgba(255,255,255,.6);">{{c.text}}</span></span></sc-for>
+</div>
+<div style="margin-top: 12px; padding: 16px 16px; border-radius: 20px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; gap: 12px;">
+<span style="width: 36px; height: 36px; flex-shrink: 0; border-radius: 20px; background: rgba(255,255,255,.12); display: flex; align-items: center; justify-content: center;"><span class="em" style="font-size: 20px;">{{first.e}}</span></span>
+<span style="flex-grow: 1; min-width: 0;"><span style="display: block; font-size: 16px; line-height: 20px; font-weight: 600;">{{first.title}}</span><span style="display: block; margin-top: 4px; font-size: 12px; line-height: 18px; color: rgba(255,255,255,.6);">Tomorrow starts with this. {{first.note}}</span></span>
+</div>
+</div>
+
+<div style="position: absolute; left: 24px; right: 24px; bottom: 36px; height: 72px; padding: 0 16px; box-sizing: border-box; border-radius: 24px; background: rgba(255,255,255,.75); display: flex; align-items: center; gap: 12px; opacity: {{tray.op}}; transform: translateY({{tray.y}}px); transition: opacity .5s ease, transform .6s cubic-bezier(.2,.7,.2,1);">
+<span style="flex-shrink: 0;"><span style="display: block; font-size: 12px; line-height: 18px; font-weight: 600;">Tomorrow</span><span class="num" style="display: block; font-size: 12px; line-height: 18px; color: rgba(28,28,30,.6);">{{tray.count}}</span></span>
+<span style="flex-grow: 1; display: flex; justify-content: flex-end; gap: 8px; overflow: hidden;"><sc-for list="{{tray.chips}}" as="c" hint-placeholder-count="3"><span class="gk-pop" style="height: 40px; padding: 0 12px 0 8px; border-radius: 20px; background: #FFFFFF; display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; white-space: nowrap;"><span class="em" style="font-size: 20px;">{{c.e}}</span>{{c.t}}</span></sc-for></span>
+</div>
+
+<div style="position: absolute; inset: 0; pointer-events: none; visibility: {{pv.vis}}; opacity: {{pv.op}}; transform: translateY({{pv.y}}px); transition: opacity .45s ease, transform .55s cubic-bezier(.2,.7,.2,1), visibility 0s linear {{pv.visD}}s;">
+<div style="position: absolute; inset: 0; transform: translateY(-62px);">
+<div style="position: absolute; left: 0; right: 0; bottom: 124px; display: flex; justify-content: center; align-items: center; gap: 8px; opacity: {{clkOp}}; transform: translateY({{clkY}}px) scale({{clkS}}); filter: blur({{clkB}}px); transition: {{clkT}};">
+<span class="gk-rec" style="width: 8px; height: 8px; border-radius: 4px; background: #E5484D;"></span><span style="display: flex; align-items: center; height: 20px; font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; color: #1C1C1E;"><span>0:</span><span style="display: inline-block; height: 20px; overflow: hidden;"><span style="display: flex; flex-direction: column; transform: translateY({{tensY}}px); transition: transform .55s cubic-bezier(.65,0,.35,1);"><span style="height: 20px; line-height: 20px;">0</span><span style="height: 20px; line-height: 20px;">1</span></span></span><span style="display: inline-block; height: 20px; overflow: hidden;"><span style="display: flex; flex-direction: column; transform: translateY({{onesY}}px); transition: transform .55s cubic-bezier(.65,0,.35,1);"><span style="height: 20px; line-height: 20px;">0</span><span style="height: 20px; line-height: 20px;">1</span><span style="height: 20px; line-height: 20px;">2</span><span style="height: 20px; line-height: 20px;">3</span><span style="height: 20px; line-height: 20px;">4</span><span style="height: 20px; line-height: 20px;">5</span><span style="height: 20px; line-height: 20px;">6</span><span style="height: 20px; line-height: 20px;">7</span><span style="height: 20px; line-height: 20px;">8</span><span style="height: 20px; line-height: 20px;">9</span><span style="height: 20px; line-height: 20px;">0</span><span style="height: 20px; line-height: 20px;">1</span><span style="height: 20px; line-height: 20px;">2</span><span style="height: 20px; line-height: 20px;">3</span><span style="height: 20px; line-height: 20px;">4</span><span style="height: 20px; line-height: 20px;">5</span><span style="height: 20px; line-height: 20px;">6</span><span style="height: 20px; line-height: 20px;">7</span><span style="height: 20px; line-height: 20px;">8</span><span style="height: 20px; line-height: 20px;">9</span></span></span></span>
+<span style="font-size: 12px; color: rgba(28,28,30,.5); opacity: {{hintOp}}; transition: opacity .5s ease;">· I’ll stop when you pause</span>
+</div>
+
+<div style="position: absolute; left: 50%; bottom: {{pb}}px; width: {{pw}}px; height: {{ph}}px; transform: translateX(-50%); opacity: {{ripOp}}; transition: width .75s cubic-bezier(.65,0,.35,1), height .75s cubic-bezier(.65,0,.35,1), bottom .75s cubic-bezier(.65,0,.35,1), opacity .9s ease;" aria-hidden="true">
+<span class="{{ripCls}}" style="position: absolute; inset: 0; border-radius: 1000px; border: 1.5px solid rgba(28,28,30,.4);"></span>
+<span class="{{ripCls}}" style="position: absolute; inset: 0; border-radius: 1000px; border: 1.5px solid rgba(28,28,30,.4); animation-delay: -1.1s;"></span>
+</div>
+
+<div style="position: absolute; left: 50%; bottom: {{pb}}px; width: {{pw}}px; height: {{ph}}px; transform: translateX(-50%) scale({{pS}}); border-radius: 1000px; pointer-events: auto; background: #1C1C1E; color: #FFFFFF; box-shadow: {{pSh}}; overflow: hidden; transition: width .75s cubic-bezier(.65,0,.35,1), height .75s cubic-bezier(.65,0,.35,1), bottom .75s cubic-bezier(.65,0,.35,1), transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .75s ease;">
+
+<button type="button" onClick="{{talk}}" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 8px; color: #FFFFFF; font-size: 16px; font-weight: 600; opacity: {{labOp}}; filter: blur({{labB}}px); transform: scale({{labS}}); pointer-events: {{labPE}}; transition: opacity .3s ease, filter .35s ease, transform .5s cubic-bezier(.22,1,.36,1);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3zM5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"></path></svg>Say something</button>
+
+<span style="position: absolute; left: 12px; top: 50%; margin-top: -24px; opacity: {{xOp}}; transform: translateX({{xX}}px) scale({{xS}}) rotate({{xR}}deg); pointer-events: {{livePE}}; transition: {{xT}};"><button type="button" aria-label="Cancel" onClick="{{cancel}}" style="width: 48px; height: 48px; border-radius: 24px; background: rgba(255,255,255,.1); color: #FFFFFF; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></span>
+
+<span style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; gap: 8px; pointer-events: none;" aria-hidden="true"><sc-for list="{{dots}}" as="d" hint-placeholder-count="5"><span class="{{d.cls}}" style="display: flex; animation-delay: {{d.del}}s;"><span style="width: 8px; border-radius: 4px; background: #FFFFFF; height: {{d.h}}px; opacity: {{d.o}}; transform: translateX({{d.x}}px) scale({{d.s}}); transition: height .45s cubic-bezier(.34,1.56,.64,1), opacity .4s ease {{d.d}}s, transform .65s cubic-bezier(.65,0,.35,1);"></span></span></sc-for></span>
+
+<span style="position: absolute; right: 12px; top: 50%; margin-top: -24px; opacity: {{okOp}}; transform: translateX({{okX}}px) scale({{okS}}); pointer-events: {{livePE}}; transition: {{okT}};"><button type="button" aria-label="Done" onClick="{{ok}}" style="position: relative; width: 48px; height: 48px; border-radius: 24px; background: #FFFFFF; color: #1C1C1E; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><svg width="60" height="60" viewBox="0 0 58 58" style="position: absolute; left: -4px; top: -4px; transform: rotate(-90deg);" aria-hidden="true"><circle cx="29" cy="29" r="27" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-dasharray="169.6" stroke-dashoffset="{{ringOff}}" style="transition: stroke-dashoffset {{ringDur}}s linear;"></circle></svg></button></span>
+
+<span style="position: absolute; inset: 0; padding: 0 12px 0 24px; display: flex; align-items: center; justify-content: space-between; opacity: {{cxOp}}; transform: translateY({{cxY}}px); pointer-events: {{cxPE}}; transition: opacity .4s ease {{cxD}}s, transform .6s cubic-bezier(.22,1,.36,1) {{cxD}}s;">
+<span style="font-size: 16px; font-weight: 600; color: rgba(255,255,255,.72);">Cancelled</span>
+<button type="button" onClick="{{undo}}" style="height: 44px; padding: 0 20px; border-radius: 24px; background: #FFFFFF; color: #1C1C1E; display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"></path><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"></path></svg>Undo</button>
+<span style="position: absolute; left: 24px; right: 24px; bottom: 8px; height: 2px; border-radius: 1px; background: rgba(255,255,255,.14); overflow: hidden;"><span style="position: absolute; inset: 0; background: rgba(255,255,255,.7); transform-origin: left center; transform: scaleX({{drain}}); transition: transform {{drainDur}}s linear;"></span></span>
+</span>
+
+<span style="position: absolute; left: 16px; top: 16px; width: 44px; height: 44px; border-radius: 24px; background: {{spBg}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; opacity: {{spOp}}; transform: scale({{spS}}) rotate({{spR}}deg); transition: opacity .35s ease {{spD}}s, transform .8s cubic-bezier(.34,1.56,.64,1) {{spD}}s, background .6s ease;" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5h3.5L11.5 5.5v13L7 14.5H3.5z" fill="currentColor"></path><path class="gk-waveO" d="M15 9.2a4 4 0 0 1 0 5.6"></path><path class="gk-waveO" style="animation-delay: .3s;" d="M18 6.5a7.8 7.8 0 0 1 0 11"></path></svg></span>
+<span style="position: absolute; left: 72px; right: 68px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; gap: 0px; white-space: nowrap; opacity: {{ctxOp}}; transform: translateX({{ctxX}}px); filter: blur({{ctxB}}px); transition: opacity .45s ease {{ctxD}}s, transform .7s cubic-bezier(.22,1,.36,1) {{ctxD}}s, filter .45s ease {{ctxD}}s;">
+<span style="font-size: 16px; font-weight: 600; color: #FFFFFF;">Adding to tomorrow</span>
+<span style="font-size: 12px; font-weight: 500; color: rgba(255,255,255,.6);">Return the library books</span>
+</span>
+<span style="position: absolute; right: 16px; top: 16px; opacity: {{stopOp}}; transform: scale({{stopS}}); pointer-events: {{spPE}}; transition: opacity .35s ease {{stopD}}s, transform .7s cubic-bezier(.34,1.56,.64,1) {{stopD}}s;"><button type="button" aria-label="Stop speaking" onClick="{{stop}}" style="width: 44px; height: 44px; border-radius: 24px; background: #FFFFFF; color: #1C1C1E; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2.5" fill="currentColor"></rect></svg></button></span>
+
+</div>
+</div>
+<div style="position: absolute; left: 24px; right: 24px; bottom: 32px;">
+<button type="button" class="gk-press" onClick="{{pv.go}}" style="width: 100%; height: 52px; border-radius: 24px; border: 1px solid rgba(28,28,30,.14); background: rgba(255,255,255,.7); color: #1C1C1E; display: flex; align-items: center; justify-content: center; font: inherit; font-size: 16px; font-weight: 600; pointer-events: {{pv.pe}}; cursor: pointer;">{{pv.text}}</button>
+</div>
+</div>
+
+<div style="position: absolute; left: 24px; right: 24px; bottom: 36px; opacity: {{cta.op}}; transform: translateY({{cta.y}}px); pointer-events: {{cta.pe}}; transition: opacity .45s ease, transform .55s cubic-bezier(.2,.7,.2,1);">
+<button type="button" class="gk-press" onClick="{{cta.go}}" style="width: 100%; height: 56px; border: none; border-radius: 28px; background: {{cta.bg}}; color: {{cta.fg}}; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; cursor: pointer; transition: background-color .6s ease, color .6s ease;">{{cta.text}}</button>
+<div style="height: 32px; display: flex; align-items: flex-end; justify-content: center; font-size: 12px; font-weight: 500; color: {{sub}};">{{cta.note}}</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  g4(v) {
+    // sizes on the 4px grid: what's computed here is snapped like what's written in the markup
+    const K = { spad: 1, pad: 1, rpad: 1, mh: 1, mh2: 1, h: 1, subGap: 1, mt: 1, size: 2, fs: 2, es: 2, ts: 2, bs: 2, fadeH: 1, pw: 1, ph: 1, pb: 1, tile: 1, top: 1, bm: 1, togX: 1, tl: 1, bl: 1, bh: 1, askH: 1, rad: 1 };
+    const F = { 11: 12, 13: 12, 14: 16, 15: 16, 17: 16, 18: 20, 19: 20, 21: 20, 22: 24, 23: 24, 26: 28, 30: 32, 34: 36, 38: 40 };
+    const one = (n, font) => { const a = Math.abs(n); if (!a) return n; if (font) return Math.sign(n) * (F[a] || Math.min(40, Math.round(a / 4) * 4)); if (a < 2) return 0; if (a < 4) return Math.sign(n) * 4; return Math.sign(n) * Math.round(a / 4) * 4; };
+    const walk = (o, d) => {
+      if (d > 6 || !o || typeof o !== 'object' || typeof o === 'function') return o;
+      if (Array.isArray(o)) { o.forEach((x) => walk(x, d + 1)); return o; }
+      Object.keys(o).forEach((k) => {
+        const x = o[k];
+        if (K[k] && typeof x === 'number') o[k] = one(x, K[k] === 2);
+        else if (K[k] && typeof x === 'string' && /px/.test(x)) o[k] = x.replace(/(-?\d+(?:\.\d+)?)px/g, (_, n) => one(+n, false) + 'px');
+        else if (x && typeof x === 'object') walk(x, d + 1);
+      });
+      return o;
+    };
+    return walk(v, 0);
+  }
+  renderVals() { return this.g4(this.renderVals0()); }
+
+  // ---- time on top: shared pieces ----
+  later(k, fn, ms) { this._t = this._t || {}; clearTimeout(this._t[k]); this._t[k] = setTimeout(fn, ms); }
+  componentWillUnmount() { Object.values(this._t || {}).forEach((t) => clearTimeout(t)); clearInterval(this._iv); }
+  get I() {
+    return { check: 'M5 12.5l4.5 4.5L19 7.5', out: 'M7 17L17 7M8.5 7H17v8.5', clock: 'M12 7v5l3 2M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z',
+      mic: 'M12 3a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3zM5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21', arrow: 'M5 12h14M13 6l6 6-6 6',
+      cal: 'M4 6.5h16v13H4zM4 10.5h16M8.5 4v4M15.5 4v4', info: 'M12 11v6M12 7.5v.5M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z', down: 'M12 4v11M7 10l5 5 5-5M5 20h14',
+      plus: 'M12 5v14M5 12h14', undo: 'M9 7L4 12l5 5M4 12h11a5 5 0 0 1 0 10h-2', edit: 'M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4', pause: 'M8 5v14M16 5v14',
+      bag: 'M5 8h14l-1.2 11.5H6.2zM9 8V6.5a3 3 0 0 1 6 0V8', laptop: 'M5 6.5h14v9H5zM2.5 18.5h19', moon: 'M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z',
+      bell: 'M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5a2 2 0 0 0 4 0', copy: 'M8 8h11v12H8zM5 16V4h11', x: 'M7 7l10 10M17 7L7 17',
+      gear: 'M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1',
+      swap: 'M7 4L3 8l4 4M3 8h14M17 12l4 4-4 4M21 16H7', thumb: 'M7 11v9H4v-9zM7 11l4-7a2 2 0 0 1 3 2l-1 4h6a2 2 0 0 1 2 2.3l-1.2 6A2 2 0 0 1 17.8 20H7' };
+  }
+  sw(rgb) { return 'radial-gradient(110% 70% at 100% 0%, rgba(' + rgb + ',.34) 0%, rgba(' + rgb + ',.10) 45%, rgba(' + rgb + ',0) 75%)'; }
+  tint(rgb, a) { const x = 'rgba(' + rgb + ',' + (a || 0.16) + ')'; return 'linear-gradient(' + x + ', ' + x + '), #FFFFFF'; }
+  washes(rgbs, on) { return rgbs.map((rgb, n) => ({ bg: this.sw(rgb), op: n === on ? 1 : 0 })); }
+  brand(name) {
+    // the app's own icon wherever an app is named, the same set the app bundles
+    const n = (name || '').toLowerCase();
+    const K = [['swiggy instamart', 'instamart'], ['instamart', 'instamart'], ['swiggy', 'swiggy'], ['dineout', 'swiggy'], ['zomato', 'zomato'], ['eatsure', 'eatsure'], ['zepto', 'zepto'], ['blinkit', 'blinkit'],
+      ['amazon', 'amazon'], ['flipkart', 'flipkart'], ['myntra', 'myntra'], ['uber', 'uber'], ['airtel', 'airtel'], ['netflix', 'netflix'], ['figma', 'figma'], ['notion', 'notion'],
+      ['indigo', 'indigo'], ['air india', 'airindia'], ['strava', 'strava'], ['slack', 'slack'], ['phonepe', 'phonepe'], ['google pay', 'gpay'], ['gpay', 'gpay'], ['paytm', 'paytm'],
+      ['whatsapp', 'whatsapp'], ['gmail', 'gmail'], ['outlook', 'outlook'], ['teams', 'teams'], ['google meet', 'meet'], ['meet', 'meet'], ['google calendar', 'gcal'], ['calendar', 'gcal'],
+      ['google maps', 'maps'], ['maps', 'maps'], ['health connect', 'healthconnect'], ['google fit', 'fit'], ['garmin', 'garmin'], ['zoom', 'zoom']];
+    const hit = K.find(([k]) => new RegExp('(^|[^a-z])' + k + '([^a-z]|$)').test(n));
+    const B = {"airindia": "536527ecec9b933db2d89e473cd8f4af", "airtel": "273ee58cb619fe3396fac17990de33d1", "amazon": "efe4118104cba6f076b772e38c7498a1", "blinkit": "d29b1af891ec6706d31e0f6af6ce53d6", "eatsure": "1bd1c207424eb25d8ebe97e24a48c0b3", "figma": "a99adf15beab814547b9dfaa0cd7e7e6", "fit": "962cf8cc0a0e030dd969392e2aad3cfc", "flipkart": "c83e563c70b1f527bc730e97b00db172", "garmin": "ff54b1e9ca36da6b6f52881eb69d9bba", "gcal": "adfc422740ec8c5162df290249e74ea2", "gmail": "68559f35eeecbc671dedba3b601a56c2", "google": "e9ca237a3c6ec00f457a43470865edfb", "gpay": "3d27c6ee0755976fd196152872adfb29", "healthconnect": "c9969de6e3ef2df1fe753aeffdc4eeab", "indigo": "309014748ceef49054bfaeb2c9f97bb2", "instamart": "803ef26a65efb80750acb4998b63d613", "maps": "861810427cbbf1e2cf5a1c87a8125d98", "meet": "35b9819ff2677596544976f33747fd60", "myntra": "56a97072e91829d51ec5c718caf0f24d", "netflix": "eb3ef331bf309f9cc67d6215d1753c21", "notion": "e644bd9d25e60804065fe40d78b78ecf", "outlook": "56f20fd6bff5024e83542103180232d6", "paytm": "c6cc1094d8c3a05c2c38fc596aa23598", "phonepe": "0b0c79b39cb497faa7ad656b6bca767c", "slack": "786bac5dc8f59c6291499d4dfa9904a5", "strava": "217aa1dde170a8443a7c9d849fea05fd", "swiggy": "ffb63f0255059f253a0978a0b63b493d", "teams": "995fdbed1c032d51f659c091518a77fb", "uber": "dffbf2e1a3494cfb2f8eb5b57930068c", "whatsapp": "c18e40f7efd39efacf9ad800def39d14", "zepto": "2aafdd84758c6ea94df13597b50d608a", "zomato": "658b6685d184453da05caf7e4ae422bc", "zoom": "817ce0f9b97d2a1f4ff7b79c897834f6"};
+    return hit && B[hit[1]] ? '/_blob/' + B[hit[1]] : '';
+  }
+  btn(b) {
+    const k = b.kind || 'light';
+    const logo = b.app ? this.brand(b.app) : '';
+    const icon = b.icon ? (this.I[b.icon] || b.icon) : '';
+    const C = { dark: ['#1C1C1E', '#FFFFFF', 'none'], light: ['rgba(255,255,255,.9)', '#1C1C1E', 'inset 0 0 0 1px rgba(28,28,30,.12)'], white: ['#FFFFFF', '#1C1C1E', 'inset 0 0 0 1px rgba(28,28,30,.14)'],
+      ok: ['rgba(38,179,122,.16)', '#10603F', 'none'], tint: ['rgba(' + (b.rgb || '28,28,30') + ',.15)', b.accent || '#1C1C1E', 'none'], ghost: ['transparent', 'rgba(28,28,30,.62)', 'none'] }[k];
+    const busy = !!b.busy;
+    const hasLogo = !!logo && !busy, hasIcon = !!icon && !logo && !busy;
+    const lead = hasLogo || hasIcon || busy;
+    return { text: b.text || '', aria: b.aria || b.text || 'Done', bg: C[0], fg: C[1], edge: C[2], busy, hasLogo, logo, hasIcon, icon: icon || this.I.check,
+      spinBg: k === 'dark' ? 'rgba(255,255,255,.3)' : 'rgba(28,28,30,.15)', spinFg: k === 'dark' ? '#FFFFFF' : '#1C1C1E',
+      pad: !b.text ? '0' : lead ? '0 20px 0 16px' : '0 20px', spad: !b.text ? '0' : lead ? '0 12px 0 9px' : '0 13px',
+      isLink: !!b.href, isBtn: !b.href, href: b.href || '#', go: b.go || (() => {}) };
+  }
+  row(r, spine) {
+    // a row: the app's logo when an app is named, else its emoji; no icon at all when it adds nothing
+    const logo = r.app ? this.brand(r.app) : '';
+    const rgb = r.rgb || '28,28,30';
+    const hasCircle = !!(logo || r.e);
+    const ring = [spine ? '0 0 0 4px #FFFFFF' : '', logo ? 'inset 0 0 0 1px rgba(28,28,30,.08)' : ''].filter(Boolean).join(', ') || 'none';
+    // what used to be a pill is now the start of the detail line, coloured when it matters
+    const lead = r.pill || '';
+    return { e: r.e || '', hasCircle, hasEmoji: !logo, hasLogo: !!logo, logo, anim: r.anim || '', ring,
+      circle: logo ? '#FFFFFF' : r.rgb ? this.tint(r.rgb) : 'rgba(28,28,30,.06)',
+      title: r.title || '', ink: r.ink || '#1C1C1E', strike: r.strike ? 100 : 0, dim: r.dim ? 0.45 : 1,
+      hasSub: !!(r.sub || lead), sub: r.sub || '', hasLead: !!lead, lead, leadSep: lead && r.sub ? ' · ' : '', leadC: r.hot ? (r.accent || '#1C1C1E') : 'rgba(28,28,30,.75)',
+      hasBar: r.bar !== undefined, bar: r.bar || 0, barC: r.barC || 'rgb(' + rgb + ')',
+      hasRight: !!r.right, right: r.right || '', rightC: r.rightC || '#1C1C1E', hasRightSub: !!r.rightSub, rightSub: r.rightSub || '',
+      hasB: !!r.b, b: this.btn(r.b ? { kind: 'white', ...r.b } : {}),
+      mh: r.hide ? 0 : 240, op: r.hide ? 0 : 1, tap: r.tap || (() => {}), cursor: r.tap ? 'pointer' : 'default' };
+  }
+  rows(list, spine) {
+    const out = list.map((r) => this.row(r, spine));
+    let first = true;
+    out.forEach((x) => { x.line = spine || first || !x.op ? 'transparent' : 'rgba(28,28,30,.07)'; if (x.op) first = false; });
+    return out;
+  }
+  heroV(h) {
+    // the type system: 40 only for a number, 32 for every other screen title, 22 inside a sheet; never above 40
+    const size = Math.min(40, h.size || (h.num ? 40 : 32));
+    const lh = { 40: 44, 32: 38, 22: 28 }[size] || Math.round(size * 1.2);
+    return { mt: h.mt ?? 16, h: h.h ?? 0, hasE: !!h.e, e: h.e || '', anim: h.anim || '',
+      big: h.big || '', size, lh, ls: size >= 32 ? (size === 40 ? -1 : -0.7) : -0.3, strike: h.strike ? 100 : 0,
+      hasSub: !!h.sub, sub: h.sub || '', subGap: size <= 22 ? 6 : 8,
+      hasBar: !!h.bar, bar: (h.bar || []).map((s) => ({ w: s.w || 1, bg: s.bg || 'rgba(28,28,30,.08)', fill: s.fill ?? 100, c: s.c })), hasPace: !!h.pace, pace: h.pace || 0,
+      hasNote: !!h.note, note: h.note || '', hasCtas: !!(h.ctas && h.ctas.length), ctas: (h.ctas || []).map((b, n) => this.btn({ kind: n === 0 ? 'dark' : 'light', ...b })) };
+  }
+  topV(t) {
+    const logo = t.app ? this.brand(t.app) : '';
+    return { back: t.back || 'GHomeTime.dc.html', title: t.title || '', hasLogo: !!logo, logo, hasStep: !!t.step, step: t.step || '',
+      hasRight: !!(t.icon || t.rtext), icon: this.I[t.icon] || t.icon || '', rtext: t.rtext || '',
+      rpad: t.rtext ? '0 15px 0 12px' : '0', aria: t.aria || t.rtext || '', go: t.go || (() => {}) };
+  }
+  chip(c) {
+    const logo = c.app ? this.brand(c.app) : '';
+    const sel = !!c.sel;
+    return { text: c.text, hasLogo: !!logo, logo, hasEmoji: !logo && !!c.e, e: c.e || '', sel: sel ? 'true' : 'false',
+      bg: sel ? '#1C1C1E' : '#FFFFFF', fg: sel ? '#FFFFFF' : '#1C1C1E', edge: sel ? 'none' : 'inset 0 0 0 1px rgba(28,28,30,.12)',
+      pad: logo ? '0 14px 0 8px' : c.e ? '0 14px 0 12px' : '0 14px', go: c.go || (() => {}) };
+  }
+  opt(o, sel, n) {
+    // a form answer: words only, no icon
+    return { text: o.text, sub: o.sub || '', hasSub: !!o.sub, sel: sel ? 'true' : 'false',
+      edge: sel ? 'inset 0 0 0 2px #1C1C1E' : 'inset 0 0 0 1px rgba(28,28,30,.08)', ring: sel ? 'none' : '1.5px solid rgba(28,28,30,.25)', dot: sel ? '#1C1C1E' : 'transparent', tick: sel ? 1 : 0,
+      d: (0.05 + n * 0.05).toFixed(2), go: o.go || (() => {}) };
+  }
+  bottomV(list) {
+    return list.map((b) => {
+      const dark = (b.kind || 'dark') === 'dark';
+      const logo = b.app ? this.brand(b.app) : '';
+      return { text: b.text, isLink: !!b.href, isBtn: !b.href, href: b.href || '#', go: b.go || (() => {}), h: dark ? 56 : 44, fs: dark ? 16 : 15,
+        bg: b.bg || (dark ? '#1C1C1E' : 'transparent'), fg: dark ? '#FFFFFF' : 'rgba(28,28,30,.62)', edge: 'none', cls: b.breathe ? 'gk-breathe' : '',
+        hasLogo: !!logo && !b.busy, logo, hasIcon: !logo && !!b.icon && !b.busy, icon: this.I[b.icon] || b.icon || '', busy: !!b.busy };
+    });
+  }
+  // ---- end ----
+
+  componentDidMount() { this.timer = setInterval(() => this.setState((s) => this.step(s)), 100); }
+  componentWillUnmount() { clearInterval(this.timer); }
+  step(s) {
+    const t = s.t + 0.1;
+    const d = t - s.at;
+    let { phase, at, le, cycle } = s;
+    const go = (p) => { phase = p; at = t; };
+    if (phase === 'listen') le += 0.1;
+    if (phase === 'idle' && !s.manual && d > 1.8) { go('listen'); le = 0; }
+    else if (phase === 'listen') {
+      // the demo shows the cancel path every other time round
+      if (!s.manual && cycle % 2 === 1 && le >= 5.2) go('cancel');
+      else if (le >= 10.9) go('think');
+    }
+    else if (phase === 'cancel' && d >= 3) go('bye');
+    else if (phase === 'think' && d >= 2.4) go('gather');
+    else if (phase === 'gather' && d >= 0.8) go('speak');
+    else if (phase === 'speak' && d >= 4.6) go('done');
+    else if (phase === 'done' && !s.manual && d >= 2.6) go('out');
+    else if (phase === 'out' && d >= 1.4) { go('idle'); le = 0; cycle += 1; }
+    else if (phase === 'bye' && d >= 1.0) { go('idle'); le = 0; cycle += 1; }
+    return { t, phase, at, le, cycle };
+  }
+  pillVals() {
+    const { t, phase, at, le } = this.state;
+    const d = t - at;
+    const P = (...ps) => ps.includes(phase);
+    const TALK_END = 9.4, PAUSE = 9.7;
+    const listening = P('listen');
+    const talking = listening && le > 0.6 && le < TALK_END;
+    const wrapping = listening && le >= PAUSE;
+    const entering = listening && d < 1.2;
+    const L = talking ? 0.62 + 0.3 * Math.sin(le * 2.1) * Math.sin(le * 0.7 + 1) : 0;
+    const shown = P('listen', 'cancel', 'think', 'gather', 'speak', 'done', 'out');
+    const pulledIn = P('cancel', 'think', 'gather', 'speak', 'done', 'out', 'bye');
+    const IN = 'cubic-bezier(.55,0,.75,.15)';
+    const SPRING = 'cubic-bezier(.34,1.56,.64,1)';
+
+    const said = 'Book my Uber to the office, tell #design on Slack that standup moves to 11, and draft a reply to Rohan saying the deck’s ready by 5.'.split(' ');
+    const words = said.map((w, i) => {
+      const on = shown && le >= 0.8 + 0.34 * i;
+      return { text: w + ' ', op: on ? (P('cancel') ? 0.28 : 1) : 0, y: on ? 0 : 12, blur: on ? 0 : 6 };
+    });
+    const promptOn = listening && le > 0.25 && le < 0.8;
+
+    const top = (text, on) => ({ text, op: on ? 1 : 0, y: on ? 0 : 8, b: on ? 0 : 4 });
+    const tops = [
+      top('Listening', listening && !wrapping),
+      top('Got it, one moment', wrapping || P('think', 'gather')),
+      top('Speaking', P('speak')),
+      top('Anything else?', P('done')),
+    ];
+
+    const s = Math.floor(Math.min(le, TALK_END));
+    // the timer and its line: out from the pill when listening starts, drawn back into it when it ends
+    const clkOn = listening;
+    const clk = clkOn
+      ? { clkOp: 1, clkY: 0, clkS: 1, clkB: 0, clkT: 'opacity .5s ease .35s, transform .8s ' + SPRING + ' .3s, filter .5s ease .3s' }
+      : { clkOp: 0, clkY: pulledIn ? 62 : 10, clkS: pulledIn ? 0.2 : 0.9, clkB: pulledIn ? 3 : 2, clkT: pulledIn ? 'opacity .45s ease .1s, transform .55s ' + IN + ', filter .45s ease' : 'opacity .3s ease, transform .3s ease, filter .3s ease' };
+
+    // x and the tick: spring in, get sucked toward the middle
+    const liveBtns = listening;
+    const btnT = (delay) => liveBtns ? 'opacity .35s ease ' + delay + 's, transform .7s ' + SPRING + ' ' + delay + 's' : 'opacity .3s ease .12s, transform .5s ' + IN;
+    const btn = {
+      xOp: liveBtns ? 1 : 0, xX: liveBtns ? 0 : (pulledIn ? 70 : 0), xS: liveBtns ? 1 : 0.3, xR: liveBtns ? 0 : -90, xT: btnT(entering ? 0.18 : 0),
+      okOp: liveBtns ? 1 : 0, okX: liveBtns ? 0 : (pulledIn ? -70 : 0), okS: liveBtns ? 1 : 0.3, okT: btnT(entering ? 0.28 : 0),
+      livePE: liveBtns ? 'auto' : 'none',
+      ringOff: wrapping ? 0 : 169.6, ringDur: wrapping ? 1.1 : 0.25,
+    };
+
+    const shape = [0.55, 0.85, 1, 0.85, 0.55];
+    const dots = shape.map((k, i) => {
+      const beat = 0.45 + 0.55 * Math.abs(Math.sin(le * 3.1 + i * 1.3));
+      const h = talking ? 9 + 26 * L * k * beat : 9;
+      const vis = P('listen', 'think', 'gather');
+      const gather = P('gather', 'speak');
+      return {
+        h, o: vis ? (P('gather') && i !== 2 ? 0.0 : 1) : 0,
+        x: gather ? (2 - i) * 16 : 0, s: P('speak') ? 0.2 : (P('gather') && i === 2 ? 1.4 : 1),
+        d: entering ? 0.3 + Math.abs(i - 2) * 0.07 : (P('gather') ? 0.35 : 0),
+        cls: P('think') || wrapping ? 'gk-think' : '', del: (i * 0.14).toFixed(2),
+      };
+    });
+
+    // the pill's shape in each phase
+    const opened = P('speak') && d >= 0.7;
+    const geo = P('idle', 'bye', 'done') ? { pw: 334, ph: 56, pb: 34, pSh: '0 4px 12px rgba(28,28,30,.12)' }
+      : P('listen', 'cancel') ? { pw: 236, ph: 72, pb: 40, pSh: '0 16px 40px rgba(28,28,30,.24)' }
+      : P('think') ? { pw: 132, ph: 72, pb: 40, pSh: '0 16px 40px rgba(28,28,30,.24)' }
+      : P('out') ? { pw: 334, ph: 56, pb: 34, pSh: '0 4px 12px rgba(28,28,30,.12)' }
+      : opened ? { pw: 290, ph: 72, pb: 40, pSh: '0 16px 40px rgba(28,28,30,.24)' }
+      : { pw: 72, ph: 72, pb: 40, pSh: '0 16px 40px rgba(28,28,30,.24)' };
+
+    const idleish = P('idle', 'bye', 'done', 'out');
+    // the reply, said a word at a time once the pill has opened
+    const replyWords = 'On it. Your Uber first, then Slack and Rohan.'.split(' ');
+    const spoken = P('speak') ? Math.floor((d - 0.9) / 0.34) : (P('done', 'out') ? 99 : -1);
+    const reply = replyWords.map((w, i) => ({ text: w + ' ', op: i <= spoken ? 1 : 0.28 }));
+    return {
+      sceneOp: P('out') ? 0 : 1,
+      tops, words,
+      promptOp: promptOn ? 1 : 0, promptY: promptOn ? 0 : (le >= 0.8 ? -10 : 10), promptB: promptOn ? 0 : 6,
+      reply, replyOp: P('speak', 'done', 'out') ? 1 : 0, replyY: P('speak', 'done', 'out') ? 0 : 12, replyB: P('speak', 'done', 'out') ? 0 : 6,
+      ...clk, tensY: -20 * Math.floor(s / 10), onesY: -20 * s,
+      hintOp: listening && !wrapping && le > 0.6 ? 1 : 0,
+      ...btn, dots, ...geo,
+      pS: idleish && this.state.pressed ? 0.95 : 1,
+      labOp: idleish ? 1 : 0, labB: idleish ? 0 : 8, labS: idleish ? 1 : 0.92, labPE: idleish ? 'auto' : 'none',
+      cxOp: P('cancel') ? 1 : 0, cxY: P('cancel') ? 0 : 10, cxD: P('cancel') ? 0.2 : 0, cxPE: P('cancel') ? 'auto' : 'none',
+      drain: P('cancel') ? 0 : 1, drainDur: P('cancel') ? 2.8 : 0,
+      spOp: P('speak') ? 1 : 0, spS: P('speak') ? 1 : 0.3, spR: P('speak') ? 0 : -25, spD: P('speak') && !opened ? 0.05 : 0, spPE: opened ? 'auto' : 'none',
+      spBg: opened ? 'rgba(255,255,255,.12)' : 'rgba(255,255,255,0)',
+      ctxOp: opened ? 1 : 0, ctxX: opened ? 0 : -10, ctxB: opened ? 0 : 4, ctxD: opened ? 0.3 : 0,
+      stopOp: opened ? 1 : 0, stopS: opened ? 1 : 0.3, stopD: opened ? 0.42 : 0,
+      ripOp: talking ? 0.35 + 0.65 * L : (P('speak') ? 0.7 : 0), ripCls: P('speak') && !opened ? 'gk-ripO' : 'gk-rip',
+      talk: () => this.setState({ phase: 'listen', at: this.state.t, le: 0, manual: true }),
+      cancel: () => this.setState({ phase: 'cancel', at: this.state.t, manual: true }),
+      ok: () => this.setState({ phase: 'think', at: this.state.t, manual: true }),
+      undo: () => this.setState({ phase: 'listen', at: this.state.t, manual: true }),
+      stop: () => this.setState({ phase: 'done', at: this.state.t, manual: true }),
+    };
+  }
+  // the pill is Listening A2's, untouched; here it only moves when they tap it
+  constructor(props) { super(props); this.state = { t: 0, ...this.fresh() }; }
+  fresh() { return { step: 0, fate: {}, picking: false, star: 0, busy: -1, added: false, phase: 'idle', at: this.state ? this.state.t : 0, le: 0, manual: true, cycle: 0 }; }
+  componentWillUnmount() { clearInterval(this.timer); clearTimeout(this.t1); clearTimeout(this.t2); }
+  wash(rgbs, on) {
+    // one wash per colour, stacked; only the live one shows, so a change crossfades
+    return rgbs.map((rgb, n) => ({ op: n === on ? 1 : 0,
+      bg: 'radial-gradient(120% 72% at 100% 0%, rgba(' + rgb + ',.32) 0%, rgba(' + rgb + ',.10) 45%, rgba(' + rgb + ',0) 75%)' }));
+  }
+  emojis(list, on) {
+    return list.map((e, n) => ({ e, op: n === on ? 1 : 0, s: n === on ? 1 : 0.3, r: n === on ? 0 : n < on ? -40 : 40 }));
+  }
+  now(n) {
+    // opens the app with it ready; they send or order there, and it leaves the list
+    if (this.state.busy >= 0) return;
+    this.setState({ busy: n });
+    clearTimeout(this.t1);
+    this.t1 = setTimeout(() => { this.setState({ busy: -1 }); this.decide(n, 'sent'); }, 1100);
+  }
+  decide(n, fate) { this.setState({ fate: { ...this.state.fate, [n]: fate }, step: this.state.step + 1, picking: false }); }
+  renderVals0() {
+    const s = this.state;
+    const st = s.step;
+    const night = st === 6;
+    // the sky gets later with every step: dusk, then evening, then night
+    const SKY = ['242,153,46', '238,76,138', '148,103,240', '148,103,240', '106,63,208', '86,60,190', '40,36,90'];
+    const W = (rgb, a) => 'radial-gradient(120% 75% at 100% 0%, rgba(' + rgb + ',' + a + ') 0%, rgba(' + rgb + ',' + (a / 3).toFixed(2) + ') 45%, rgba(' + rgb + ',0) 78%)';
+    const CW = (rgb) => 'radial-gradient(120% 90% at 100% 0%, rgba(' + rgb + ',.20) 0%, rgba(' + rgb + ',0) 60%), #FFFFFF';
+    const C = [
+      { e: '🛒', rgb: '242,153,46', accent: '#A65A05', title: 'Groceries', sub: 'Milk, eggs and atta. It was for any time today.', infoE: '🛵', info: 'All three go in your Zepto cart. About 12 minutes away.', kind: 'left', now: ['Open Zepto', 'Zepto'] },
+      { e: '🧾', rgb: '47,123,246', accent: '#1F5FC8', title: 'Invoice to Kiran', sub: '₹48,000 for the Modalis work, due today.', infoE: '📎', info: 'The draft is ready in Gmail, PDF attached.', kind: 'left', now: ['Open Gmail', 'Gmail'] },
+      { e: '⏳', rgb: '238,76,138', accent: '#B8285F', title: 'Karan, about the deck', sub: 'No reply since Monday.', infoE: '💬', info: '“Hi Karan, just checking on the deck.” Written and ready.', kind: 'wait', now: ['Open WhatsApp', 'WhatsApp'] },
+    ];
+    const opt = (e, text, go) => ({ e, text, go, bg: 'rgba(255,255,255,.9)', fg: '#1C1C1E', edge: 'rgba(28,28,30,.12)' });
+    const cards = C.map((c, n) => {
+      const k = n - (st - 1);
+      const fate = s.fate[n];
+      const front = k === 0 && st >= 1 && st <= 3;
+      // a decided card leaves the way its answer goes: kept ones drop toward Tomorrow, the rest fall away
+      const kept = fate && fate !== 'gone' && fate !== 'did' && fate !== 'drop' && fate !== 'sent';
+      const out = k < 0 ? (kept ? { tx: 40, ty: 420, rot: 8, sc: 0.3 } : fate === 'sent' ? { tx: 0, ty: -90, rot: 0, sc: 0.9 } : { tx: -30, ty: 120, rot: -10, sc: 0.85 }) : null;
+      const pos = out || (st === 0 ? { tx: 0, ty: 60 + k * 14, rot: 0, sc: 1 - k * 0.05 } : { tx: 0, ty: Math.min(k, 2) * 14, rot: 0, sc: 1 - Math.min(k, 2) * 0.05 });
+      const opts = c.kind === 'wait'
+        ? [opt('🔔', 'Nudge 9 AM', () => this.decide(n, 'nudge')), opt('✅', 'They did it', () => this.decide(n, 'did')), opt('👋', 'Drop it', () => this.decide(n, 'drop'))]
+        : s.picking && front
+          ? [['Thu', '2'], ['Fri', '3'], ['Sat', '4']].map(([d, date]) => opt(date, d + ' · Oct', () => this.decide(n, d)))
+          : [opt('📅', 'Tomorrow', () => this.decide(n, 'Tomorrow')), opt('🗓️', 'Pick a day', () => this.setState({ picking: true })), opt('👋', 'Let it go', () => this.decide(n, 'gone'))];
+      return { ...c, now: { text: s.busy === n ? 'Opening ' + c.now[1] : c.now[0], app: s.busy === n ? '' : c.now[1], logo: this.brand(c.now[1]), hasLogo: s.busy !== n, busy: s.busy === n, go: () => this.now(n) }, wash: CW(c.rgb), soft: 'rgba(' + c.rgb + ',.10)', opts, hidden: front ? 'false' : 'true', pe: front ? 'auto' : 'none', inner: k === 0 ? 1 : 0,
+        z: k < 0 ? 4 : 10 - k, op: k < 0 || st > 3 || k > 2 || st === 0 ? 0 : 1, ...pos };
+    });
+
+    // tomorrow, as it fills up
+    const T = [{ t: '6:10 AM', e: '✈️', title: 'Flight to Bengaluru', rgb: '47,123,246', chip: '6:10', note: 'I’ll ring at 4:45. Uber at 5:15.' }];
+    if (s.fate[2] === 'nudge') T.push({ t: '9:00 AM', e: '🔔', title: 'Nudge Karan', rgb: '238,76,138', chip: '9:00', note: 'WhatsApp, written and ready.' });
+    T.push({ t: '2:00 PM', e: '🏨', title: 'Check in, Taj MG Road', rgb: '148,103,240', chip: '2:00', note: 'Booking in your mail.' });
+    [0, 1].forEach((n) => { if (s.fate[n] === 'Tomorrow') T.push({ t: 'Any time', e: C[n].e, title: C[n].title, rgb: C[n].rgb, chip: 'Any', note: 'Kept from today.' }); });
+    const first = T[Math.min(s.star, T.length - 1)];
+    const tomorrow = T.map((r, n) => {
+      const on = s.star === n;
+      return { ...r, on: on ? 'true' : 'false', line: n ? 'rgba(28,28,30,.07)' : 'transparent', tint: 'rgba(' + r.rgb + ',' + (on ? '.24' : '.12') + ')', anim: on ? 'gk-pop' : '',
+        ring: on ? 'none' : '1.5px solid rgba(28,28,30,.18)', fill: on ? 'rgba(242,153,46,.18)' : 'transparent', starOp: on ? 1 : 0, starS: on ? 1 : 0.3, starR: on ? 0 : -60,
+        go: () => this.setState({ star: n }) };
+    });
+
+    const HEADS = [
+      ['#6A3FD0', '', 'Nice day, Aarya.'],
+      ['#A65A05', '', 'This didn’t happen. What now?'],
+      ['#1F5FC8', '', 'And this one?'],
+      ['#B8285F', '', 'Still waiting on this.'],
+      ['#10794D', '', 'What matters most tomorrow?'],
+      ['#B8285F', '', 'Anything else before bed?'],
+      ['rgba(255,255,255,.6)', '', 'Good night, Aarya.'],
+    ];
+    const moved = [0, 1].filter((n) => s.fate[n] && s.fate[n] !== 'gone' && s.fate[n] !== 'sent').length + (s.added ? 1 : 0);
+    const doneN = 6 + [0, 1].filter((n) => s.fate[n] === 'sent').length;
+    // what they say before bed lands on tomorrow once the pill has heard it
+    const ph = s.phase;
+    const heard = st === 5 && (ph === 'speak' || ph === 'done');
+    if (heard && !s.added) { clearTimeout(this.t2); this.t2 = setTimeout(() => this.setState({ added: true }), 0); }
+    const add = s.added && st >= 5;
+    const T5 = T.slice();
+    if (add) T5.splice(T5.findIndex((r) => r.t === '2:00 PM'), 0, { t: '11:00 AM', e: '📚', title: 'Return the library books', rgb: '38,179,122', isNew: true });
+    const said = 'Return the library books before 11.'.split(' ');
+    const lis = st === 5 && ph !== 'idle' && ph !== 'bye';
+    const show = (on) => ({ op: on ? 1 : 0, y: on ? 0 : 20, pe: on ? 'auto' : 'none' });
+    const cta = st === 0 ? { text: 'Close my day', note: 'Sort the three left · about a minute', go: () => this.setState({ step: 1 }) }
+      : st === 4 ? { text: 'That’s the one', note: 'It goes first tomorrow', go: () => this.setState({ step: 5 }) }
+      : st === 6 ? { text: 'Good night', note: 'Phone on quiet until 4:45', go: () => this.setState({ ...this.fresh(), at: s.t }) } : null;
+    return {
+      bg: night ? '#17152E' : '#F4F3EF', ink: night ? '#F4F3EF' : '#1C1C1E', sub: night ? 'rgba(244,243,239,.55)' : 'rgba(28,28,30,.55)', chrome: night ? 'rgba(255,255,255,.1)' : 'rgba(255,255,255,.7)',
+      washes: SKY.map((rgb, n) => ({ bg: W(rgb, n === 6 ? 0.55 : 0.30 + n * 0.03), op: n === st ? 1 : 0 })),
+      stars: [[40, 140, 2], [96, 96, 3], [152, 180, 2], [212, 120, 2], [300, 212, 3], [340, 152, 2], [72, 260, 2], [252, 72, 2], [332, 300, 2], [20, 332, 3], [180, 292, 2], [120, 360, 2]]
+        .map(([x, y, r], n) => ({ x, y, r, op: night ? 0.9 : 0, d: (n * 0.17).toFixed(2) })),
+      stepDots: [1, 2, 3, 4, 5].map((k) => ({ w: k === st ? 16 : 8, c: k <= st ? '#1C1C1E' : 'rgba(28,28,30,.18)' })), dotsOp: st > 0 && st < 6 ? 1 : 0,
+      heads: HEADS.map(([accent, eyebrow, title], n) => ({ accent, eyebrow, title, hidden: n === st ? 'false' : 'true', op: n === st ? 1 : 0, y: n === st ? 0 : n < st ? -12 : 12, b: n === st ? 0 : 4 })),
+      sum: show(st === 0),
+      segBar: [1, 1, 1, 1, 1, 1, 0, 0].map((v, n) => ({ c: v ? '#26B37A' : 'rgba(242,153,46,.35)', d: (0.1 + n * 0.06).toFixed(2) })),
+      // the whole day in order: what got done is crossed through, what didn't stands out
+      dayRows: [['11:00 AM', '☕', 'Coffee with Isha', 'done'], ['2:30 PM', '📞', 'Call Maa', 'done'], ['4:00 PM', '🎨', 'Design review', 'done'],
+        ['5:00 PM', '🧾', 'Invoice to Kiran', 'missed', '47,123,246'], ['8:00 PM', '🏋️', 'Gym, legs', 'done'], ['9:00 PM', '💬', 'Text Monika', 'done'],
+        ['10:00 PM', '💻', 'Modalis, with Rajat', 'done'], ['Any time', '🛒', 'Groceries', 'missed', '242,153,46'], ['Since Mon', '⏳', 'Karan’s reply', 'wait', '238,76,138']]
+        .map(([t, e, title, how, rgb], n) => {
+          const done = how === 'done';
+          return { t, e, title, line: n ? 'rgba(28,28,30,.07)' : 'transparent', del: (0.15 + n * 0.05).toFixed(2), sdel: (0.55 + n * 0.08).toFixed(2),
+            tw: done ? 400 : 600, tc: done ? 'rgba(28,28,30,.4)' : '#1C1C1E', w: done ? 500 : 600, c: done ? 'rgba(28,28,30,.45)' : '#1C1C1E',
+            circle: done ? 'transparent' : 'rgba(' + rgb + ',.14)', eo: done ? 0.5 : 1, strike: done ? 'gk-strike' : '',
+            tag: !done, tagText: how === 'wait' ? 'Waiting' : 'Missed', tagBg: how === 'wait' ? 'rgba(238,76,138,.12)' : 'rgba(242,153,46,.16)', tagFg: how === 'wait' ? '#B8285F' : '#A65A05' };
+        }),
+      cards,
+      tray: { ...show(st >= 1 && st <= 3), count: T.length + (T.length === 1 ? ' thing' : ' things'), chips: T.map((r) => ({ e: r.e, t: r.chip })) },
+      pick: show(st === 4), tomorrow,
+      ...this.pillVals(),
+      mind: { ...show(st === 5), hint: add ? '' : 'Say it and it goes on tomorrow.', hintOp: lis || add ? 0 : 1, count: T5.length + ' things',
+        words: said.map((w, i) => { const on = (lis && (ph !== 'listen' || s.le >= 0.8 + 0.34 * i)) || add; return { text: w + ' ', op: on ? (ph === 'cancel' ? 0.28 : 1) : 0, y: on ? 0 : 12, blur: on ? 0 : 6 }; }),
+        rows: T5.map((r, n) => ({ ...r, isNew: !!r.isNew, anim: r.isNew ? 'gk-up' : '', line: n ? 'rgba(28,28,30,.07)' : 'transparent', tint: 'rgba(' + r.rgb + ',.13)' })) },
+      pv: { vis: st === 5 ? 'visible' : 'hidden', visD: st === 5 ? 0 : 0.5, op: st === 5 ? 1 : 0, y: st === 5 ? 0 : 20, pe: st === 5 ? 'auto' : 'none',
+        text: add ? 'That’s everything' : 'Nothing, I’m done', go: () => this.setState({ step: 6, phase: 'idle', at: s.t }) },
+      night: show(night), first,
+      tally: [{ e: '✅', n: String(doneN), text: 'done' }, { e: '📆', n: String(moved), text: 'moved on' }, { e: '💬', n: s.fate[2] === 'nudge' || s.fate[2] === 'sent' ? '1' : '0', text: 'followed up' }],
+      cta: cta ? { ...show(true), ...cta, bg: night ? '#F4F3EF' : '#1C1C1E', fg: night ? '#17152E' : '#FFFFFF' } : { op: 0, y: 20, pe: 'none', text: '', note: '', go: () => {}, bg: '#1C1C1E', fg: '#FFFFFF' },
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Overlay C2, dark</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Geist,system-ui,sans-serif;color:#F2F1EC;background:#141413}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;color:inherit;border:none;padding:0;margin:0;background:none;cursor:pointer}
+.em{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;line-height:1;display:inline-block}
+.num{font-variant-numeric:tabular-nums}
+.gk-press{transition:transform .18s cubic-bezier(.3,.7,.4,1),background-color .3s ease,opacity .3s ease}
+.gk-press:active{transform:scale(.94)}
+@keyframes gkBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(-4deg)}}
+.gk-bob{animation:gkBob 2.8s ease-in-out infinite}
+@keyframes gkRing{0%{transform:scale(.7);opacity:.55}100%{transform:scale(1.9);opacity:0}}
+.gk-ring{animation:gkRing 1.6s cubic-bezier(.2,.6,.3,1) infinite}
+.gk-ring2{animation:gkRing 1.6s cubic-bezier(.2,.6,.3,1) .8s infinite}
+@keyframes gkWave{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
+.gk-wave{animation:gkWave .8s ease-in-out infinite;transform-origin:50% 50%}
+@keyframes gkRec{0%,100%{opacity:1}50%{opacity:.3}}
+.gk-rec{animation:gkRec 1.6s cubic-bezier(.45,0,.55,1) infinite}
+@keyframes gkRip{0%{transform:scale(1,1);opacity:.55}100%{transform:scale(1.07,1.55);opacity:0}}
+.gk-rip{animation:gkRip 2.4s cubic-bezier(.22,1,.36,1) infinite}
+@keyframes gkRipO{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.9);opacity:0}}
+.gk-ripO{animation:gkRipO 1.8s cubic-bezier(.22,1,.36,1) infinite}
+@keyframes gkThink{0%,100%{opacity:.35;transform:translateY(0)}40%{opacity:1;transform:translateY(-4px)}}
+.gk-think{animation:gkThink 1.1s cubic-bezier(.45,0,.55,1) infinite}
+@keyframes gkWaveO{0%,100%{opacity:.25}50%{opacity:1}}
+.gk-waveO{animation:gkWaveO 1.2s cubic-bezier(.45,0,.55,1) infinite}
+@keyframes gkCaret{0%,45%{opacity:1}55%,100%{opacity:0}}
+.gk-caret{animation:gkCaret 1s steps(1) infinite}
+@keyframes gkTap{0%{transform:scale(.4);opacity:.9}60%{opacity:.5}100%{transform:scale(1.5);opacity:0}}
+.gk-tap{animation:gkTap .5s cubic-bezier(.2,.7,.3,1) both}
+@keyframes gkInB{
+0%{left:175px;top:848px;width:40px;height:24px;border-radius:12px;opacity:0;animation-timing-function:cubic-bezier(.3,0,.2,1)}
+12%{left:167px;top:812px;width:56px;height:40px;border-radius:20px;opacity:1;animation-timing-function:cubic-bezier(.2,.6,.3,1)}
+38%{left:171px;top:660px;width:48px;height:100px;border-radius:24px;animation-timing-function:cubic-bezier(.5,0,.5,1)}
+56%{left:159px;top:696px;width:72px;height:72px;border-radius:36px;animation-timing-function:cubic-bezier(.5,0,.8,.6)}
+72%{left:147px;top:744px;width:96px;height:56px;border-radius:28px;animation-timing-function:cubic-bezier(.2,.6,.3,1)}
+88%{left:69px;top:736px;width:252px;height:64px;border-radius:32px;animation-timing-function:cubic-bezier(.4,0,.4,1)}
+100%{left:77px;top:732px;width:236px;height:72px;border-radius:36px;opacity:1}}
+@keyframes gkOutB{
+0%{left:159px;top:732px;width:72px;height:72px;border-radius:36px;opacity:1;animation-timing-function:cubic-bezier(.3,0,.5,1)}
+30%{left:167px;top:696px;width:56px;height:96px;border-radius:28px;animation-timing-function:cubic-bezier(.5,0,.9,.5)}
+70%{left:163px;top:800px;width:64px;height:48px;border-radius:24px;opacity:1;animation-timing-function:cubic-bezier(.4,0,.8,.6)}
+100%{left:179px;top:852px;width:32px;height:16px;border-radius:8px;opacity:0}}
+.gk-inB{animation:gkInB 1s linear both}.gk-outB{animation:gkOutB .8s linear both}
+@keyframes gkBack{0%{width:0;opacity:0}35%{width:40px;opacity:1}70%{width:44px;opacity:1}100%{width:0;opacity:0}}
+.gk-back{animation:gkBack .56s cubic-bezier(.3,.7,.3,1) both}
+.gk-glass{position:relative;background:linear-gradient(160deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,.05) 100%);-webkit-backdrop-filter:blur(28px) saturate(1.8);backdrop-filter:blur(28px) saturate(1.8);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 0 24px rgba(255,255,255,.06),0 0 0 1px rgba(255,255,255,.14),0 24px 64px rgba(0,0,0,.5)}
+.gk-rim{position:absolute;inset:0;border-radius:inherit;padding:1.5px;box-sizing:border-box;background:linear-gradient(135deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,0) 30%,rgba(255,255,255,0) 64%,rgba(255,255,255,.22) 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none}
+.gk-spec{position:absolute;inset:0;border-radius:inherit;background:radial-gradient(80% 48% at 16% 0%,rgba(255,255,255,.12) 0%,rgba(255,255,255,0) 64%);pointer-events:none}
+@keyframes gkSheen{0%{transform:translateX(-120%) skewX(-16deg);opacity:0}20%{opacity:1}100%{transform:translateX(320%) skewX(-16deg);opacity:0}}
+.gk-sheen{animation:gkSheen 1.8s cubic-bezier(.3,.6,.2,1) .5s both}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #000000; font-family: Geist, system-ui, sans-serif; color: #F2F1EC;">
+<div style="position: absolute; inset: 0; overflow: hidden; background: #141413; color: #F2F1EC; transform: {{appT}}; transition: {{appTr}};">
+<div style="position: absolute; left: 0; right: 0; top: 0; height: 112px; padding: 52px 16px 0; box-sizing: border-box; display: flex; align-items: center; gap: 12px; background: #1A1A18; border-bottom: 1px solid rgba(255,255,255,.06);">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F2F1EC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+<span style="width: 40px; height: 40px; border-radius: 20px; background: #1F3B6E; color: #B3CEFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600;">R</span>
+<span style="display: flex; flex-direction: column; flex-grow: 1;"><span style="font-size: 16px; line-height: 20px; font-weight: 600;">Rohan</span><span style="font-size: 12px; line-height: 16px; font-weight: 500; color: rgba(242,241,236,.6);">online</span></span>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F2F1EC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg>
+</div>
+<div style="position: absolute; left: 0; right: 0; top: 112px; bottom: 88px; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px;">
+<div style="align-self: center; font-size: 12px; line-height: 16px; font-weight: 600; color: rgba(242,241,236,.6); margin-bottom: 8px;">Today</div>
+<div style="align-self: flex-start; max-width: 264px; padding: 8px 16px; border-radius: 20px 20px 20px 4px; background: #20201E; border: 1px solid rgba(255,255,255,.06); font-size: 16px; line-height: 24px; font-weight: 500;">Dinner tonight?</div>
+<div style="align-self: flex-end; max-width: 264px; padding: 8px 16px; border-radius: 20px 20px 4px 20px; background: #1F3B6E; border: none; font-size: 16px; line-height: 24px; font-weight: 500;">Can’t, gym at 7</div>
+<div style="align-self: flex-start; max-width: 264px; padding: 8px 16px; border-radius: 20px 20px 20px 4px; background: #20201E; border: 1px solid rgba(255,255,255,.06); font-size: 16px; line-height: 24px; font-weight: 500;">Order in after? I’m starving</div>
+<div style="align-self: flex-end; max-width: 264px; padding: 8px 16px; border-radius: 20px 20px 4px 20px; background: #1F3B6E; border: none; font-size: 16px; line-height: 24px; font-weight: 500;">Yes, finding something now</div>
+<div style="align-self: flex-start; max-width: 264px; padding: 8px 16px; border-radius: 20px 20px 20px 4px; background: #20201E; border: 1px solid rgba(255,255,255,.06); font-size: 16px; line-height: 24px; font-weight: 500;">Burgers pls</div>
+</div>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; height: 88px; padding: 12px 16px 28px; box-sizing: border-box; display: flex; gap: 8px; background: #1A1A18;">
+<span style="flex-grow: 1; height: 48px; border-radius: 24px; background: #20201E; display: flex; align-items: center; padding: 0 16px; font-size: 16px; font-weight: 500; color: rgba(242,241,236,.6);">Message</span>
+<span style="width: 48px; height: 48px; border-radius: 24px; background: #F2F1EC; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#141413" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"></path></svg></span>
+</div>
+</div>
+<button type="button" aria-label="Hold power to open Goalkeeper" onClick="{{openNow}}" style="position: absolute; inset: 0; pointer-events: {{openPE}};"></button>
+<svg width="0" height="0" style="position: absolute;" aria-hidden="true"><defs><filter id="gkLiquidD" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.006 0.009" numOctaves="2" seed="7" result="flow"><animate attributeName="baseFrequency" dur="14s" values="0.006 0.009;0.009 0.006;0.006 0.009" repeatCount="indefinite"></animate></feTurbulence><feDisplacementMap in="SourceGraphic" in2="flow" scale="16" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap></filter></defs></svg>
+<div style="position: absolute; inset: 0; -webkit-backdrop-filter: url(#gkLiquidD); backdrop-filter: url(#gkLiquidD); clip-path: circle({{{{fR}}}}px at 195px 844px); transition: {{{{fTr}}}}; pointer-events: none;" aria-hidden="true"></div>
+<div style="position: absolute; inset: 0; background: rgba(20,20,19,.36); -webkit-backdrop-filter: blur({{blur}}px) saturate(1.7) brightness(.84); backdrop-filter: blur({{blur}}px) saturate(1.7) brightness(.84); clip-path: circle({{{{fR}}}}px at 195px 844px); transition: {{{{fTr}}}}; pointer-events: none;" aria-hidden="true"></div>
+<div style="position: absolute; inset: 0; border-radius: 44px; -webkit-backdrop-filter: blur(20px) saturate(1.9) brightness(.92); backdrop-filter: blur(20px) saturate(1.9) brightness(.92); -webkit-mask: radial-gradient(130% 100% at 50% 50%, rgba(0,0,0,0) 58%, #000 86%); mask: radial-gradient(130% 100% at 50% 50%, rgba(0,0,0,0) 58%, #000 86%); clip-path: circle({{{{fR}}}}px at 195px 844px); transition: {{{{fTr}}}}; pointer-events: none;" aria-hidden="true"></div>
+<div style="position: absolute; inset: 0; clip-path: circle({{{{fR}}}}px at 195px 844px); transition: {{{{fTr}}}}; pointer-events: none;" aria-hidden="true">
+<div style="position: absolute; left: 0; right: 0; top: 0; height: 480px; background: linear-gradient(rgba(20,20,19,.62) 0%, rgba(0,0,0,0) 100%);"></div>
+<sc-for list="{{washes}}" as="w" hint-placeholder-count="5"><div style="position: absolute; inset: 0; background: {{w.bg}}; opacity: {{w.op}}; transition: opacity 1s ease; pointer-events: none;"></div></sc-for>
+<div style="position: absolute; inset: 0; border-radius: 44px; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.22), inset 0 2px 32px rgba(255,255,255,.1);"></div>
+<div style="position: absolute; inset: 0; border-radius: 44px; background: radial-gradient(60% 28% at 12% 0%, rgba(255,255,255,.12) 0%, rgba(255,255,255,0) 70%), radial-gradient(50% 20% at 92% 100%, rgba(255,255,255,.12) 0%, rgba(255,255,255,0) 70%);"></div>
+<div style="position: absolute; inset: 0; overflow: hidden;"><span class="{{sheen}}" style="position: absolute; top: -20%; bottom: -20%; left: 0; width: 36%; opacity: 0; background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.16), rgba(255,255,255,0));"></span></div>
+</div>
+<button type="button" aria-label="Close Goalkeeper" onClick="{{closeNow}}" style="position: absolute; inset: 0; pointer-events: {{outPE}};"></button>
+<div style="position: absolute; left: 24px; right: 24px; top: 56px; display: flex; flex-direction: column; color: #F2F1EC; text-shadow: 0 1px 16px rgba(0,0,0,.7); pointer-events: none;">
+<div style="opacity: {{hd.op}}; transform: translateY({{hd.y}}px) scale({{hd.s}}); filter: blur({{hd.b}}px); transform-origin: 50% 100%; transition: {{hd.tr}};">
+<div style="display: flex; gap: 12px;">
+<div style="flex-grow: 1; min-width: 0;"><div style="position: relative; height: 80px;"><sc-for list="{{heads}}" as="h" hint-placeholder-count="4"><span style="position: absolute; left: 0; right: 0; top: 0; font-size: 32px; line-height: 40px; font-weight: 600; letter-spacing: -0.7px; opacity: {{h.op}}; transform: translateY({{h.y}}px); filter: blur({{h.b}}px); transition: opacity .5s ease, transform .6s cubic-bezier(.22,1,.36,1), filter .5s ease;">{{h.text}}</span></sc-for></div></div>
+<span style="position: relative; width: 48px; height: 48px; flex-shrink: 0;"><sc-for list="{{ems}}" as="m" hint-placeholder-count="4"><span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: {{m.op}}; transform: scale({{m.s}}) rotate({{m.r}}deg); transition: opacity .4s ease, transform .7s cubic-bezier(.3,1.5,.5,1);"><span class="em gk-bob" style="font-size: 40px; text-shadow: none;">{{m.e}}</span></span></sc-for></span>
+</div>
+<div style="max-height: {{vt.mh}}px; overflow: hidden; transition: max-height .6s cubic-bezier(.22,1,.36,1);"><div style="opacity: {{vt.op}}; transform: translateY({{vt.y}}px) scale({{vt.s}}); filter: blur({{vt.b}}px); transform-origin: 0 0; transition: {{vt.tr}};"><p style="margin: 8px 0 0; font-size: 24px; line-height: 28px; font-weight: 500; letter-spacing: -0.3px; white-space: pre-wrap;"><sc-for list="{{vwords}}" as="w" hint-placeholder-count="7"><span style="display: inline-block; opacity: {{w.op}}; transform: translateY({{w.y}}px); filter: blur({{w.blur}}px); transition: opacity .8s cubic-bezier(.22,1,.36,1), transform 1s cubic-bezier(.16,1,.3,1), filter .8s cubic-bezier(.22,1,.36,1);">{{w.text}}</span></sc-for></p></div></div>
+<div style="max-height: {{rp.mh}}px; overflow: hidden; transition: max-height .6s cubic-bezier(.22,1,.36,1);"><div style="opacity: {{rp.op}}; transform: translateY({{rp.y}}px) scale({{rp.s}}); filter: blur({{rp.b}}px); transform-origin: 0 0; transition: {{rp.tr}};"><p style="margin: 12px 0 0; font-size: 16px; line-height: 24px; font-weight: 600; white-space: pre-wrap;"><sc-for list="{{vreply}}" as="r" hint-placeholder-count="8"><span style="opacity: {{r.op}}; transition: opacity .45s cubic-bezier(.22,1,.36,1);">{{r.text}}</span></sc-for></p></div></div>
+</div>
+<div style="margin-top: 24px;"><div style="display: flex; flex-direction: column; gap: 8px; pointer-events: auto; opacity: {{cd.op}}; transform: translateY({{cd.y}}px) scale({{cd.s}}); transform-origin: 50% 100%; transition: {{cd.tr}};">
+<sc-for list="{{shops}}" as="r" hint-placeholder-count="2">
+<div style="position: relative; height: 56px; display: flex; align-items: center; gap: 12px; opacity: {{r.op}}; transform: translateY({{r.y}}px); transition: opacity .4s ease {{r.d}}s, transform .6s cubic-bezier(.22,1,.36,1) {{r.d}}s;">
+<img src="{{r.logo}}" alt="{{r.name}}" style="width: 36px; height: 36px; border-radius: 12px; display: block; flex-shrink: 0;">
+<span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 16px; line-height: 20px; font-weight: 600;">{{r.name}}</span><span style="font-size: 12px; line-height: 16px; font-weight: 500; color: rgba(242,241,236,.6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{r.sub}}</span></span>
+<span class="num" style="font-size: 20px; line-height: 28px; font-weight: 600;">{{r.price}}</span>
+</div>
+</sc-for>
+<div style="position: relative; display: flex; gap: 8px; margin-top: 16px; text-shadow: none; opacity: {{fcBtn.op}}; transform: translateY({{fcBtn.y}}px); transition: opacity .4s ease {{fcBtn.d}}s, transform .6s cubic-bezier(.22,1,.36,1) {{fcBtn.d}}s;">
+<button type="button" onClick="{{closeNow}}" class="gk-press" style="flex: 1 1 0; height: 48px; border-radius: 24px; background: #F2F1EC; color: #141413; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; line-height: 20px; font-weight: 600;"><img src="/_blob/658b6685d184453da05caf7e4ae422bc" alt="" style="width: 20px; height: 20px; border-radius: 8px; display: block;">Open Zomato</button>
+<button type="button" onClick="{{closeNow}}" class="gk-press" style="flex: 1 1 0; height: 48px; border-radius: 24px; background: rgba(255,255,255,0); border: 1px solid rgba(255,255,255,.18); color: #F2F1EC; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; line-height: 20px; font-weight: 600;"><img src="/_blob/ffb63f0255059f253a0978a0b63b493d" alt="" style="width: 20px; height: 20px; border-radius: 8px; display: block;">Open Swiggy</button>
+</div>
+</div></div>
+</div>
+<div class="{{dropCls}}" style="position: absolute; left: 0; top: 0; width: 0; height: 0; opacity: 0; background: #F2F1EC; box-shadow: 0 16px 40px rgba(0,0,0,.5); pointer-events: none;"></div>
+<div style="position: absolute; inset: 0; pointer-events: none; opacity: {{pwrOp}}; transition: {{pwrTr}};">
+<div style="position: absolute; left: 0; right: 0; bottom: 124px; display: flex; justify-content: center; align-items: center; gap: 8px; opacity: {{clkOp}}; transform: translateY({{clkY}}px) scale({{clkS}}); filter: blur({{clkB}}px); transition: {{clkT}};">
+<span class="gk-rec" style="width: 8px; height: 8px; border-radius: 4px; background: #E5484D;"></span><span style="display: flex; align-items: center; height: 20px; font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; color: #F2F1EC;"><span>0:</span><span style="display: inline-block; height: 20px; overflow: hidden;"><span style="display: flex; flex-direction: column; transform: translateY({{tensY}}px); transition: transform .55s cubic-bezier(.65,0,.35,1);"><span style="height: 20px; line-height: 20px;">0</span><span style="height: 20px; line-height: 20px;">1</span></span></span><span style="display: inline-block; height: 20px; overflow: hidden;"><span style="display: flex; flex-direction: column; transform: translateY({{onesY}}px); transition: transform .55s cubic-bezier(.65,0,.35,1);"><span style="height: 20px; line-height: 20px;">0</span><span style="height: 20px; line-height: 20px;">1</span><span style="height: 20px; line-height: 20px;">2</span><span style="height: 20px; line-height: 20px;">3</span><span style="height: 20px; line-height: 20px;">4</span><span style="height: 20px; line-height: 20px;">5</span><span style="height: 20px; line-height: 20px;">6</span><span style="height: 20px; line-height: 20px;">7</span><span style="height: 20px; line-height: 20px;">8</span><span style="height: 20px; line-height: 20px;">9</span><span style="height: 20px; line-height: 20px;">0</span><span style="height: 20px; line-height: 20px;">1</span><span style="height: 20px; line-height: 20px;">2</span><span style="height: 20px; line-height: 20px;">3</span><span style="height: 20px; line-height: 20px;">4</span><span style="height: 20px; line-height: 20px;">5</span><span style="height: 20px; line-height: 20px;">6</span><span style="height: 20px; line-height: 20px;">7</span><span style="height: 20px; line-height: 20px;">8</span><span style="height: 20px; line-height: 20px;">9</span></span></span></span>
+<span style="font-size: 12px; color: rgba(242,241,236,.5); opacity: {{hintOp}}; transition: opacity .5s ease;">· I’ll stop when you pause</span>
+</div>
+
+<div style="position: absolute; left: 50%; bottom: {{pb}}px; width: {{pw}}px; height: {{ph}}px; transform: translateX(-50%); opacity: {{ripOp}}; transition: width .75s cubic-bezier(.65,0,.35,1), height .75s cubic-bezier(.65,0,.35,1), bottom .75s cubic-bezier(.65,0,.35,1), opacity .9s ease;" aria-hidden="true">
+<span class="{{ripCls}}" style="position: absolute; inset: 0; border-radius: 1000px; border: 1.5px solid rgba(242,241,236,.4);"></span>
+<span class="{{ripCls}}" style="position: absolute; inset: 0; border-radius: 1000px; border: 1.5px solid rgba(242,241,236,.4); animation-delay: -1.1s;"></span>
+</div>
+
+<div style="position: absolute; left: 50%; bottom: {{pb}}px; width: {{pw}}px; height: {{ph}}px; transform: translateX(-50%) scale({{pS}}); border-radius: 1000px; pointer-events: auto; background: #F2F1EC; color: #141413; box-shadow: {{pSh}}; overflow: hidden; transition: width .75s cubic-bezier(.65,0,.35,1), height .75s cubic-bezier(.65,0,.35,1), bottom .75s cubic-bezier(.65,0,.35,1), transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .75s ease;">
+
+<button type="button" onClick="{{talk}}" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 8px; color: #141413; font-size: 16px; font-weight: 600; opacity: {{labOp}}; filter: blur({{labB}}px); transform: scale({{labS}}); pointer-events: {{labPE}}; transition: opacity .3s ease, filter .35s ease, transform .5s cubic-bezier(.22,1,.36,1);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3zM5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"></path></svg>Say something</button>
+
+<span style="position: absolute; left: 12px; top: 50%; margin-top: -24px; opacity: {{xOp}}; transform: translateX({{xX}}px) scale({{xS}}) rotate({{xR}}deg); pointer-events: {{livePE}}; transition: {{xT}};"><button type="button" aria-label="Cancel" onClick="{{cancel}}" style="width: 48px; height: 48px; border-radius: 24px; background: rgba(20,20,19,.1); color: #141413; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></span>
+
+<span style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; gap: 8px; pointer-events: none;" aria-hidden="true"><sc-for list="{{dots}}" as="d" hint-placeholder-count="5"><span class="{{d.cls}}" style="display: flex; animation-delay: {{d.del}}s;"><span style="width: 8px; border-radius: 4px; background: #141413; height: {{d.h}}px; opacity: {{d.o}}; transform: translateX({{d.x}}px) scale({{d.s}}); transition: height .45s cubic-bezier(.34,1.56,.64,1), opacity .4s ease {{d.d}}s, transform .65s cubic-bezier(.65,0,.35,1);"></span></span></sc-for></span>
+
+<span style="position: absolute; right: 12px; top: 50%; margin-top: -24px; opacity: {{okOp}}; transform: translateX({{okX}}px) scale({{okS}}); pointer-events: {{livePE}}; transition: {{okT}};"><button type="button" aria-label="Done" onClick="{{ok}}" style="position: relative; width: 48px; height: 48px; border-radius: 24px; background: #141413; color: #F2F1EC; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><svg width="60" height="60" viewBox="0 0 58 58" style="position: absolute; left: -4px; top: -4px; transform: rotate(-90deg);" aria-hidden="true"><circle cx="29" cy="29" r="27" fill="none" stroke="#141413" stroke-width="2" stroke-linecap="round" stroke-dasharray="169.6" stroke-dashoffset="{{ringOff}}" style="transition: stroke-dashoffset {{ringDur}}s linear;"></circle></svg></button></span>
+
+<span style="position: absolute; inset: 0; padding: 0 12px 0 24px; display: flex; align-items: center; justify-content: space-between; opacity: {{cxOp}}; transform: translateY({{cxY}}px); pointer-events: {{cxPE}}; transition: opacity .4s ease {{cxD}}s, transform .6s cubic-bezier(.22,1,.36,1) {{cxD}}s;">
+<span style="font-size: 16px; font-weight: 600; color: rgba(20,20,19,.72);">Cancelled</span>
+<button type="button" onClick="{{undo}}" style="height: 44px; padding: 0 20px; border-radius: 24px; background: #141413; color: #F2F1EC; display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"></path><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"></path></svg>Undo</button>
+<span style="position: absolute; left: 24px; right: 24px; bottom: 8px; height: 2px; border-radius: 1px; background: rgba(20,20,19,.14); overflow: hidden;"><span style="position: absolute; inset: 0; background: rgba(20,20,19,.7); transform-origin: left center; transform: scaleX({{drain}}); transition: transform {{drainDur}}s linear;"></span></span>
+</span>
+
+<span style="position: absolute; left: 16px; top: 16px; width: 44px; height: 44px; border-radius: 24px; background: {{spBg}}; color: #141413; display: flex; align-items: center; justify-content: center; opacity: {{spOp}}; transform: scale({{spS}}) rotate({{spR}}deg); transition: opacity .35s ease {{spD}}s, transform .8s cubic-bezier(.34,1.56,.64,1) {{spD}}s, background .6s ease;" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5h3.5L11.5 5.5v13L7 14.5H3.5z" fill="currentColor"></path><path class="gk-waveO" d="M15 9.2a4 4 0 0 1 0 5.6"></path><path class="gk-waveO" style="animation-delay: .3s;" d="M18 6.5a7.8 7.8 0 0 1 0 11"></path></svg></span>
+<span style="position: absolute; left: 72px; right: 68px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; gap: 0px; white-space: nowrap; opacity: {{ctxOp}}; transform: translateX({{ctxX}}px); filter: blur({{ctxB}}px); transition: opacity .45s ease {{ctxD}}s, transform .7s cubic-bezier(.22,1,.36,1) {{ctxD}}s, filter .45s ease {{ctxD}}s;">
+<span style="font-size: 16px; font-weight: 600; color: #141413;">Reading the prices</span>
+<span style="font-size: 12px; font-weight: 500; color: rgba(20,20,19,.6);">2 apps · Zomato, Swiggy</span>
+</span>
+<span style="position: absolute; right: 16px; top: 16px; opacity: {{stopOp}}; transform: scale({{stopS}}); pointer-events: {{spPE}}; transition: opacity .35s ease {{stopD}}s, transform .7s cubic-bezier(.34,1.56,.64,1) {{stopD}}s;"><button type="button" aria-label="Stop speaking" onClick="{{stop}}" style="width: 44px; height: 44px; border-radius: 24px; background: #141413; color: #F2F1EC; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2.5" fill="currentColor"></rect></svg></button></span>
+
+</div>
+
+</div>
+<sc-if value="{{backOn}}" hint-placeholder-val="{{false}}"><span class="gk-back" style="position: absolute; left: 0; top: 392px; height: 72px; border-radius: 0 36px 36px 0; background: #F2F1EC; display: flex; align-items: center; justify-content: flex-end; overflow: hidden; pointer-events: none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#141413" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; flex-shrink: 0;" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></span></sc-if>
+<div style="position: absolute; right: 0; top: 196px; width: 4px; height: 72px; border-radius: 4px 0 0 4px; background: #F2F1EC; opacity: {{pwOp}}; transition: opacity .3s ease; pointer-events: none;"></div>
+<div style="position: absolute; right: -24px; top: 208px; width: 48px; height: 48px; opacity: {{pwOp}}; transition: opacity .3s ease; pointer-events: none;" aria-hidden="true"><span class="gk-ring" style="position: absolute; inset: 0; border-radius: 24px; border: 1.5px solid rgba(242,241,236,.5);"></span><span class="gk-ring2" style="position: absolute; inset: 0; border-radius: 24px; border: 1.5px solid rgba(242,241,236,.5);"></span></div>
+<div style="position: absolute; right: 16px; top: 208px; height: 48px; padding: 0 20px; box-sizing: border-box; border-radius: 24px; background: #F2F1EC; color: #141413; display: flex; align-items: center; font-size: 16px; line-height: 20px; font-weight: 600; overflow: hidden; opacity: {{pwOp}}; transform: translateX({{pwX}}px) scale({{pwS}}); transform-origin: 100% 50%; transition: opacity .35s ease, transform .6s cubic-bezier(.34,1.56,.64,1); pointer-events: none;">Holding power<span style="position: absolute; left: 20px; right: 20px; bottom: 8px; height: 2px; border-radius: 2px; background: rgba(20,20,19,.2); overflow: hidden;"><span style="position: absolute; inset: 0; background: #141413; transform-origin: 0 50%; transform: scaleX({{pwProg}}); transition: transform {{pwDur}}s linear;"></span></span></div>
+<div style="position: absolute; left: 50%; top: 56px; height: 48px; padding: 0 20px; box-sizing: border-box; border-radius: 24px; background: #F2F1EC; color: #141413; display: flex; align-items: center; gap: 12px; font-size: 16px; line-height: 20px; font-weight: 600; white-space: nowrap; opacity: {{wkOp}}; transform: translate(-50%, {{wkY}}px) scale({{wkS}}); filter: blur({{wkB}}px); transition: opacity .35s ease, transform .6s cubic-bezier(.34,1.56,.64,1), filter .35s ease; pointer-events: none;"><span style="display: flex; align-items: center; gap: 4px; height: 20px;" aria-hidden="true"><span class="gk-wave" style="width: 4px; height: 12px; border-radius: 2px; background: #141413;"></span><span class="gk-wave" style="width: 4px; height: 20px; border-radius: 2px; background: #141413; animation-delay: .15s;"></span><span class="gk-wave" style="width: 4px; height: 12px; border-radius: 2px; background: #141413; animation-delay: .3s;"></span></span>“Hey Goalkeeper”</div>
+<sc-if value="{{tapOn}}" hint-placeholder-val="{{false}}"><span class="gk-tap" style="position: absolute; left: {{tapX}}px; top: {{tapY}}px; width: 48px; height: 48px; margin: -24px 0 0 -24px; border-radius: 24px; background: rgba(242,241,236,.24); pointer-events: none;"></span></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"glass":{"editor":"enum","options":["Clear","Soft","Frosted"],"default":"Soft"},"trigger":{"editor":"enum","options":["Both, in turn","Power button","Hey Goalkeeper"],"default":"Both, in turn"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    // phase: app (someone else's app on screen), open, listen, cancel, think, gather, speak, done, close, gone. `at` is
+    // when it began; `le` is time spent listening; `prev` is what was up when closing began; `trig` is how it was
+    // asked for (power held, or "Hey Goalkeeper"). Either way the drop comes up from the bottom.
+    this.state = { t: 0, phase: 'app', at: 0, le: 0, cycle: 0, prev: 'done', trig: 'power' };
+  }
+  componentDidMount() { this.timer = setInterval(() => this.setState((s) => this.step(s)), 100); }
+  componentWillUnmount() { clearInterval(this.timer); }
+  trigFor(cycle) {
+    const m = this.props.trigger ?? 'Both, in turn';
+    if (m === 'Power button') return 'power';
+    if (m === 'Hey Goalkeeper') return 'wake';
+    return cycle % 2 ? 'wake' : 'power';
+  }
+  step(s) {
+    const t = Math.round((s.t + 0.1) * 10) / 10;
+    const d = t - s.at + 1e-6;
+    let { phase, at, le, cycle, prev, trig } = s;
+    const go = (p) => { if (p === 'close') prev = phase; phase = p; at = t; };
+    if (phase === 'listen') le = Math.round((le + 0.1) * 10) / 10;
+    if (phase === 'app') { trig = this.trigFor(cycle); if (d >= 2.2) { go('open'); le = 0; } }
+    else if (phase === 'open') { if (d >= 1.0) go('listen'); }
+    else if (phase === 'listen') { if (le >= 4.3) go('think'); }
+    else if (phase === 'cancel') { if (d >= 2.4) go('close'); }
+    else if (phase === 'think') { if (d >= 1.8) go('gather'); }
+    else if (phase === 'gather') { if (d >= 0.8) go('speak'); }
+    else if (phase === 'speak') { if (d >= 4.0) go('done'); }
+    else if (phase === 'done') { if (d >= 3.0) go('close'); }
+    else if (phase === 'close') { if (d >= 1.6) go('gone'); }
+    else if (phase === 'gone') { if (d >= 0.8) { go('app'); le = 0; cycle += 1; trig = this.trigFor(cycle); } }
+    return { t, phase, at, le, cycle, prev, trig };
+  }
+  jump(p, extra) {
+    this.setState((s) => ({ ...s, phase: p, at: s.t, prev: p === 'close' ? s.phase : s.prev, ...(extra || {}) }));
+  }
+
+  // The Listening A2 pill, exactly as on Talk: its states, shapes and timings. Only what it's fed changes.
+  pillVals(pp, d, le) {
+    const phase = pp;
+    const P = (...ps) => ps.includes(phase);
+    const TALK_END = 3.0, PAUSE = 3.2;
+    const listening = P('listen');
+    const talking = listening && le > 0.6 && le < TALK_END;
+    const wrapping = listening && le >= PAUSE;
+    const entering = listening && d < 1.2;
+    const L = talking ? 0.62 + 0.3 * Math.sin(le * 2.1) * Math.sin(le * 0.7 + 1) : 0;
+    const pulledIn = P('cancel', 'think', 'gather', 'speak', 'done', 'out', 'bye');
+    const IN = 'cubic-bezier(.55,0,.75,.15)';
+    const SPRING = 'cubic-bezier(.34,1.56,.64,1)';
+    const s = Math.floor(Math.min(le, TALK_END));
+    const clk = listening
+      ? { clkOp: 1, clkY: 0, clkS: 1, clkB: 0, clkT: 'opacity .5s ease .35s, transform .8s ' + SPRING + ' .3s, filter .5s ease .3s' }
+      : { clkOp: 0, clkY: pulledIn ? 60 : 12, clkS: pulledIn ? 0.2 : 0.9, clkB: pulledIn ? 4 : 2, clkT: pulledIn ? 'opacity .45s ease .1s, transform .55s ' + IN + ', filter .45s ease' : 'opacity .3s ease, transform .3s ease, filter .3s ease' };
+    const liveBtns = listening;
+    const btnT = (delay) => liveBtns ? 'opacity .35s ease ' + delay + 's, transform .7s ' + SPRING + ' ' + delay + 's' : 'opacity .3s ease .12s, transform .5s ' + IN;
+    const btn = {
+      xOp: liveBtns ? 1 : 0, xX: liveBtns ? 0 : (pulledIn ? 68 : 0), xS: liveBtns ? 1 : 0.3, xR: liveBtns ? 0 : -90, xT: btnT(entering ? 0.18 : 0),
+      okOp: liveBtns ? 1 : 0, okX: liveBtns ? 0 : (pulledIn ? -68 : 0), okS: liveBtns ? 1 : 0.3, okT: btnT(entering ? 0.28 : 0),
+      livePE: liveBtns ? 'auto' : 'none',
+      ringOff: wrapping ? 0 : 169.6, ringDur: wrapping ? 1.1 : 0.25,
+    };
+    const shape = [0.55, 0.85, 1, 0.85, 0.55];
+    const dots = shape.map((k, i) => {
+      const beat = 0.45 + 0.55 * Math.abs(Math.sin(le * 3.1 + i * 1.3));
+      const h = talking ? Math.round((8 + 24 * L * k * beat) / 4) * 4 : 8;
+      const vis = P('listen', 'think', 'gather');
+      const gather = P('gather', 'speak');
+      return {
+        h, o: vis ? (P('gather') && i !== 2 ? 0.0 : 1) : 0,
+        x: gather ? (2 - i) * 16 : 0, s: P('speak') ? 0.2 : (P('gather') && i === 2 ? 1.4 : 1),
+        d: entering ? 0.3 + Math.abs(i - 2) * 0.07 : (P('gather') ? 0.35 : 0),
+        cls: P('think') || wrapping ? 'gk-think' : '', del: (i * 0.14).toFixed(2),
+      };
+    });
+    const opened = P('speak') && d >= 0.7;
+    const big = '0 16px 40px rgba(0,0,0,.5)';
+    const geo = P('idle', 'bye', 'done', 'out') ? { pw: 336, ph: 56, pb: 32, pSh: '0 4px 12px rgba(0,0,0,.4)' }
+      : P('listen', 'cancel', 'pre') ? { pw: 236, ph: 72, pb: 40, pSh: big }
+      : P('think') ? { pw: 132, ph: 72, pb: 40, pSh: big }
+      : opened ? { pw: 292, ph: 72, pb: 40, pSh: big }
+      : { pw: 72, ph: 72, pb: 40, pSh: big };
+    const idleish = P('idle', 'bye', 'done', 'out');
+    return {
+      ...clk, tensY: -20 * Math.floor(s / 10), onesY: -20 * s,
+      hintOp: listening && !wrapping && le > 0.6 ? 1 : 0,
+      ...btn, dots, ...geo, pS: 1,
+      labOp: idleish ? 1 : 0, labB: idleish ? 0 : 8, labS: idleish ? 1 : 0.92, labPE: idleish ? 'auto' : 'none',
+      cxOp: P('cancel') ? 1 : 0, cxY: P('cancel') ? 0 : 12, cxD: P('cancel') ? 0.2 : 0, cxPE: P('cancel') ? 'auto' : 'none',
+      drain: P('cancel') ? 0 : 1, drainDur: P('cancel') ? 2.3 : 0,
+      spOp: P('speak') ? 1 : 0, spS: P('speak') ? 1 : 0.3, spR: P('speak') ? 0 : -25, spD: P('speak') && !opened ? 0.05 : 0, spPE: opened ? 'auto' : 'none',
+      spBg: opened ? 'rgba(20,20,19,.12)' : 'rgba(0,0,0,0)',
+      ctxOp: opened ? 1 : 0, ctxX: opened ? 0 : -12, ctxB: opened ? 0 : 4, ctxD: opened ? 0.3 : 0,
+      stopOp: opened ? 1 : 0, stopS: opened ? 1 : 0.3, stopD: opened ? 0.42 : 0,
+      ripOp: talking ? 0.35 + 0.65 * L : (P('speak') ? 0.7 : 0), ripCls: P('speak') && !opened ? 'gk-ripO' : 'gk-rip',
+      talking, wrapping, L,
+    };
+  }
+
+  renderVals() {
+    const { t, phase, at, le, prev, trig } = this.state;
+    const d = t - at + 1e-6;
+    const P = (...ps) => ps.includes(phase);
+    const closing = P('close');
+    const live = !P('app', 'gone');
+    const ph = closing ? prev : phase;
+    const dd = closing ? 99 : d;
+    const Q = (...ps) => ps.includes(ph);
+    const OUTE = 'cubic-bezier(.22,1,.36,1)', IN = 'cubic-bezier(.55,0,.75,.15)';
+
+    // colour of the moment, as on Talk: green listening, purple thinking, orange for food
+    const G = '38,179,122', PU = '148,103,240', OR = '242,153,46', GR = '120,120,120';
+    const COL = { open: G, listen: G, cancel: GR, think: PU, gather: PU, speak: OR, done: OR };
+    const col = COL[ph] || G;
+    const washOn = live && !(closing && d >= 0.3);
+    const washes = [G, PU, OR, GR].map((c) => ({
+      bg: 'radial-gradient(110% 40% at 50% 100%, rgba(' + c + ',.42) 0%, rgba(' + c + ',0) 70%), radial-gradient(70% 36% at 100% 0%, rgba(' + c + ',.16) 0%, rgba(' + c + ',0) 70%)',
+      op: washOn && c === col ? 1 : 0,
+    }));
+
+    // the pill: hidden until the drop has become it; drawn back into a drop to leave
+    const PM = { app: 'pre', open: 'pre', listen: 'listen', cancel: 'cancel', think: 'think', gather: 'gather', speak: 'speak', done: 'done', gone: 'pre' };
+    const pp = closing ? 'shrink' : PM[phase];
+    const pv = this.pillVals(pp, closing ? 99 : d, le);
+    const pillOn = live && !P('open') && !(closing && d >= 0.7);
+
+    // how it was asked for
+    const cue = P('app') && d >= 0.8 || P('open') && d < 0.3;
+    const pwOn = cue && trig === 'power', wkOn = cue && trig === 'wake';
+
+    // what it heard and said
+    const SAID = 'Get me a McSpicy burger, whichever’s cheaper.'.split(' ');
+    const VREPLY = 'Zomato has it for ₹189, ten less than Swiggy.'.split(' ');
+    const heard = Q('listen', 'cancel', 'think', 'gather', 'speak', 'done');
+    const vwords = SAID.map((w, i) => {
+      const on = heard && (le >= 0.8 + 0.3 * i);
+      return { text: w + ' ', op: on ? (Q('cancel') ? 0.28 : 1) : 0, y: on ? 0 : 12, blur: on ? 0 : 6 };
+    });
+    const spoken = Q('speak') ? Math.floor((dd - 0.9) / 0.3) : 99;
+    const vreply = VREPLY.map((w, i) => ({ text: w + ' ', op: i <= spoken ? 1 : 0.28 }));
+    const piece = (vis, mh) => vis
+      ? { mh, op: 1, y: 0, s: 1, b: 0, tr: 'opacity .5s ease .1s, transform .8s ' + OUTE + ' .1s, filter .5s ease .1s' }
+      : { mh: 0, op: 0, y: 12, s: 0.98, b: 8, tr: 'opacity .3s ease, transform .5s ' + OUTE + ', filter .3s ease' };
+    const vt = piece(heard, 64);
+    const rp = piece(Q('speak', 'done'), 60);
+    const fcOn = Q('speak') && dd >= 0.6 || Q('done');
+    const fc = piece(fcOn, 236);
+    const shops = [
+      { name: 'Zomato', sub: 'McSpicy Chicken Burger · 30 min', price: '₹189', logo: '/_blob/658b6685d184453da05caf7e4ae422bc', bg: 'rgba(' + OR + ',.2)' },
+      { name: 'Swiggy', sub: 'McSpicy Chicken Burger · 25 min', price: '₹199', logo: '/_blob/ffb63f0255059f253a0978a0b63b493d', bg: 'rgba(0,0,0,0)' },
+    ].map((r, i) => ({ ...r, op: fcOn ? 1 : 0, y: fcOn ? 0 : 16, d: fcOn ? 0.25 + i * 0.12 : 0 }));
+    const fcBtn = { op: fcOn ? 1 : 0, y: fcOn ? 0 : 12, d: fcOn ? 0.5 : 0 };
+
+    const HEADS = [
+      ['Listening', Q('open', 'listen') && !pv.wrapping, '🎙️'],
+      ['Got it, one moment', Q('listen') && pv.wrapping || Q('think', 'gather'), '💭'],
+      ['Zomato’s cheaper', Q('speak', 'done'), '🍔'],
+      ['Okay, dropped it', Q('cancel'), '✋'],
+    ];
+    const headsShown = live && !(P('open') && d < 0.55);
+    const heads = HEADS.map(([text, on]) => ({ text, op: headsShown && on ? 1 : 0, y: headsShown && on ? 0 : 8, b: headsShown && on ? 0 : 4 }));
+    const ems = HEADS.map(([, on, e]) => ({ e, op: headsShown && on ? 1 : 0, s: headsShown && on ? 1 : 0.4, r: headsShown && on ? 0 : -30 }));
+
+    // the words sit straight on the glass; to close they're drawn down into the pill
+    const hd = closing
+      ? { op: 0, y: 64, s: 0.9, b: 8, tr: 'opacity .3s ease .05s, transform .5s ' + IN + ', filter .35s ease' }
+      : { op: 1, y: 0, s: 1, b: 0, tr: 'opacity .3s ease, transform .6s ' + OUTE + ', filter .3s ease' };
+    const cardUp = fcOn && !closing;
+    const cd = cardUp
+      ? { op: 1, y: 0, s: 1, b: 0, tr: 'opacity .4s ease .05s, transform .8s cubic-bezier(.3,1.2,.5,1) .05s' }
+      : closing
+        ? { op: 0, y: 160, s: 0.6, b: 12, tr: 'opacity .3s ease .05s, transform .5s ' + IN }
+        : { op: 0, y: 40, s: 0.92, b: 8, tr: 'opacity .2s ease, transform .3s ease' };
+    const GLASS = { Clear: 4, Soft: 8, Frosted: 16 };
+    const blur = GLASS[this.props.glass ?? 'Soft'] ?? 8;
+
+    const frost = live && !(closing && d >= 0.5);
+    let dropCls = '';
+    if (P('open') || P('listen') && d < 0.4) dropCls = 'gk-inB';
+    if (closing && d >= 0.7) dropCls = 'gk-outB';
+
+    return {
+      ...pv,
+      heads, ems, washes, vwords, vreply, vt, rp, fc, shops, fcBtn, hd, cd, blur,
+      sheen: live && !closing ? 'gk-sheen' : '',
+      pwrOp: pillOn ? 1 : 0, pwrT: 'none', pwrTr: 'opacity 0s',
+      pwOp: pwOn ? 1 : 0, pwX: pwOn ? 0 : 24, pwS: pwOn ? 1 : 0.9, pwProg: P('app') && d >= 0.9 ? 1 : 0, pwDur: P('app') && d >= 0.9 ? 1.2 : 0,
+      wkOp: wkOn ? 1 : 0, wkY: wkOn ? 0 : -12, wkS: wkOn ? 1 : 0.9, wkB: wkOn ? 0 : 4,
+      tapOn: false, tapX: 0, tapY: 0,
+      openPE: P('app', 'gone') ? 'auto' : 'none',
+      outPE: live && !closing ? 'auto' : 'none',
+      fR: frost ? 1200 : 0, fTr: frost ? 'clip-path 1.1s cubic-bezier(.45,0,.2,1)' : 'clip-path .8s cubic-bezier(.5,0,.3,1)',
+      appR: 0, appT: 'none', appTr: 'transform 1.1s cubic-bezier(.3,.6,.2,1)',
+      dropCls, backOn: closing && d < 0.6,
+      openNow: () => { if (P('app', 'gone')) this.jump('open', { le: 0 }); },
+      closeNow: () => { if (live && !closing) this.jump('close'); },
+      talk: () => this.jump('listen', { le: 0 }),
+      cancel: () => this.jump('cancel'),
+      ok: () => this.jump('think'),
+      undo: () => this.jump('listen'),
+      stop: () => this.jump('done'),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Colour tags</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Geist,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;color:inherit;border:none;padding:0;margin:0;background:none;cursor:pointer}
+.em{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;line-height:1;display:inline-block}
+.sc{scrollbar-width:none;scroll-snap-type:y proximity}.sc::-webkit-scrollbar{display:none}
+.snap{scroll-snap-align:start}
+.press{transition:transform .2s cubic-bezier(.3,.7,.4,1),background-color .3s ease,color .3s ease,box-shadow .3s ease}
+.press:active{transform:scale(.96)}
+/* coming in, going out */
+@keyframes riseA{from{opacity:0;transform:translateY(12px);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes riseB{from{opacity:0;transform:translateY(12px);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
+.rise-a{animation:riseA .8s cubic-bezier(.2,.8,.2,1) both}.rise-b{animation:riseB .8s cubic-bezier(.2,.8,.2,1) both}
+@keyframes popA{0%{opacity:0;transform:scale(.4)}60%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:none}}
+@keyframes popB{0%{opacity:0;transform:scale(.4)}60%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:none}}
+.pop-a{animation:popA .7s cubic-bezier(.3,1.2,.5,1) both}.pop-b{animation:popB .7s cubic-bezier(.3,1.2,.5,1) both}
+@keyframes out{to{opacity:0;transform:translateY(-12px);filter:blur(6px)}}
+.out{animation:out .38s cubic-bezier(.4,0,1,1) both}
+@keyframes seg{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.seg{transform-origin:0 50%;animation:seg .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes segPop{0%{transform:scaleY(1)}40%{transform:scaleY(2.4)}100%{transform:scaleY(1)}}
+.seg-pop{animation:segPop .5s cubic-bezier(.3,1.4,.5,1)}
+@keyframes check{from{stroke-dashoffset:24}to{stroke-dashoffset:0}}
+.check{stroke-dasharray:24;animation:check .35s cubic-bezier(.4,0,.2,1) both}
+/* scrolling */
+@keyframes away{to{opacity:0;transform:translateY(-48px) scale(.96);filter:blur(4px)}}
+.away{animation:away 1ms linear both;animation-timeline:view();animation-range:exit 0% exit 90%}
+@keyframes read{from{opacity:.14}to{opacity:1}}
+.read{animation:read 1ms linear both;animation-timeline:view();animation-range:entry 60% cover 42%}
+@keyframes rv{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.rv{animation:rv 1ms linear both;animation-timeline:view();animation-range:entry 0% entry 70%}
+@keyframes rail{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.rail{transform-origin:50% 0;animation:rail .9s cubic-bezier(.4,0,.2,1) .1s both}
+.view{transition:opacity .45s ease,transform .55s cubic-bezier(.2,.8,.2,1),filter .45s ease}
+.thumb{transition:transform .5s cubic-bezier(.34,1.36,.5,1)}
+@keyframes breathe{0%,100%{box-shadow:0 0 0 0 rgba(28,28,30,0)}50%{box-shadow:0 0 0 8px rgba(28,28,30,.07)}}
+.breathe{animation:breathe 3.4s ease-in-out infinite}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F4F3EF; color: #1C1C1E;">
+<div ref="{{box}}" class="sc" style="position: absolute; inset: 0; overflow-y: auto;">
+<section class="snap" style="position: relative; height: 844px; box-sizing: border-box; padding: 0 28px 124px; display: flex; flex-direction: column; justify-content: flex-end;">
+<button class="press" onClick="{{down}}" aria-label="See the rest of your day" style="position: absolute; left: 28px; right: 28px; top: 56px; display: block; text-align: left;">
+<div style="display: flex; justify-content: space-between; align-items: center; font-size: 16px; line-height: 24px; font-weight: 500; color: rgba(28,28,30,.5);">
+<span>Evening, Aarya</span><span style="font-variant-numeric: tabular-nums;">{{doneN}} of 9</span>
+</div>
+<div style="margin-top: 12px; display: flex; gap: 4px;"><sc-for list="{{segs}}" as="s" hint-placeholder-count="9"><span style="flex: 1; height: 4px; border-radius: 4px; background: rgba(28,28,30,.05); overflow: hidden;"><span class="seg {{s.pop}}" style="display: block; height: 100%; border-radius: 4px; background: {{s.c}}; animation-delay: {{s.d}}ms; transition: background-color .5s ease;"></span></span></sc-for></div>
+</button>
+<div class="away">
+<div data-next="1"><sc-for list="{{paras}}" as="p" hint-placeholder-count="3"><div style="margin-top: {{p.mt}}px; font-size: {{p.fs}}px; line-height: {{p.lh}}px; font-weight: 600; letter-spacing: {{p.ls}}px; text-wrap: pretty;"><sc-for list="{{p.words}}" as="w" hint-placeholder-count="12"><span class="{{w.cls}}" style="display: inline-block; white-space: nowrap; margin-right: {{w.mr}}; color: {{w.c}}; animation-delay: {{w.d}}ms;"><sc-if value="{{w.hasE}}" hint-placeholder-val="{{false}}"><span class="{{w.pop}}" style="display: inline-block; vertical-align: {{w.eva}}px; margin-right: {{w.eg}}px; animation-delay: {{w.d}}ms;"><img src="{{w.esrc}}" alt="" width="{{w.le}}" height="{{w.le}}" style="display: block;"></span></sc-if><sc-if value="{{w.isWord}}" hint-placeholder-val="{{true}}">{{w.t}}</sc-if><sc-if value="{{w.hasEA}}" hint-placeholder-val="{{false}}"><span class="{{w.pop}}" style="display: inline-block; vertical-align: {{w.eva}}px; margin-left: {{w.eg}}px; animation-delay: {{w.d}}ms;"><img src="{{w.esrc}}" alt="" width="{{w.le}}" height="{{w.le}}" style="display: block;"></span></sc-if><sc-if value="{{w.isTag}}" hint-placeholder-val="{{false}}"><span style="display: inline-block; height: {{w.th}}px; line-height: {{w.th}}px; padding: {{w.tp}}; border-radius: {{w.tr}}px; background: {{w.bg}}; color: {{w.tc}}; transition: background-color .6s ease;">{{w.name}}<img src="{{w.src}}" alt="" width="{{w.es}}" height="{{w.es}}" style="display: inline-block; vertical-align: {{w.iva}}px; margin-left: {{w.ig}}px; border-radius: {{w.ir}}px;"></span>{{w.after}}</sc-if></span></sc-for></div></sc-for></div>
+<div style="margin-top: 32px; display: flex; align-items: center; gap: 8px;">
+<button class="press {{aCls}}" onClick="{{primary.go}}" style="animation-delay: {{aD}}ms; height: 48px; padding: 0 20px 0 16px; border-radius: 24px; background: {{primary.bg}}; color: {{primary.fg}}; box-shadow: {{primary.sh}}; display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 20px; font-weight: 600; white-space: nowrap;">
+<sc-if value="{{primary.hasLogo}}" hint-placeholder-val="{{false}}"><img src="{{primary.logo}}" alt="" width="24" height="24" style="display: block; border-radius: 8px;"></sc-if>
+<sc-if value="{{primary.hasIcon}}" hint-placeholder-val="{{true}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="{{primary.ic}}" d="{{primary.d}}"></path></svg></sc-if>
+<span>{{primary.text}}</span></button>
+<sc-if value="{{hasLater}}" hint-placeholder-val="{{true}}"><button class="press {{aCls}}" onClick="{{later}}" style="animation-delay: {{aD2}}ms; height: 48px; padding: 0 16px; border-radius: 24px; display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 20px; font-weight: 600; color: rgba(28,28,30,.5);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0"></path></svg>Later</button></sc-if>
+</div>
+</div>
+</section>
+<section class="snap" style="padding: 56px 28px 0;">
+<div class="rv" style="display: flex; align-items: center; justify-content: space-between;"><div style="position: relative; display: inline-flex; padding: 4px; gap: 4px; border-radius: 24px; background: rgba(28,28,30,.05);">
+<span class="thumb" style="position: absolute; left: 4px; top: 4px; width: 40px; height: 40px; border-radius: 20px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(28,28,30,.08), 0 4px 12px rgba(28,28,30,.08); transform: translateX({{thumbX}}px);"></span>
+<button class="press" onClick="{{toSum}}" aria-label="Summary" aria-pressed="{{sumOn}}" style="position: relative; width: 40px; height: 40px; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: {{sumC}};"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h10"></path></svg></button>
+<button class="press" onClick="{{toCal}}" aria-label="Calendar" aria-pressed="{{calOn}}" style="position: relative; width: 40px; height: 40px; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: {{calC}};"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"></rect><path d="M8 3v4M16 3v4M3.5 10h17"></path></svg></button>
+</div><span style="font-size: 16px; line-height: 24px; font-weight: 500; color: rgba(28,28,30,.5);">Tuesday, 6 October</span></div>
+<div style="margin-top: 28px; position: relative;">
+<div class="view" style="position: {{sumPos}}; left: 0; right: 0; top: 0; opacity: {{sumOp}}; transform: translateY({{sumY}}px); filter: blur({{sumB}}px); pointer-events: {{sumPe}};"><div style="font-size: 24px; line-height: 40px; font-weight: 600; letter-spacing: -0.4px; text-wrap: pretty;"><sc-for list="{{sum}}" as="w" hint-placeholder-count="12"><span class="{{w.cls}}" style="display: inline-block; white-space: nowrap; margin-right: {{w.mr}}; color: {{w.c}}; animation-delay: {{w.d}}ms;"><sc-if value="{{w.hasE}}" hint-placeholder-val="{{false}}"><span class="{{w.pop}}" style="display: inline-block; vertical-align: {{w.eva}}px; margin-right: {{w.eg}}px; animation-delay: {{w.d}}ms;"><img src="{{w.esrc}}" alt="" width="{{w.le}}" height="{{w.le}}" style="display: block;"></span></sc-if><sc-if value="{{w.isWord}}" hint-placeholder-val="{{true}}">{{w.t}}</sc-if><sc-if value="{{w.hasEA}}" hint-placeholder-val="{{false}}"><span class="{{w.pop}}" style="display: inline-block; vertical-align: {{w.eva}}px; margin-left: {{w.eg}}px; animation-delay: {{w.d}}ms;"><img src="{{w.esrc}}" alt="" width="{{w.le}}" height="{{w.le}}" style="display: block;"></span></sc-if><sc-if value="{{w.isTag}}" hint-placeholder-val="{{false}}"><span style="display: inline-block; height: {{w.th}}px; line-height: {{w.th}}px; padding: {{w.tp}}; border-radius: {{w.tr}}px; background: {{w.bg}}; color: {{w.tc}}; transition: background-color .6s ease;">{{w.name}}<img src="{{w.src}}" alt="" width="{{w.es}}" height="{{w.es}}" style="display: inline-block; vertical-align: {{w.iva}}px; margin-left: {{w.ig}}px; border-radius: {{w.ir}}px;"></span>{{w.after}}</sc-if></span></sc-for></div></div>
+<div class="view" style="position: {{calPos}}; left: 0; right: 0; top: 0; opacity: {{calOp}}; transform: translateY({{calY}}px); filter: blur({{calB}}px); pointer-events: {{calPe}};"><div style="position: relative;">
+<span class="rail" style="position: absolute; left: 83px; top: 24px; bottom: 32px; width: 2px; border-radius: 2px; background: rgba(28,28,30,.08);"></span>
+<div class="{{rowCls}}" style="display: flex; align-items: center; height: 48px;">
+<span style="width: 64px; font-size: 12px; line-height: 16px; font-weight: 600; color: rgba(28,28,30,.26);">Earlier</span>
+<span style="width: 40px; display: flex; justify-content: center;"><span style="width: 8px; height: 8px; border-radius: 4px; background: rgba(28,28,30,.26);"></span></span>
+<span style="display: flex; gap: 4px; margin-left: 8px; opacity: .6;"><sc-for list="{{earlier}}" as="x" hint-placeholder-count="4"><img src="{{x}}" alt="" width="20" height="20" style="display: block;"></sc-for></span>
+<span style="margin-left: 8px; font-size: 16px; line-height: 20px; font-weight: 500; color: rgba(28,28,30,.26);">4 done</span>
+</div>
+<div class="{{rowCls}}" style="animation-delay: 60ms; display: flex; align-items: center; height: 32px;">
+<span style="width: 64px; font-size: 12px; line-height: 16px; font-weight: 700; color: #E5484D; font-variant-numeric: tabular-nums;">6:40 PM</span>
+<span style="width: 40px; display: flex; justify-content: center;"><span style="width: 8px; height: 8px; border-radius: 4px; background: #E5484D;"></span></span>
+<span style="flex-grow: 1; height: 2px; border-radius: 2px; background: #E5484D; opacity: .5;"></span>
+</div>
+<sc-for list="{{cal}}" as="r" hint-placeholder-count="5">
+<div class="{{r.cls}}" style="animation-delay: {{r.d}}ms; display: flex; align-items: center; min-height: 72px;">
+<span style="width: 64px; flex-shrink: 0; font-size: 12px; line-height: 16px; font-weight: 600; color: {{r.tc}}; font-variant-numeric: tabular-nums;">{{r.t}}</span>
+<span style="width: 40px; display: flex; justify-content: center; flex-shrink: 0;"><span style="width: {{r.node}}px; height: {{r.node}}px; border-radius: 50%; background: {{r.nc}}; box-shadow: 0 0 0 4px #F4F3EF;"></span></span>
+<span style="width: 40px; height: 40px; margin-left: 8px; border-radius: 20px; background: {{r.bg}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><img src="{{r.src}}" alt="" width="24" height="24" style="display: block;"></span>
+<div style="margin-left: 12px; min-width: 0; flex-grow: 1;"><div style="font-size: 16px; line-height: 20px; font-weight: 600; color: {{r.c}}; text-decoration: {{r.strike}};">{{r.title}}</div><div style="margin-top: 4px; font-size: 12px; line-height: 16px; font-weight: 500; color: rgba(28,28,30,.5);">{{r.sub}}</div></div>
+</div>
+</sc-for>
+</div></div>
+</div>
+</section>
+<section style="padding: 72px 28px 200px;">
+<div><div style="font-size: 20px; line-height: 32px; font-weight: 600; letter-spacing: -0.2px; text-wrap: pretty;"><sc-for list="{{tmr}}" as="w" hint-placeholder-count="12"><span class="{{w.cls}}" style="display: inline-block; white-space: nowrap; margin-right: {{w.mr}}; color: {{w.c}}; animation-delay: {{w.d}}ms;"><sc-if value="{{w.hasE}}" hint-placeholder-val="{{false}}"><span class="{{w.pop}}" style="display: inline-block; vertical-align: {{w.eva}}px; margin-right: {{w.eg}}px; animation-delay: {{w.d}}ms;"><img src="{{w.esrc}}" alt="" width="{{w.le}}" height="{{w.le}}" style="display: block;"></span></sc-if><sc-if value="{{w.isWord}}" hint-placeholder-val="{{true}}">{{w.t}}</sc-if><sc-if value="{{w.hasEA}}" hint-placeholder-val="{{false}}"><span class="{{w.pop}}" style="display: inline-block; vertical-align: {{w.eva}}px; margin-left: {{w.eg}}px; animation-delay: {{w.d}}ms;"><img src="{{w.esrc}}" alt="" width="{{w.le}}" height="{{w.le}}" style="display: block;"></span></sc-if><sc-if value="{{w.isTag}}" hint-placeholder-val="{{false}}"><span style="display: inline-block; height: {{w.th}}px; line-height: {{w.th}}px; padding: {{w.tp}}; border-radius: {{w.tr}}px; background: {{w.bg}}; color: {{w.tc}}; transition: background-color .6s ease;">{{w.name}}<img src="{{w.src}}" alt="" width="{{w.es}}" height="{{w.es}}" style="display: inline-block; vertical-align: {{w.iva}}px; margin-left: {{w.ig}}px; border-radius: {{w.ir}}px;"></span>{{w.after}}</sc-if></span></sc-for></div></div>
+<div style="margin-top: 32px;"><div style="font-size: 20px; line-height: 32px; font-weight: 600; letter-spacing: -0.2px; text-wrap: pretty;"><sc-for list="{{week}}" as="w" hint-placeholder-count="12"><span class="{{w.cls}}" style="display: inline-block; white-space: nowrap; margin-right: {{w.mr}}; color: {{w.c}}; animation-delay: {{w.d}}ms;"><sc-if value="{{w.hasE}}" hint-placeholder-val="{{false}}"><span class="{{w.pop}}" style="display: inline-block; vertical-align: {{w.eva}}px; margin-right: {{w.eg}}px; animation-delay: {{w.d}}ms;"><img src="{{w.esrc}}" alt="" width="{{w.le}}" height="{{w.le}}" style="display: block;"></span></sc-if><sc-if value="{{w.isWord}}" hint-placeholder-val="{{true}}">{{w.t}}</sc-if><sc-if value="{{w.hasEA}}" hint-placeholder-val="{{false}}"><span class="{{w.pop}}" style="display: inline-block; vertical-align: {{w.eva}}px; margin-left: {{w.eg}}px; animation-delay: {{w.d}}ms;"><img src="{{w.esrc}}" alt="" width="{{w.le}}" height="{{w.le}}" style="display: block;"></span></sc-if><sc-if value="{{w.isTag}}" hint-placeholder-val="{{false}}"><span style="display: inline-block; height: {{w.th}}px; line-height: {{w.th}}px; padding: {{w.tp}}; border-radius: {{w.tr}}px; background: {{w.bg}}; color: {{w.tc}}; transition: background-color .6s ease;">{{w.name}}<img src="{{w.src}}" alt="" width="{{w.es}}" height="{{w.es}}" style="display: inline-block; vertical-align: {{w.iva}}px; margin-left: {{w.ig}}px; border-radius: {{w.ir}}px;"></span>{{w.after}}</sc-if></span></sc-for></div></div>
+</section>
+</div>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; height: 136px; background: linear-gradient(rgba(244,243,239,0), #F4F3EF 64%); pointer-events: none;"></div>
+<div style="position: absolute; left: 28px; right: 28px; bottom: 36px;"><a href="GTalk.dc.html" class="press breathe" style="height: 56px; border-radius: 28px; background: #1C1C1E; color: #FFFFFF; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; font-weight: 600;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3zM5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"></path></svg>Say something</a></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+const T = {"ink": "#1C1C1E", "ink2": "rgba(28,28,30,.5)", "ink3": "rgba(28,28,30,.26)", "tok": "rgba(28,28,30,.05)", "nowTint": ".16", "tint": ".08", "surface": "#FFFFFF", "surfaceSh": "0 1px 2px rgba(28,28,30,.06), 0 8px 24px rgba(28,28,30,.08)", "onInk": "#FFFFFF"};
+const V = {"one": false, "hfs": 40, "hlh": 48, "hls": -1.6, "dfs": 32, "dlh": 40, "dls": -1, "gap": 12, "color": true, "title": "Colour tags"};
+
+const WA = '/_blob/c18e40f7efd39efacf9ad800def39d14', MEET = '/_blob/35b9819ff2677596544976f33747fd60', ZEPTO = '/_blob/2aafdd84758c6ea94df13597b50d608a';
+const BLOB = {'1f31b.s': 'efbdea802725c78393d649f3678a8b8e', '1f31b': '99f6e2b56bf55dfbe1f6166dd3957fc3', '1f31e.s': 'afd61da8259c651e806815337ced7660', '1f31e': '6c7e68801d147a05e4b57cfa4508ed38', '1f35c.s': '7abcab6d291141c4818dd842bc0a8809', '1f35c': '457996f018e257f9faa40091dfc8f2da', '1f373.s': '420df8220c7e8a7b51d080b76889e755', '1f373': '8418d34065fdf1cf816b42d382510251', '1f37d_fe0f.s': '4b2133de9925e9f572789ff02c6bf6b9', '1f37d_fe0f': 'e09c43d2dd2d8e3cb2d390387431907e', '1f382.s': '3f85604e4e25b19dd02d76c7ac588bdb', '1f382': '47992dff67a1ce2cbd9faa98fbbff8ce', '1f389.s': 'fe6fd36edd081b673256aa5aee8068bc', '1f389': 'e297340511df88f3316d1486ea444d73', '1f3e0.s': 'fee748324de6c1c6e0fee9f5e5a8a8e8', '1f3e0': '7e34d891a2be227d5efda9e09f09d809', '1f44b.s': '6d2f58f8ff7bb7e43b7170ef84afb69a', '1f44b': '3adf7cc361adfd01d3a986b994f67ed5', '1f45f.s': 'ddf061361b8cc4fd9cf4965fe5ab2965', '1f45f': 'ba3b8fb715f10e16858f6a40bf7ddc70', '1f4a1.s': '907ab987a691cf53f9c1a1d771f803a1', '1f4a1': 'ddef679ba7880a2cfe3dc6e7a5a1ecac', '1f4a7.s': '6541d95790814a9d0cb9b84883dcf144', '1f4a7': 'cb85bec1b11f84ff146a6ee74016de08', '1f4aa.s': 'e8ee7773ef026d739d4e31b42c6567dd', '1f4aa': '9afa6062047369c61a8b944c52e518ba', '1f4ac.s': 'e197a925bd9d078176404789dea1a54f', '1f4ac': 'f406443ba41f8ddb6719a571c5649729', '1f4b8.s': 'bd584e989626e1be7a4cd31010ea9d80', '1f4b8': 'b20aacca67d230ca6ca396b549b960d7', '1f4bb.s': '86dc8f31372c3c99216dc49ee13b1257', '1f4bb': '35e01f7f7a2767558ac814170ba31967', '1f4ca.s': '95c69b36d6ccf3335a032ddafb8ff246', '1f4ca': 'c7249119e35f1ea08dae8e4188a8b343', '1f4e6.s': 'ac737afd3991743f5623e8bb7a5c1c2f', '1f4e6': 'a0f9e62b0bcd63c325dbea6c33ed2cd2', '1f525.s': '4cc51303b45cbee6291081e7165677bf', '1f525': 'd590b92e3fdec995afd935008bcafc4a', '1f634.s': '54bfccc5261d91e2603f3b1ca1f2626e', '1f634': '66e17676e9d0e8f3e85c7e57344c6c0a', '1f6d2.s': '5f1a210b01746e2f9e4fdda41a1eec4f', '1f6d2': '6a2388b6915e3fb8a0f5fa615f9fd5f2', '1f6eb.s': '652c6187fc13dd8e4718a68ed3150e11', '1f6eb': 'fc419516ccb8451349509aaf4026e023', '1f9b5.s': 'd4a0858a373455bc8f13e728ff7e337a', '1f9b5': '486b947ec3b0a89cbdf2e51303ad527a', '23f0.s': 'd839056f594befc8026a5294c0aae84b', '23f0': '1779e1ec4292c548011b73716fa9ed4c', '2615.s': 'eca682b0fa5ea4aaecaa0488cd9a7da2', '2615': '09ded5c43167f72192a389592217796e', '26a1.s': '9519ca7affee66c6a4dbc854bc13c84e', '26a1': '0fd3fc17f86200f9a279bde7009e4c32', '2705.s': 'bfd9293fa52f3602954e3d0952595fb5', '2705': 'ef6f1a65b7105541819605e51e36f412', '270d_fe0f.s': '4bf9c25a7cd07db1cfbb4ec28e252852', '270d_fe0f': 'd93d347a868e3c1fc1384a012fac12db'};
+const STILL_ONLY = ['1f45f', '1f4a7', '1f6eb', '26a1', '1f382'];
+const ANIM = (c) => '/_blob/' + BLOB[STILL_ONLY.indexOf(c) >= 0 ? c + '.s' : c];
+const STILL = (c) => '/_blob/' + BLOB[c + '.s'];
+const RGB = { g: '38,179,122', m: '148,103,240', v: '238,76,138', mod: '47,123,246', gro: '242,153,46', close: '148,103,240' };
+// tag: [emoji code or logo url, name]
+const TAG = {
+  g: ['1f4aa', 'Gym'], m: ['1f4ac', 'Monika'], v: ['1f31e', 'Vitamin D'], mod: ['1f4bb', 'Modalis'], gro: ['1f6d2', 'Groceries'],
+  legs: ['1f9b5', 'Leg day'], shoes: ['1f45f', 'Shoes'], bottle: ['1f4a7', 'Bottle'], alarm: ['23f0', '7:30'],
+  draft: ['270d_fe0f', '“Dinner at 9 tonight?”'], meal: ['1f37d_fe0f', 'Dinner'], streak: ['1f525', '12 days'],
+  rajat: ['1f44b', 'Rajat'], deck: ['1f4ca', 'Q4 deck'], list: ['1f373', 'Milk, eggs, atta'], cart: ['1f6d2', 'Zepto cart'],
+  run: ['1f45f', 'Run'], review: ['1f4a1', 'Design review'], bday: ['1f382', 'Akash’s birthday'], goa: ['1f6eb', 'Goa'], rent: ['1f3e0', 'Rent'],
+  close: ['1f634', 'Close the day'], sleep: ['1f634', 'Sleep'],
+  wa: [WA, 'WhatsApp'], meet: [MEET, 'Google Meet'], zepto: [ZEPTO, 'Zepto'],
+};
+const KEY = ['g', 'm', 'v', 'mod', 'gro', 'close'];
+const HUE = { green: ['38,179,122', '#13734B'], amber: ['242,153,46', '#94570A'], violet: ['148,103,240', '#5A3BB5'], pink: ['238,76,138', '#AD2459'], blue: ['47,123,246', '#1E54B5'], teal: ['16,166,170', '#0A6E71'] };
+const TAGHUE = { legs: 'green', alarm: 'amber', meal: 'pink', rajat: 'blue', meet: 'teal', deck: 'violet', wa: 'green', zepto: 'violet', draft: 'violet', list: 'amber',
+  g: 'green', m: 'violet', v: 'amber', mod: 'blue', gro: 'amber', close: 'violet', run: 'green', review: 'amber', bday: 'pink', rent: 'blue', goa: 'teal' };
+const LEAD = ['1f4aa', '1f4ac', '1f31e', '1f4bb', '1f6d2', '1f389'];
+// the next task, written three ways: the bigger the type, the fewer the words. *…* is the one dark phrase.
+// the original words (round 7). Big sizes write the long tags as plain words so they fit the line.
+const HEAD = ['Gym in {cd} {e}', 'Text Monika at 9 {e}', 'Vitamin D at 9:30 {e}', 'Modalis call at 10 {e}', 'Groceries, whenever {e}', 'That’s tonight {e}'];
+const DETAIL = [
+  'It’s {legs} today. I’ll nudge you at {alarm}, so you leave on time.',
+  '{draft} is ready in {wa}. You just hit send.',
+  'One tablet, right after {meal}.',
+  'With {rajat} on {meet}, going over the {deck}.',
+  '{list} from {zepto}, at your door in ten minutes.',
+  'All nine things done. {close} when you’re ready.',
+];
+const DETAIL_BIG = [
+  DETAIL[0], '“Dinner at 9 tonight?” is ready in {wa}. You just hit send.', DETAIL[2], DETAIL[3],
+  'Milk, eggs and atta from {zepto}, at your door in ten minutes.', 'All nine things done. Close the day when you’re ready.',
+];
+const ACT = [['I’m going', 'check'], ['Open WhatsApp', WA], ['Taken', 'check'], ['Open Meet', MEET], ['Open Zepto', ZEPTO], ['Close the day', 'moon']];
+const D = { check: 'M5 12.5l4.5 4.5L19 7.5', moon: 'M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z' };
+const CAL = [
+  ['8:00 PM', 0, 'Gym', 'Leg day'], ['9:00 PM', 1, 'Text Monika', '“Dinner at 9 tonight?” is ready to send'], ['9:30 PM', 2, 'Vitamin D', 'One tablet, after dinner'],
+  ['10:00 PM', 3, 'Modalis call', 'With Rajat on Google Meet, Q4 deck'], ['Any time', 4, 'Groceries', 'Milk, eggs, atta on Zepto'],
+];
+const TOMORROW = '*Tomorrow* starts with a {run} at 7. The {review} with Neha is at 11, and {bday} dinner at 7:30 PM.';
+const WEEK = '*Later this week,* {rent} is due on Saturday and you fly to {goa} on Sunday morning.';
+const NOTE = [
+  '*Four things done* today. Next, {g} at 8, *it’s leg day.* At 9, text {m} *about dinner.* Then {v}, and the {mod} call *with Rajat* at 10. *You’re free after 10:45.*',
+  '*Five things done* today. At 9, text {m} *about dinner,* the message is ready. Then {v}, and the {mod} call *with Rajat* at 10. *You’re free after 10:45.*',
+  '*Six things done* today. {v} after you eat, then the {mod} call *with Rajat* at 10. *You’re free after 10:45.*',
+  '*Seven things done* today. The {mod} call *with Rajat* is at 10, on the Q4 deck. *You’re free after 10:45.*',
+  '*Eight things done* today. Only {gro} left, *whenever you get a minute.*',
+  '*Nine things done* today. That’s everything, *you’re free.*',
+];
+// sizes: tag height, radius, padding, emoji, emoji drop, gap, logo radius; lead emoji size, drop, gap
+const SZ = {
+  40: { th: 44, tr: 12, tp: '0 4px 0 12px', es: 36, iva: -6, ig: 8, ir: 8, le: 48, eva: -10, eg: 12 },
+  32: { th: 36, tr: 12, tp: '0 4px 0 12px', es: 28, iva: -4, ig: 8, ir: 8, le: 40, eva: -8, eg: 8 },
+  24: { th: 32, tr: 8, tp: '0 4px 0 8px', es: 24, iva: -5, ig: 4, ir: 4, le: 32, eva: -7, eg: 4 },
+  20: { th: 28, tr: 8, tp: '0 4px 0 8px', es: 20, iva: -4, ig: 4, ir: 4, le: 28, eva: -6, eg: 4 },
+};
+function sentence(str, fs, o) {
+  const S = SZ[fs];
+  let hi = false, lead = null;
+  const out = [];
+  str.split(' ').filter(Boolean).forEach((raw) => {
+    let t = raw, on = false, off = false;
+    if (t.startsWith('*')) { on = true; t = t.slice(1); }
+    if (t.endsWith('*')) { off = true; t = t.slice(0, -1); }
+    if (on) hi = true;
+    const m = t.match(/^\{(\w+)\}(.*)$/);
+    if (m && m[1] === 'e') { const last = out[out.length - 1]; if (last) Object.assign(last, { hasEA: true, esrc: ANIM(o.lead), pop: o.pop || '' }); if (off) hi = false; return; }
+    const w = { isWord: false, isTag: false, hasE: false, hasEA: false, t: '', after: '', mr: '0.25em', c: (hi || o.allInk) ? o.T.ink : o.T.ink2,
+      ...S, pop: '', esrc: '', name: '', bg: '', tc: o.T.ink, src: '' };
+    if (lead) { Object.assign(w, { hasE: true, esrc: ANIM(lead), pop: o.pop || '' }); lead = null; }
+    if (m && m[1] === 'cd') Object.assign(w, { isWord: true, t: o.cd + m[2] });
+    else if (m && TAG[m[1]]) {
+      const [code, name] = TAG[m[1]];
+      const logo = code.startsWith('/');
+      const isNow = m[1] === o.nowKey;
+      const moving = o.anim === 'all' || (o.anim === 'now' && isNow);
+      Object.assign(w, { isTag: true, name, after: m[2], src: logo ? code : (moving ? ANIM(code) : STILL(code)), ir: logo ? S.ir : 0,
+        bg: isNow ? 'rgba(' + RGB[m[1]] + ',' + o.T.nowTint + ')' : o.T.tok });
+      if (V.color && TAGHUE[m[1]]) { const [rgb, ink] = HUE[TAGHUE[m[1]]]; Object.assign(w, { bg: 'rgba(' + rgb + ',.14)', tc: ink }); }
+    } else Object.assign(w, { isWord: true, t });
+    out.push(w);
+    if (off) hi = false;
+  });
+  return out;
+}
+function stagger(list, o) {
+  return list.map((w, n) => ({ ...w, cls: o.cls === 'out' ? 'out' : (o.cls || ''), d: o.cls === 'out' ? 0 : (o.d0 || 0) + n * (o.step || 0) }));
+}
+
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    const q = typeof location !== 'undefined' ? +(new URLSearchParams(location.search).get('i') || 0) : 0;
+    this.state = { i: q, k: 'a', out: false, pressed: false, view: 'sum', t0: Date.now(), tick: 0 };
+    this.box = (el) => { this.el = el; };
+  }
+  componentDidMount() { this.iv = setInterval(() => this.setState((s) => ({ tick: s.tick + 1 })), 15000); }
+  componentWillUnmount() { clearTimeout(this.t); clearTimeout(this.t2); clearInterval(this.iv); }
+  advance() {
+    if (this.state.out || this.state.pressed) return;
+    const end = this.state.i >= 5;
+    this.setState({ pressed: true });
+    this.t = setTimeout(() => {
+      this.setState({ out: true });
+      this.t2 = setTimeout(() => this.setState((s) => ({ i: end ? 0 : s.i + 1, k: s.k === 'a' ? 'b' : 'a', out: false, pressed: false, t0: Date.now() })), 400);
+    }, 520);
+  }
+  later() {
+    if (this.state.out || this.state.pressed) return;
+    this.setState({ out: true });
+    this.t2 = setTimeout(() => this.setState((s) => ({ i: Math.min(s.i + 1, 5), k: s.k === 'a' ? 'b' : 'a', out: false })), 400);
+  }
+  view(v) { if (v !== this.state.view) this.setState((s) => ({ view: v, k: s.k === 'a' ? 'b' : 'a' })); }
+  renderVals() {
+    const { i, k, out, pressed, view } = this.state;
+    const sum = view === 'sum';
+    const rise = out ? 'out' : 'rise-' + k;
+    const mins = Math.max(1, 80 - Math.floor((Date.now() - this.state.t0) / 60000));
+    const cd = Math.floor(mins / 60) + 'h ' + (mins % 60) + 'm';
+    // the next task: every word rises in, the whole thing in about a second
+    const det = (V.dfs >= 32 ? DETAIL_BIG : DETAIL)[i];
+    const parts = V.one
+      ? [['*' + HEAD[i] + '* ' + det, V.hfs, V.hlh, V.hls]]
+      : [['*' + HEAD[i] + '*', V.hfs, V.hlh, V.hls], [det, V.dfs, V.dlh, V.dls]];
+    const blocks = parts.map(([str, fs]) => sentence(str, fs, { T, cd, lead: LEAD[i], pop: out ? '' : 'pop-' + k, anim: 'all' }));
+    const total = blocks.reduce((a, b) => a + b.length, 0);
+    const step = Math.min(48, Math.round(1000 / total));
+    let n0 = 0;
+    const paras = blocks.map((words, p) => {
+      const [, fs, lh, ls] = parts[p];
+      const r = { mt: p ? V.gap : 0, fs, lh, ls, words: stagger(words, { cls: rise, d0: 160 + n0 * step, step }) };
+      n0 += words.length;
+      return r;
+    });
+    const aD = 160 + total * step + 120;
+    const doneN = 4 + i + (pressed ? 1 : 0);
+    const segs = Array.from({ length: 9 }, (_, n) => ({
+      c: n < doneN ? T.ink : n === 4 + i ? 'rgba(' + RGB[KEY[Math.min(i, 4)]] + ',1)' : 'transparent',
+      d: 80 + n * 50, pop: pressed && n === doneN - 1 ? 'seg-pop' : '',
+    }));
+    const [label, what] = ACT[i];
+    const isLogo = what && what.startsWith('/');
+    const primary = {
+      text: pressed ? 'Done' : label, hasLogo: isLogo && !pressed, logo: isLogo ? what : '', hasIcon: !isLogo || pressed,
+      d: pressed ? D.check : (D[what] || D.check), ic: pressed ? 'check' : '',
+      bg: pressed ? T.ink : T.surface, fg: pressed ? T.onInk : T.ink, sh: pressed ? 'none' : T.surfaceSh,
+      go: () => this.advance(),
+    };
+    const cal = CAL.map(([t, id, title, sub], n) => {
+      const st = id < i ? 0 : id === i ? 1 : 2;
+      return { t, title, sub, src: st === 1 ? ANIM(LEAD[id]) : STILL(LEAD[id]),
+        cls: 'rise-' + k, d: 120 + n * 70, node: st === 1 ? 12 : 8,
+        nc: st === 1 ? 'rgba(' + RGB[KEY[id]] + ',1)' : st === 0 ? T.ink3 : T.ink2,
+        bg: 'rgba(' + RGB[KEY[id]] + ',' + (st === 1 ? T.nowTint : T.tint) + ')',
+        c: st === 1 ? T.ink : st === 0 ? T.ink3 : T.ink2, tc: st === 1 ? T.ink : T.ink3, strike: st === 0 ? 'line-through' : 'none' };
+    });
+    const read = (w) => ({ ...w, cls: 'read', d: 0 });
+    return {
+      paras, primary, hasLater: i < 5, later: () => this.later(), aCls: rise, aD, aD2: aD + 80,
+      segs, doneN, down: () => this.el && this.el.scrollTo({ top: 844, behavior: 'smooth' }), box: this.box,
+      sum: sentence(NOTE[i], 24, { T, nowKey: KEY[i], anim: 'now' }).map(read), cal, rowCls: 'rise-' + k,
+      earlier: ['2615', '1f35c', '26a1', '1f4e6'].map(STILL),
+      thumbX: sum ? 0 : 44, sumOn: sum ? 'true' : 'false', calOn: sum ? 'false' : 'true', sumC: sum ? T.ink : T.ink2, calC: sum ? T.ink2 : T.ink,
+      toSum: () => this.view('sum'), toCal: () => this.view('cal'),
+      sumPos: sum ? 'relative' : 'absolute', calPos: sum ? 'absolute' : 'relative',
+      sumOp: sum ? 1 : 0, sumY: sum ? 0 : -12, sumB: sum ? 0 : 6, sumPe: sum ? 'auto' : 'none',
+      calOp: sum ? 0 : 1, calY: sum ? 12 : 0, calB: sum ? 6 : 0, calPe: sum ? 'none' : 'auto',
+      tmr: sentence(TOMORROW, 20, { T, anim: 'none' }).map(read),
+      week: sentence(WEEK, 20, { T, anim: 'none' }).map(read),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

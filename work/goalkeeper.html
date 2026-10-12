@@ -16,9 +16,6 @@
   :root{
     --paper:#fbf7ec; --cream:#f6f0e0; --ink:#141210; --ink2:#5b554c; --line:#e4d9c2;
     --blue:#1d3fa6;
-    /* Goalkeeper's own colours, for the phones */
-    --gk-ink:#1c1c1e; --gk-dim:#8a8a8e; --gk-bg:#ffffff;
-    --hl-blue:rgba(47,123,246,.24); --hl-orange:rgba(242,153,46,.34); --hl-purple:rgba(148,103,240,.26); --hl-green:rgba(38,179,122,.28); --hl-pink:rgba(238,76,138,.3);
     --col:960px;
     --ease:cubic-bezier(.4,0,.2,1);
   }
@@ -64,11 +61,14 @@
   .lt-pm{position:absolute; right:58%; top:52%; width:118%; pointer-events:none; opacity:0; transform:rotate(-9deg); transform-origin:85% 50%}
   .lt-pm.on{animation:strike .45s cubic-bezier(.3,1.4,.5,1) both}
   @keyframes strike{from{opacity:0; transform:rotate(-9deg) scale(1.5)} to{opacity:.88; transform:rotate(-9deg) scale(1)}}
-  .facts{margin-top:64px; display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+  .facts{margin-top:64px; display:grid; grid-template-columns:repeat(5, minmax(0,1fr))}
   .facts{gap:0 32px}
   .facts div{padding:20px 0 22px}
   .facts dt{font-size:14px; font-weight:500; color:var(--ink2)}
   .facts dd{margin-top:6px; font-size:16px; font-weight:600; line-height:1.4}
+
+  .photo{margin-top:48px; border-radius:20px; overflow:hidden; border:1px solid var(--line); background:#f4f3ef}
+  .photo video{display:block; width:100%; aspect-ratio:16/9; object-fit:cover}
 
   /* ---------- sections ---------- */
   section{padding-top:144px}
@@ -95,8 +95,8 @@
   .compare td{padding:20px 24px 20px 0; border-bottom:1px solid var(--line); vertical-align:top}
   .compare td:first-child{width:56%; font-weight:600}
   .compare td:last-child{color:var(--ink2)}
-  .quote{margin-top:56px; padding-left:28px; border-left:3px solid var(--blue)}
-  .quote h3{font-size:28px; line-height:1.3}
+  .quote{margin-top:56px; max-width:680px}
+  .quote h3{font-size:24px; line-height:1.3}
   .quote .body{margin-top:12px; max-width:640px}
 
   /* promises */
@@ -111,89 +111,16 @@
   .shot{display:flex; flex-direction:column; align-items:center; gap:14px}
   .shot .label{opacity:.8}
 
-  .phone{position:relative; width:300px; height:620px; border-radius:46px; background:var(--gk-bg); border:10px solid var(--ink); overflow:hidden; box-shadow:0 30px 50px -20px rgba(20,18,16,.35); color:var(--gk-ink)}
-  .phone::before{content:""; position:absolute; top:10px; left:50%; width:84px; height:22px; margin-left:-42px; background:var(--ink); border-radius:12px; z-index:5}
-  .scr{position:absolute; inset:0; padding:60px 22px 28px; display:flex; flex-direction:column}
-  .pill{margin-top:22px; height:56px; border-radius:999px; background:var(--gk-ink); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:16px; gap:10px}
-  .pill i{width:8px; height:8px; border-radius:50%; background:#fff; display:inline-block}
+  .phone{--k:.71795; position:relative; width:300px; height:626px; border-radius:46px; background:#f4f3ef; border:10px solid var(--ink); overflow:hidden; box-shadow:0 30px 50px -20px rgba(20,18,16,.35)}
+  .phone::before{content:""; position:absolute; top:10px; left:50%; width:84px; height:22px; margin-left:-42px; background:var(--ink); border-radius:12px; z-index:5; pointer-events:none}
+  /* each screen is the canvas board itself, played at its own size and scaled into the phone */
+  .phone iframe{position:absolute; left:0; top:0; width:390px; height:844px; border:0; transform-origin:0 0; transform:scale(var(--k))}
 
-  /* the widget on a home screen */
-  .homescreen{background:#dfe5ec; padding:56px 16px 24px}
-  .apps{display:grid; grid-template-columns:repeat(4,1fr); gap:18px 10px; margin-top:auto; padding:0 6px}
-  .apps img{width:52px; height:52px; border-radius:14px; margin:0 auto; box-shadow:0 2px 6px rgba(0,0,0,.12)}
-  .dock{margin-top:22px; padding:10px; border-radius:26px; background:rgba(255,255,255,.45); display:grid; grid-template-columns:repeat(4,1fr)}
-  .dock img{width:48px; height:48px; border-radius:13px; margin:0 auto}
-  .wg{position:relative; height:186px; margin-top:12px; border-radius:26px; background:#fff; box-shadow:0 1px 1px rgba(0,0,0,.06), 0 10px 24px -8px rgba(30,40,60,.25); overflow:hidden}
-  .wm{position:absolute; inset:0; padding:18px 18px 16px; display:flex; flex-direction:column; opacity:0; transform:translateY(6px); transition:opacity .5s var(--ease), transform .5s var(--ease)}
-  .wm.on{opacity:1; transform:none}
-  .wm .eb{font-size:11px; font-weight:600; letter-spacing:.06em; color:var(--gk-dim)}
-  .wm .tt{margin-top:6px; font-size:22px; font-weight:700; letter-spacing:-.02em; line-height:1.2}
-  .wm .big{font-size:30px; font-weight:700; letter-spacing:-.02em; margin-top:6px; font-variant-numeric:tabular-nums}
-  .wm .bar{position:relative; height:10px; margin-top:auto; border-radius:5px; background:#f0f0f2}
-  .wm .bar i{position:absolute; top:0; bottom:0; border-radius:5px}
-  .wm .bar i.o{background:transparent!important; box-shadow:inset 0 0 0 1.5px currentColor}
-  .wm .bar b{position:absolute; top:-3px; bottom:-3px; width:2px; background:#e5484d; border-radius:1px}
-  .wm .row{display:flex; align-items:center; gap:8px; margin-top:12px}
-  .wm .sum{font-size:13px; color:var(--gk-dim); flex:1; line-height:1.3}
-  .wm .cta{height:34px; padding:0 16px; border-radius:999px; background:var(--gk-ink); color:#fff; font-size:13px; font-weight:600; display:grid; place-items:center}
-  .wm .cta.q{background:#f0f0f2; color:var(--gk-ink)}
-  .moments{margin-top:28px; border-top:1px solid var(--line)}
-  .moments button{display:grid; grid-template-columns:96px 1fr auto; gap:16px; align-items:center; width:100%; padding:12px 0; border:0; border-bottom:1px solid var(--line); background:none; text-align:left; font:inherit; color:var(--ink2); cursor:pointer; transition:color .3s var(--ease)}
-  .moments button b{font-size:15px; font-weight:600}
-  .moments button span{font-size:15px}
-  .moments button em{font-style:normal; font-size:13px; font-weight:600; padding:4px 10px; border-radius:999px; border:1px solid var(--line)}
-  .moments button.on{color:var(--ink)}
-  .moments button.on em{background:var(--ink); color:var(--paper); border-color:var(--ink)}
-
-  /* Home: next task only, bottom aligned */
-  .home .day{font-size:13px; color:var(--gk-dim); font-weight:500}
-  .home .next{margin-top:auto; font-size:28px; line-height:1.3; font-weight:600; letter-spacing:-.02em}
-  .home .next .hl{background:var(--gk-ink); color:#fff; border-radius:6px; padding:0 6px; box-decoration-break:clone; -webkit-box-decoration-break:clone}
-  .home .next .rest{color:#b9b9bd}
-  .home .later{margin-top:22px; font-size:13px; color:var(--gk-dim)}
-  .rounds{display:flex; gap:6px; margin-top:24px}
-  .rounds span{flex:1; height:40px; border-radius:8px; border:1px dashed var(--ink2); display:grid; place-items:center; font-size:13px; color:var(--ink2)}
-  .rounds span.ok{border:1px solid var(--ink); background:var(--ink); color:var(--paper); font-weight:600}
-
-  /* Listening: fills up, then sums up */
-  .listen .words{margin-top:auto; font-size:26px; line-height:1.4; font-weight:600; letter-spacing:-.02em}
-  .listen .w{opacity:0; transition:opacity .25s var(--ease)}
-  .listen .w.on{opacity:1}
-  .listen .w.h{border-radius:6px; padding:0 3px; margin:0 -3px; transition:background-color .5s var(--ease), opacity .25s}
-  .listen.sum .w.h.blue{background:var(--hl-blue)} .listen.sum .w.h.orange{background:var(--hl-orange)} .listen.sum .w.h.purple{background:var(--hl-purple)}
-  .listen .meter{margin-top:22px; height:56px; border-radius:999px; background:#f1f1f3; position:relative; overflow:hidden}
-  .listen .meter b{position:absolute; inset:0; width:0; background:var(--gk-ink); border-radius:999px; transition:width .2s linear}
-  .listen .meter span{position:absolute; inset:0; display:grid; place-items:center; font-weight:600; font-size:16px; color:#fff; mix-blend-mode:difference}
-
-  /* Overlay: over the app you're in */
-  .overlay .app{position:absolute; inset:0; background:#e9e4dc; padding:60px 16px 0}
-  .overlay .bubble{max-width:72%; padding:10px 14px; border-radius:16px; margin-bottom:10px; font-size:14px; line-height:1.4; background:#fff}
-  .overlay .bubble.me{margin-left:auto; background:#d6f5c7}
-  .overlay .glass{position:absolute; inset:0; background:rgba(255,255,255,.55); -webkit-backdrop-filter:blur(18px) saturate(1.4); backdrop-filter:blur(18px) saturate(1.4); padding:60px 22px 28px; display:flex; flex-direction:column; opacity:0; transform:scale(1.04); transition:all .7s var(--ease)}
-  .overlay.open .glass{opacity:1; transform:none}
-  .overlay .glass .said{margin-top:auto; font-size:24px; line-height:1.4; font-weight:600; letter-spacing:-.02em}
-  .overlay .glass .said em{font-style:normal; background:var(--hl-green); border-radius:6px; padding:0 3px}
-
-  /* Price check */
-  .price .q{font-size:22px; font-weight:600; letter-spacing:-.02em; line-height:1.35; margin-top:8px}
-  .price .q em{font-style:normal; background:var(--hl-blue); border-radius:6px; padding:0 3px}
-  .price ul{list-style:none; margin:auto 0 0; padding:0}
-  .price li{display:flex; align-items:center; gap:12px; padding:14px 0; border-top:1px solid #eee; font-size:15px; font-weight:500}
-  .price li img{width:34px; height:34px; border-radius:9px}
-  .price li .p{margin-left:auto; font-weight:700}
-  .price li.best .p{background:var(--hl-green); border-radius:6px; padding:0 6px}
-  .price .ro{font-size:12px; color:var(--gk-dim); margin-top:10px; text-align:center}
-
-  /* Evening close */
-  .close .step{position:absolute; left:22px; right:22px; bottom:110px; font-size:24px; line-height:1.4; font-weight:600; letter-spacing:-.02em; opacity:0; transform:translateY(12px); transition:all .6s var(--ease)}
-  .close .step.on{opacity:1; transform:none}
-  .close .step small{display:block; font-size:14px; font-weight:500; color:var(--gk-dim); margin-top:12px; letter-spacing:0}
-  .close .chips{position:absolute; left:22px; right:22px; bottom:28px; display:flex; gap:8px}
-  .close .chips span{flex:1; height:56px; border-radius:999px; display:grid; place-items:center; font-size:14px; font-weight:600; background:#f1f1f3}
-  .close .chips span:last-child{background:var(--gk-ink); color:#fff}
-  .close .dots{display:flex; gap:6px}
-  .close .dots i{width:20px; height:4px; border-radius:2px; background:#e3e3e6}
-  .close .dots i.on{background:var(--gk-ink)}
+  /* the widgets, as they sit on the canvas: one wide board */
+  .wide{margin-top:56px; overflow-x:auto; border-radius:20px; scrollbar-width:none}
+  .wide::-webkit-scrollbar{display:none}
+  .wide .fit{position:relative; overflow:hidden; border-radius:20px}
+  .wide iframe{position:absolute; left:0; top:0; width:1292px; height:640px; border:0; transform-origin:0 0}
 
   /* ---------- how it was made ---------- */
   .steps .num{display:block; margin-bottom:20px}
@@ -206,11 +133,6 @@
   .cut h3{text-decoration:line-through; text-decoration-thickness:1.5px; text-decoration-color:var(--ink2)}
 
   /* ---------- where it stands ---------- */
-  .stand{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
-  .stand div{padding:28px 24px 28px 0}
-  .stand div + div{padding-left:24px; border-left:1px solid var(--line)}
-  .stand b{display:block; font-size:48px; font-weight:700; letter-spacing:-.04em; line-height:1}
-  .stand span{display:block; margin-top:12px; font-size:16px; color:var(--ink2); line-height:1.5}
   .measure{list-style:none; padding:0; border-top:1px solid var(--ink)}
   .measure li{display:grid; grid-template-columns:56px minmax(0,1fr); align-items:baseline; padding:18px 0; border-bottom:1px solid var(--line); font-size:16px; line-height:1.6; color:var(--ink2)}
   .measure li .num{font-size:28px}
@@ -241,6 +163,7 @@
     .lt-head .lede{font-size:18px}
     .facts{grid-template-columns:1fr 1fr; gap:0 24px}
     .facts div{padding:16px 0}
+    .photo{border-radius:14px}
     section{padding-top:96px}
     .why, .duo, .duo.flip, .grid2, .grid3{grid-template-columns:minmax(0,1fr); gap:24px}
     .why{gap:40px}
@@ -248,11 +171,8 @@
     .shot{justify-self:center}
     .compare th:last-child, .compare td:last-child{display:none}
     .compare td:first-child{width:auto}
-    .stand{grid-template-columns:1fr}
-    .stand div, .stand div + div{padding:20px 0; border-left:0}
-    .stand div + div{border-top:1px solid var(--line)}
-    .log div{grid-template-columns:72px minmax(0,1fr); gap:16px}
-    .phone{width:272px; height:564px}
+          .log div{grid-template-columns:72px minmax(0,1fr); gap:16px}
+    .phone{--k:.64615; width:272px; height:565px}
   }
 </style>
 </head>
@@ -277,6 +197,7 @@
       <div><dt>Timeline</dt><dd>Since 27 Sep 2026</dd></div>
       <div><dt>Status</dt><dd>In testing</dd></div>
     </dl>
+    <div class="photo"><video id="launch" src="assets/goalkeeper/launch.mp4" poster="assets/goalkeeper/launch.jpg" muted loop playsinline controls preload="metadata" aria-label="Goalkeeper launch video"></video></div>
   </header>
 
   <!-- WHY -->
@@ -284,7 +205,7 @@
     <div>
       <h2>Nobody assigns me my day</h2>
       <p class="body" style="margin-top:16px">I'm a full-time freelancer. There's no manager handing me work and nobody checking in at the end of the day. My day is spread across calendars, chats, mail and a dozen apps, and keeping track of it was a job of its own.</p>
-      <p class="body">I wanted something that watches my whole day across those apps, tells me <b>what to do next and what matters most</b>, and at night asks what happened. What didn't get done moves to tomorrow. If I'm past a deadline and haven't said anything, it nudges me.</p>
+      <p class="body">I wanted something that watches my whole day across those apps, tells me what to do next and what matters most, and at night asks what happened. What didn't get done moves to tomorrow. If I'm past a deadline and haven't said anything, it nudges me.</p>
       <p class="body">Everything in Goalkeeper is built on top of that.</p>
     </div>
     <div class="scatter" id="scatter">
@@ -315,8 +236,8 @@
       </tbody>
     </table>
     <div class="quote">
-      <h3>Grok reacts to what happens. Goalkeeper notices what didn't.</h3>
-      <p class="body">Grok came closest: it can already summarise your calendar and mail every night. But nothing in it fires on silence, like no reply in three days, the gym skipped again, or a task moved a fourth time. So silence, skips and repeats became what creates Goalkeeper's nudges.</p>
+      <h3>Grok came closest</h3>
+      <p class="body">It can already summarise your calendar and mail every night. But nothing in it fires on silence: no reply in three days, the gym skipped again, a task moved a fourth time. Those became what creates Goalkeeper's nudges.</p>
     </div>
   </section>
 
@@ -338,62 +259,9 @@
   <section class="col rv">
     <div class="head">
       <h2>The widget</h2>
-      <p class="body">The app is where you talk. The widget is where you look. It sits on your home screen and changes through the day, so the next thing is always one glance away and there's only ever one button to press.</p>
+      <p class="body">The widget sits on your home screen and changes through the day, so the next thing is always one glance away. The 4×2 moves through the evening: the gym, the Instamart order on its way, the text to Monika, the Modalis call, then closing the day. The 4×4 lays out the whole evening, each thing with its own button, and each 2×2 holds just one.</p>
     </div>
-    <div class="duo">
-      <div class="shot">
-        <div class="phone"><div class="scr homescreen">
-          <div class="wg" id="widget">
-            <div class="wm on" data-m="0">
-              <div class="eb">MON 28 · MORNING</div><div class="tt">Gym at 7:00 AM</div>
-              <div class="bar"><i style="left:6%;width:8%;background:#26b37a"></i><i style="left:22%;width:10%;background:#2f7bf6"></i><i style="left:55%;width:6%;background:#ee4c8a"></i><i style="left:62%;width:9%;background:#9467f0"></i><b style="left:3%"></b></div>
-              <div class="row"><span class="sum">8 things today · first in 20 min</span><span class="cta">Plan</span></div>
-            </div>
-            <div class="wm" data-m="1">
-              <div class="eb">MON 28 · AFTERNOON</div><div class="tt">Call Mom · 4 PM</div>
-              <div class="bar"><i style="left:6%;width:8%;background:#26b37a"></i><i style="left:22%;width:10%;background:#2f7bf6"></i><i style="left:55%;width:6%;background:#ee4c8a"></i><i style="left:62%;width:9%;background:#9467f0"></i><b style="left:46%"></b></div>
-              <div class="row"><span class="sum">in 1 h 50 m · then Design review at 5</span><span class="cta">Talk</span></div>
-            </div>
-            <div class="wm" data-m="2">
-              <div class="eb">MON 28 · REMINDER · 4:00 PM</div><div class="tt">Call Mom</div>
-              <div class="big">11:55</div>
-              <div class="row" style="margin-top:auto"><span class="sum">Starts in</span><span class="cta q">Snooze</span><span class="cta">Call</span></div>
-            </div>
-            <div class="wm" data-m="3">
-              <div class="eb">MON 28 · NOW · 4:00 PM</div><div class="tt">Call Mom</div>
-              <div class="row" style="margin-top:auto"><span class="sum">It's time</span><span class="cta q">10 min</span><span class="cta">Call</span></div>
-            </div>
-            <div class="wm" data-m="4">
-              <div class="eb">MON 28 · EVENING</div><div class="tt">6 of 8 done</div>
-              <div class="bar"><i style="left:6%;width:8%;background:#26b37a"></i><i style="left:22%;width:10%;background:#2f7bf6"></i><i class="o" style="left:55%;width:6%;color:#ee4c8a"></i><i style="left:62%;width:9%;background:#9467f0"></i><i class="o" style="left:80%;width:5%;color:#f2992e"></i></div>
-              <div class="row"><span class="sum">2 left · waiting on Akash</span><span class="cta">Close</span></div>
-            </div>
-            <div class="wm" data-m="5">
-              <div class="eb">MON 28 · DAY CLOSED</div><div class="tt">Gym at 7:00 AM</div>
-              <div class="bar" style="opacity:.5"><i style="left:6%;width:8%;background:#26b37a"></i><i style="left:40%;width:12%;background:#2f7bf6"></i><i style="left:70%;width:7%;background:#9467f0"></i></div>
-              <div class="row"><span class="sum">Tomorrow · 4 things · 5-day streak</span><span class="cta q">Talk</span></div>
-            </div>
-          </div>
-          <div class="apps">
-            <img src="assets/calendar.webp" alt=""><img src="assets/gmail.jpg" alt=""><img src="assets/notion.jpg" alt=""><img src="assets/slack.jpg" alt="">
-          </div>
-          <div class="dock"><img src="assets/whatsapp.png" alt=""><img src="assets/uber.jpg" alt=""><img src="assets/swiggy.jpg" alt=""><img src="assets/zomato.png" alt=""></div>
-        </div></div>
-        <span class="label">Recording to add</span>
-      </div>
-      <div>
-        <h3>One widget, six moments</h3>
-        <p class="body">It says one thing at the top and keeps the summary at the bottom. The button changes with the time of day: Plan in the morning, Talk during the day, Close at night. Tap it and the assistant grows out of the widget.</p>
-        <div class="moments" id="moments">
-          <button data-m="0" class="on"><b>Morning</b><span>Your first thing</span><em>Plan</em></button>
-          <button data-m="1"><b>Day</b><span>What's next, and after</span><em>Talk</em></button>
-          <button data-m="2"><b>Reminder</b><span>A countdown, 15 min out</span><em>Call</em></button>
-          <button data-m="3"><b>Now</b><span>It's time</span><em>Call</em></button>
-          <button data-m="4"><b>Evening</b><span>How the day went</span><em>Close</em></button>
-          <button data-m="5"><b>Closed</b><span>Tomorrow, and your streak</span><em>Talk</em></button>
-        </div>
-      </div>
-    </div>
+    <div class="wide"><div class="fit" id="wideFit"><iframe data-board="GWidgets" title="Goalkeeper's widgets in three sizes" loading="lazy"></iframe></div></div>
   </section>
 
   <!-- DECISIONS -->
@@ -405,51 +273,29 @@
 
     <div class="duo rv">
       <div class="shot">
-        <div class="phone"><div class="scr home">
-          <div class="day">Tuesday, 2:40 PM</div>
-          <div class="next"><span class="hl">Send Riya the deck</span> <span class="rest">before your 4 PM call 📞</span></div>
-          <div class="later">Then: gym at 6:30 · 3 more today</div>
-          <div class="pill"><i></i> Anything else?</div>
-        </div></div>
-        <span class="label">Recording to add</span>
+        <div class="phone"><iframe data-board="HomeLast" title="Goalkeeper Home" loading="lazy"></iframe></div>
       </div>
       <div>
         <h3>Home shows only what's next</h3>
         <p class="body">Home took ten rounds. The early ones showed the whole day, the way a calendar does. But every time I opened it, I only wanted to know one thing: what do I do now?</p>
         <p class="body">So Home shows just the next task, written as a sentence, at the bottom where your thumb is. The rest of the day is one swipe away.</p>
-        <div class="rounds" aria-label="Ten rounds of Home"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span class="ok">10</span></div>
       </div>
     </div>
 
     <div class="duo flip rv">
       <div class="shot">
-        <div class="phone"><div class="scr listen" id="listen">
-          <div class="words" id="words"></div>
-          <div class="meter"><b id="meter"></b><span id="meterTxt">Listening</span></div>
-        </div></div>
-        <span class="label">Recording to add</span>
+        <div class="phone"><iframe data-board="OverlayListenA" title="Goalkeeper listening" loading="lazy"></iframe></div>
       </div>
       <div>
         <h3>Listening fills up, then sums up</h3>
         <p class="body">Talking to an app feels awkward when you can't tell if it heard you. While you speak, the words fill the screen as they're heard.</p>
-        <p class="body">When you stop, it sums up what it understood and highlights each part, <b>the person, the time and the task</b>, so you can see at a glance whether it got it right.</p>
+        <p class="body">When you stop, it highlights each thing it understood, then reads them back as one sentence, written the way Home writes your day, so you can see at a glance whether it got it right.</p>
       </div>
     </div>
 
     <div class="duo rv">
       <div class="shot">
-        <div class="phone"><div class="scr overlay" id="overlay" style="padding:0">
-          <div class="app">
-            <div class="bubble">Can you share the deck before the call?</div>
-            <div class="bubble me">Yes, by 4!</div>
-            <div class="bubble">Perfect 🙌</div>
-          </div>
-          <div class="glass">
-            <div class="said">Remind me to send Riya the deck <em>at 3:30</em></div>
-            <div class="pill"><i></i> Anything else?</div>
-          </div>
-        </div></div>
-        <span class="label">Recording to add</span>
+        <div class="phone"><iframe data-board="OverlayC2Dark" title="Goalkeeper opening over a chat" loading="lazy"></iframe></div>
       </div>
       <div>
         <h3>It opens over the app you're in</h3>
@@ -460,16 +306,7 @@
 
     <div class="duo flip rv">
       <div class="shot">
-        <div class="phone"><div class="scr price">
-          <div class="q">Paneer tikka from <em>Barbeque Nation</em></div>
-          <ul>
-            <li class="best"><img src="assets/swiggy.jpg" alt="">Swiggy<span class="p">₹349</span></li>
-            <li><img src="assets/zomato.png" alt="">Zomato<span class="p">₹372</span></li>
-          </ul>
-          <div class="pill">Open Swiggy</div>
-          <div class="ro">Reads prices only. You book.</div>
-        </div></div>
-        <span class="label">Recording to add</span>
+        <div class="phone"><iframe data-board="OverlayC2" title="Goalkeeper comparing prices" loading="lazy"></iframe></div>
       </div>
       <div>
         <h3>Price check compares, but never books</h3>
@@ -480,15 +317,7 @@
 
     <div class="duo rv">
       <div class="shot">
-        <div class="phone"><div class="scr close" id="close">
-          <div class="dots"><i class="on"></i><i></i><i></i><i></i></div>
-          <div class="step on">You got 6 of 8 done today.<small>Wash my car and the invoice are left.</small></div>
-          <div class="step">Wash my car has moved three times now. Keep it, or let it go?</div>
-          <div class="step">Still waiting on Akash for the payment.<small>A nudge is drafted for 9 AM.</small></div>
-          <div class="step">Tomorrow has 9 things and 2 free hours. What goes?</div>
-          <div class="chips"><span>Later</span><span>Next</span></div>
-        </div></div>
-        <span class="label">Recording to add</span>
+        <div class="phone"><iframe data-board="GClose" title="Goalkeeper closing the day" loading="lazy"></iframe></div>
       </div>
       <div>
         <h3>The evening close</h3>
@@ -546,11 +375,7 @@
   <section class="col rv">
     <div class="head">
       <h2>Where it stands</h2>
-    </div>
-    <div class="stand after">
-      <div><b>35+</b><span>on the waitlist, from the website and posts on X, LinkedIn and Instagram</span></div>
-      <div><b>7</b><span>test builds in two days, each one installed on my phone</span></div>
-      <div><b>Live</b><span>website, with early access open</span></div>
+      <p class="body">The website is live with early access open, and 35+ people have joined the waitlist from it and from posts on X, LinkedIn and Instagram. The app has been through 7 test builds in two days, each one installed on my phone.</p>
     </div>
     <div class="sub">
       <h3>What I'll measure when it opens up</h3>
@@ -587,42 +412,29 @@
   }), { threshold: 0.2 });
   document.querySelectorAll('.rv').forEach((el) => io.observe(el));
 
-  // the widget: through the day's six moments, crossfading; picking one from the list holds it a while
-  const wms = document.querySelectorAll('#widget .wm'), mbs = document.querySelectorAll('#moments button');
-  let wi = 0, hold = 0;
-  function showMoment(i) {
-    wi = i;
-    wms.forEach((m, k) => m.classList.toggle('on', k === i));
-    mbs.forEach((b, k) => b.classList.toggle('on', k === i));
+  // the launch video plays, muted, while it's on screen
+  const launch = document.getElementById('launch');
+  new IntersectionObserver(([e]) => { if (e.isIntersecting) launch.play().catch(() => {}); else launch.pause(); }, { threshold: 0.4 }).observe(launch);
+
+  // the screens: each is the canvas board itself, loaded as it comes near and paused while it's away
+  const boards = document.querySelectorAll('iframe[data-board]');
+  const bio = new IntersectionObserver((es) => es.forEach((e) => {
+    const f = e.target;
+    if (e.isIntersecting && !f.src) f.src = 'gk/board.html?b=' + f.dataset.board;
+    if (f.contentWindow) f.contentWindow.postMessage({ run: e.isIntersecting }, '*');
+  }), { rootMargin: '300px 0px' });
+  boards.forEach((f) => {
+    bio.observe(f);
+    f.addEventListener('load', () => f.contentWindow.postMessage({ run: true }, '*'));
+  });
+  // the widgets board is wide: it fills the column, and on a phone it scrolls sideways at half size
+  const wideFit = document.getElementById('wideFit');
+  function fitWide() {
+    const k = Math.max(wideFit.parentNode.clientWidth, 646) / 1292;
+    wideFit.style.width = 1292 * k + 'px'; wideFit.style.height = 640 * k + 'px';
+    wideFit.firstElementChild.style.transform = `scale(${k})`;
   }
-  mbs.forEach((b, k) => b.addEventListener('click', () => { showMoment(k); hold = 2; }));
-  setInterval(() => { if (hold > 0) { hold--; return; } showMoment((wi + 1) % wms.length); }, 2800);
-
-  // listening: words fill up as they're heard, then the parts it understood get highlighted
-  const SENT = [['Remind'], ['me'], ['to'], ['call', 'orange'], ['Riya', 'blue'], ['about'], ['the'], ['deck', 'orange'], ['tomorrow', 'purple'], ['at', 'purple'], ['11', 'purple']];
-  const words = document.getElementById('words'), listen = document.getElementById('listen');
-  const meter = document.getElementById('meter'), meterTxt = document.getElementById('meterTxt');
-  words.innerHTML = SENT.map(([w, c]) => `<span class="w${c ? ' h ' + c : ''}">${w}</span>`).join(' ');
-  const ws = words.querySelectorAll('.w');
-  function playListen() {
-    listen.classList.remove('sum'); ws.forEach((w) => w.classList.remove('on'));
-    meter.style.width = '0'; meterTxt.textContent = 'Listening';
-    ws.forEach((w, i) => setTimeout(() => { w.classList.add('on'); meter.style.width = ((i + 1) / ws.length) * 100 + '%'; }, 400 + i * 280));
-    setTimeout(() => { listen.classList.add('sum'); meterTxt.textContent = 'Got it'; }, 400 + ws.length * 280 + 500);
-  }
-  playListen(); setInterval(playListen, 7500);
-
-  // overlay: the glass opens over the chat, then closes again
-  const ov = document.getElementById('overlay');
-  setInterval(() => ov.classList.toggle('open'), 2600);
-
-  // evening close: one step at a time
-  const steps = document.querySelectorAll('#close .step'), dots = document.querySelectorAll('#close .dots i');
-  let si = 0;
-  setInterval(() => {
-    steps[si].classList.remove('on'); si = (si + 1) % steps.length;
-    steps[si].classList.add('on'); dots.forEach((d, i) => d.classList.toggle('on', i <= si));
-  }, 2800);
+  fitWide(); addEventListener('resize', fitWide);
 
   // ---- the letter ----
   const embed = document.documentElement.classList.contains('embed');

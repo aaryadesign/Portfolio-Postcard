@@ -57,12 +57,15 @@
   .lt-pm{position:absolute; right:58%; top:52%; width:118%; pointer-events:none; opacity:0; transform:rotate(-9deg); transform-origin:85% 50%}
   .lt-pm.on{animation:strike .45s cubic-bezier(.3,1.4,.5,1) both}
   @keyframes strike{from{opacity:0; transform:rotate(-9deg) scale(1.5)} to{opacity:.88; transform:rotate(-9deg) scale(1)}}
-  .facts{margin-top:64px; display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:0 32px; border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+  .facts{margin-top:64px; display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:0 32px}
   .facts div{padding:20px 0 22px}
   .facts dt{font-size:14px; font-weight:500; color:var(--ink2)}
   .facts dd{margin-top:6px; font-size:16px; font-weight:600; line-height:1.4}
   .facts dd a{color:inherit; text-decoration-color:var(--line); text-underline-offset:3px}
   .note{margin-top:16px; font-size:14px; color:var(--ink2)}
+
+  .photo{margin-top:48px; border-radius:20px; overflow:hidden; background:#5f259f}
+  .photo video{display:block; width:100%; aspect-ratio:16/9; object-fit:cover}
 
   /* ---------- sections ---------- */
   section{padding-top:144px}
@@ -251,6 +254,7 @@
     .duo.flip .shot{order:0}
   }
   @media (max-width: 760px){
+    .photo{border-radius:14px}
     .letter{width:calc(100vw - 24px); padding:56px 24px 72px; margin-top:76px}
     .lt-head{grid-template-columns:1fr; gap:0}
     .lt-slot{grid-row:1; justify-self:end; width:150px; margin:-32px -8px 0 0}
@@ -290,6 +294,7 @@
       <div><dt>Status</dt><dd>Android APK</dd></div>
     </dl>
     <p class="note">A self-initiated concept. I'm not affiliated with PhonePe.</p>
+    <div class="photo"><video id="intro" src="assets/phonepe/intro.mp4" poster="assets/phonepe/intro.jpg" muted loop playsinline preload="metadata" aria-label="PhonePe Car Insurance, flow reimagined"></video></div>
   </header>
 
   <!-- WHY -->
@@ -540,6 +545,11 @@
 </article>
 
 <script src="../print.js"></script>
+<script>
+  // the opening plays while it's on screen
+  const intro = document.getElementById('intro');
+  new IntersectionObserver(([e]) => { if (e.isIntersecting) intro.play().catch(() => {}); else intro.pause(); }, { threshold: 0.4 }).observe(intro);
+</script>
 <script>
   const io = new IntersectionObserver((es) => es.forEach((e) => {
     if (!e.isIntersecting) return;

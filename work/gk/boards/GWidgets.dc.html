@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Widgets, gradient</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Geist,system-ui,sans-serif;color:#1C1C1E;background:#F4F3EF}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;color:inherit}
+.em{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;line-height:1;display:inline-block}
+.num{font-variant-numeric:tabular-nums}
+.gk-scroll{scrollbar-width:none}
+.gk-scroll::-webkit-scrollbar{display:none}
+.gk-press{transition:transform .18s cubic-bezier(.3,.7,.4,1),background-color .3s ease,color .3s ease,border-color .3s ease,opacity .3s ease}
+.gk-press:active{transform:scale(.94)}
+@keyframes gkSpin{to{transform:rotate(360deg)}}
+.gk-spin{animation:gkSpin .8s linear infinite}
+@keyframes gkDot{0%,100%{opacity:.25}50%{opacity:1}}
+.gk-live{animation:gkDot 1.4s ease-in-out infinite}
+@keyframes gkBob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(-4deg)}}
+.gk-bob{animation:gkBob 2.8s ease-in-out infinite}
+@keyframes gkRide{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-1.5px) rotate(-3deg)}}
+.gk-ride{animation:gkRide .5s ease-in-out infinite}
+@keyframes gkFlip{0%,70%{transform:rotate(0)}85%,100%{transform:rotate(180deg)}}
+.gk-hourglass{animation:gkFlip 3.2s cubic-bezier(.6,0,.3,1) infinite}
+@keyframes gkPop{0%{transform:scale(1)}35%{transform:scale(1.35)}70%{transform:scale(.92)}100%{transform:scale(1)}}
+.gk-pop{animation:gkPop .5s cubic-bezier(.3,1.5,.5,1)}
+@keyframes gkB1{to{transform:translate(-22px,-18px) scale(.3);opacity:0}}
+@keyframes gkB2{to{transform:translate(22px,-18px) scale(.3);opacity:0}}
+@keyframes gkB3{to{transform:translate(26px,6px) scale(.3);opacity:0}}
+@keyframes gkB4{to{transform:translate(-26px,6px) scale(.3);opacity:0}}
+@keyframes gkB5{to{transform:translate(0,-28px) scale(.3);opacity:0}}
+@keyframes gkB6{to{transform:translate(0,24px) scale(.3);opacity:0}}
+.b1{animation:gkB1 .6s ease-out forwards}.b2{animation:gkB2 .6s ease-out forwards}.b3{animation:gkB3 .6s ease-out forwards}
+.b4{animation:gkB4 .6s ease-out forwards}.b5{animation:gkB5 .6s ease-out forwards}.b6{animation:gkB6 .6s ease-out forwards}
+@keyframes gkBreathe{0%,100%{box-shadow:0 0 0 0 rgba(28,28,30,0)}50%{box-shadow:0 0 0 7px rgba(28,28,30,.08)}}
+.gk-breathe{animation:gkBreathe 3.4s ease-in-out infinite}
+@keyframes gkUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.gk-up{animation:gkUp .6s cubic-bezier(.2,.7,.2,1) both}
+@keyframes gkSheet{from{transform:translateY(100%)}to{transform:none}}
+.gk-sheet{animation:gkSheet .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes gkFade{from{opacity:0}to{opacity:1}}
+.gk-fade{animation:gkFade .3s ease both}
+@keyframes gkRing{0%{transform:scale(.7);opacity:.55}100%{transform:scale(1.9);opacity:0}}
+.gk-ring{animation:gkRing 1.8s cubic-bezier(.2,.6,.3,1) infinite}
+.gk-ring2{animation:gkRing 1.8s cubic-bezier(.2,.6,.3,1) .9s infinite}
+@keyframes gkWave{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}
+.gk-wave{animation:gkWave .9s ease-in-out infinite;transform-origin:50% 50%}
+@keyframes gkWiggle{0%,60%,100%{transform:rotate(0)}66%{transform:rotate(-12deg)}74%{transform:rotate(10deg)}82%{transform:rotate(-6deg)}90%{transform:rotate(3deg)}}
+.gk-wiggle{animation:gkWiggle 1.6s ease-in-out infinite}
+@keyframes gkTwinkle{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
+.gk-twinkle{animation:gkTwinkle 2.4s ease-in-out infinite}
+@keyframes gkStrike{from{background-size:0 1.5px}to{background-size:100% 1.5px}}
+.gk-strike{background-image:linear-gradient(rgba(28,28,30,.5),rgba(28,28,30,.5));background-repeat:no-repeat;background-position:0 55%;background-size:100% 1.5px;animation:gkStrike .5s cubic-bezier(.4,0,.2,1) both}
+@keyframes gkGrow{from{transform:scaleX(var(--from,0))}to{transform:scaleX(1)}}
+.gk-grow{transform-origin:0 50%;animation:gkGrow .9s cubic-bezier(.3,.7,.2,1) .2s both}
+</style>
+
+</helmet>
+<div style="width: 1292px; height: 640px; box-sizing: border-box; padding: 48px 56px; background: {{c.wall}}; font-family: Geist, system-ui, sans-serif; display: flex; gap: 48px; align-items: flex-start;">
+
+<div style="width: 352px; display: flex; flex-direction: column; gap: 12px;">
+<span style="font-size: 12px; font-weight: 500; color: rgba(255,255,255,.78);">4×2 · Changes with the evening</span>
+<div style="position: relative; width: 352px; height: 172px; border-radius: 28px; overflow: hidden; background: {{c.card}}; color: {{c.ink}};">
+<sc-for list="{{slides}}" as="s" hint-placeholder-count="5">
+<div aria-hidden="{{s.hidden}}" style="position: absolute; inset: 0; padding: 16px 16px 12px 16px; box-sizing: border-box; display: flex; flex-direction: column; background: {{s.wash}}; opacity: {{s.op}}; transform: translateY({{s.y}}px); transition: opacity .55s ease, transform .6s cubic-bezier(.2,.7,.2,1);">
+<span class="em" style="position: absolute; right: 16px; top: 16px; font-size: 28px; transform: scale({{s.emS}}) rotate({{s.emR}}deg); transition: transform .6s cubic-bezier(.3,1.5,.5,1) .12s;">{{s.e}}</span>
+
+<div style="margin-top: 4px; max-width: 264px; font-size: 24px; line-height: 28px; font-weight: 600; letter-spacing: -0.3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{s.title}}</div>
+<div style="max-width: 264px; font-size: 12px; line-height: 18px; color: {{c.grey}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{s.sub}}</div>
+<span style="flex-grow: 1;"></span>
+<div style="display: flex; gap: 8px;">
+<sc-for list="{{s.ctas}}" as="b" hint-placeholder-count="2">
+<span style="height: 36px; min-width: 36px; padding: {{b.pad}}; box-sizing: border-box; border-radius: 16px; border: {{b.edge}}; background: {{b.bg}}; color: {{b.fg}}; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12px; font-weight: 600; white-space: nowrap;"><sc-if value="{{b.hasLogo}}" hint-placeholder-val="{{false}}"><img src="{{b.logo}}" alt="" style="width: 20px; height: 20px; border-radius: 4px; flex-shrink: 0;"></sc-if><sc-if value="{{b.noLogo}}" hint-placeholder-val="{{true}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{b.icon}}"></path></svg></sc-if>{{b.text}}</span>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+<div role="tablist" aria-label="Time of evening" style="display: flex; justify-content: space-between; padding: 8px 4px 0;">
+<sc-for list="{{stops}}" as="p" hint-placeholder-count="5">
+<button type="button" role="tab" aria-selected="{{p.sel}}" onClick="{{p.pick}}" style="height: 32px; padding: 0 12px; border: none; border-radius: 16px; background: {{p.bg}}; color: {{p.fg}}; display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; cursor: pointer; transition: background-color .3s ease, color .3s ease;"><span class="em" style="font-size: 16px;">{{p.e}}</span><span class="num">{{p.t}}</span></button>
+</sc-for>
+</div>
+
+<span style="font-size: 12px; font-weight: 500; color: rgba(255,255,255,.78); margin-top: 20px;">4×2 · On the way</span>
+<div style="position: relative; width: 352px; height: 172px; box-sizing: border-box; padding: 16px 16px 12px 16px; border-radius: 28px; background: {{washO}}; color: {{c.ink}}; display: flex; flex-direction: column;">
+<span class="em" style="position: absolute; right: 16px; top: 16px; font-size: 28px;">🛍️</span>
+<div style="max-width: 252px; font-size: 24px; line-height: 28px; font-weight: 600; letter-spacing: -0.3px;">Instamart in {{eta}} min</div>
+<span style="margin-top: 4px; font-size: 12px; line-height: 18px; color: {{c.grey}};">4 items, your rider is on the way</span>
+<div style="position: relative; height: 28px; margin-top: 8px; max-width: 264px;">
+<span style="position: absolute; left: 0; right: 0; top: 16px; height: 4px; border-radius: 2px; background: {{c.hair}};"></span>
+<span style="position: absolute; left: 0; top: 16px; height: 4px; border-radius: 2px; width: {{prog}}%; background: #F2992E; transition: width 1.6s cubic-bezier(.4,0,.2,1);"></span>
+<span style="position: absolute; top: 0; left: {{prog}}%; margin-left: -8px; transition: left 1.6s cubic-bezier(.4,0,.2,1);"><span class="em gk-ride" style="font-size: 16px;">🛵</span></span>
+</div>
+<span style="flex-grow: 1;"></span>
+<div style="display: flex; gap: 8px;">
+<span style="height: 36px; padding: 0 16px 0 12px; border-radius: 16px; background: {{c.btnBg}}; color: {{c.btnFg}}; display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600;"><img src="/_blob/ffb63f0255059f253a0978a0b63b493d" alt="" style="width: 20px; height: 20px; border-radius: 4px;">Track</span>
+<span style="height: 36px; padding: 0 16px 0 12px; box-sizing: border-box; border-radius: 16px; border: 1px solid {{c.outline}}; background: {{c.outBg}}; display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Got it</span>
+</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<span style="font-size: 12px; font-weight: 500; color: rgba(255,255,255,.78);">4×4 · Tonight</span>
+<div style="width: 352px; height: 420px; box-sizing: border-box; padding: 12px; border-radius: 28px; background: {{c.card}}; color: {{c.ink}}; display: flex; flex-direction: column;">
+<div style="position: relative; height: 152px; box-sizing: border-box; padding: 12px 16px; border-radius: 20px; background: {{washG}}; display: flex; flex-direction: column;">
+<span class="em" style="position: absolute; right: 16px; top: 12px; font-size: 28px; opacity: {{gym.emOp}}; transform: scale({{gym.emS}}); transition: transform .45s cubic-bezier(.3,1.6,.5,1), opacity .3s ease;">🏋️</span>
+<span style="font-size: 24px; line-height: 28px; font-weight: 600; letter-spacing: -0.3px;"><span style="background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat; background-position: 0 58%; background-size: {{gym.strike}}% 2px; transition: background-size .45s cubic-bezier(.4,0,.2,1);">Gym at 8:00</span></span>
+<span style="margin-top: 4px; font-size: 12px; line-height: 18px; color: {{c.grey}};">{{gym.note}}</span>
+<span style="flex-grow: 1;"></span>
+<div style="display: flex; gap: 8px;">
+<button type="button" class="gk-press" onClick="{{gym.go}}" aria-pressed="{{gym.pressed}}" style="height: 36px; padding: 0 16px 0 12px; border: none; border-radius: 16px; background: {{gym.bg}}; color: {{gym.fg}}; display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" style="stroke-dasharray: 24; stroke-dashoffset: {{gym.dash}}; transition: stroke-dashoffset .35s ease .1s;"></path></svg>{{gym.text}}</button>
+<span style="height: 36px; padding: 0 16px 0 12px; box-sizing: border-box; border-radius: 16px; border: 1px solid {{c.outline}}; background: {{c.outBg}}; display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h12M13 7l5 5-5 5"></path></svg>Move</span>
+</div>
+</div>
+<div style="padding: 4px 4px 0;">
+<sc-for list="{{rows}}" as="x" hint-placeholder-count="4">
+<div style="height: 52px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid {{x.line}};">
+<span class="num" style="width: 40px; flex-shrink: 0; font-size: 12px; font-weight: 600; color: {{x.timeC}};">{{x.t}}</span>
+<span style="width: 36px; height: 36px; flex-shrink: 0; border-radius: 16px; background: {{x.tint}}; display: flex; align-items: center; justify-content: center;"><span class="em" style="font-size: 20px;">{{x.e}}</span></span>
+<span style="flex-grow: 1; min-width: 0;"><span style="display: block; font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{x.title}}</span><span style="display: block; font-size: 12px; color: {{c.grey}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{x.sub}}</span></span>
+<span style="flex-shrink: 0; height: 32px; padding: 0 12px 0 8px; box-sizing: border-box; border-radius: 16px; border: 1px solid {{c.outline}}; background: {{c.outBg}}; display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600;"><sc-if value="{{x.hasLogo}}" hint-placeholder-val="{{false}}"><img src="{{x.logo}}" alt="" style="width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0;"></sc-if><sc-if value="{{x.noLogo}}" hint-placeholder-val="{{true}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{x.icon}}"></path></svg></sc-if>{{x.cta}}</span>
+</div>
+</sc-for>
+</div>
+<span style="flex-grow: 1;"></span>
+<div style="display: flex; align-items: center; gap: 8px; padding: 0 4px;">
+<span style="flex-grow: 1; min-width: 0; font-size: 12px; color: {{c.grey}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Any time <span class="em">🛒</span> Groceries · <span class="em">⏳</span> Karan</span>
+<span aria-label="Talk" style="width: 36px; height: 36px; border-radius: 20px; background: {{c.btnBg}}; color: {{c.btnFg}}; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3zM5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"></path></svg></span>
+</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<span style="font-size: 12px; font-weight: 500; color: rgba(255,255,255,.78);">2×2 · Next, meeting, delivery, evening</span>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; width: 352px;">
+
+<div style="position: relative; height: 164px; box-sizing: border-box; padding: 16px; border-radius: 28px; background: {{washG}}; color: {{c.ink}}; display: flex; flex-direction: column;">
+<span class="em" style="font-size: 28px;">🏋️</span>
+<span style="flex-grow: 1;"></span>
+<span class="num" style="font-size: 24px; line-height: 28px; font-weight: 700; letter-spacing: -0.3px;">8:00</span>
+<span style="font-size: 12px; line-height: 18px; font-weight: 600; color: {{acc.g}};">Gym, in 1h 20m</span>
+</div>
+
+<div style="position: relative; height: 164px; box-sizing: border-box; padding: 16px; border-radius: 28px; background: {{washB}}; color: {{c.ink}}; display: flex; flex-direction: column;">
+<div style="display: flex; align-items: flex-start; justify-content: space-between;"><span class="em" style="font-size: 28px;">💻</span></div>
+<span style="margin-top: 8px; font-size: 16px; font-weight: 600;">Modalis</span>
+<span style="flex-grow: 1;"></span>
+<span style="height: 36px; border-radius: 20px; background: {{c.btnBg}}; color: {{c.btnFg}}; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12px; font-weight: 600;"><img src="/_blob/35b9819ff2677596544976f33747fd60" alt="" style="width: 20px; height: 20px; border-radius: 4px;">Join</span>
+</div>
+
+<div style="position: relative; height: 164px; box-sizing: border-box; padding: 16px; border-radius: 28px; background: {{washO}}; color: {{c.ink}}; display: flex; flex-direction: column; align-items: center;">
+<span style="width: 76px; height: 76px; border-radius: 40px; background: conic-gradient(#F2992E {{ringDeg}}deg, {{c.hair}} 0deg); display: flex; align-items: center; justify-content: center;"><span style="width: 64px; height: 64px; border-radius: 32px; background: {{c.card}}; display: flex; align-items: center; justify-content: center;"><span class="em" style="font-size: 28px;">🛍️</span></span></span>
+<span class="num" style="margin-top: 12px; font-size: 24px; font-weight: 700;">{{eta}} min</span>
+<span style="font-size: 12px; line-height: 18px; color: {{c.grey}};">Instamart</span>
+</div>
+
+<div style="position: relative; height: 164px; box-sizing: border-box; padding: 16px; border-radius: 28px; background: {{washP}}; color: {{c.ink}}; display: flex; flex-direction: column;">
+<span class="em" style="font-size: 28px;">🌙</span>
+<span style="margin-top: 8px; font-size: 24px; font-weight: 700; letter-spacing: -0.3px;">6 of 8 done</span>
+<span style="flex-grow: 1;"></span>
+<span style="height: 36px; border-radius: 20px; background: {{c.btnBg}}; color: {{c.btnFg}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">Close the day</span>
+</div>
+
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"$preview":{"width":1290,"height":640}}'>
+class Component extends DCLogic {
+  g4(v) {
+    // sizes on the 4px grid: what's computed here is snapped like what's written in the markup
+    const K = { spad: 1, pad: 1, rpad: 1, mh: 1, mh2: 1, h: 1, subGap: 1, mt: 1, size: 2, fs: 2, es: 2, ts: 2, bs: 2, fadeH: 1, pw: 1, ph: 1, pb: 1, tile: 1, top: 1, bm: 1, togX: 1, tl: 1, bl: 1, bh: 1, askH: 1, rad: 1 };
+    const F = { 11: 12, 13: 12, 14: 16, 15: 16, 17: 16, 18: 20, 19: 20, 21: 20, 22: 24, 23: 24, 26: 28, 30: 32, 34: 36, 38: 40 };
+    const one = (n, font) => { const a = Math.abs(n); if (!a) return n; if (font) return Math.sign(n) * (F[a] || Math.min(40, Math.round(a / 4) * 4)); if (a < 2) return 0; if (a < 4) return Math.sign(n) * 4; return Math.sign(n) * Math.round(a / 4) * 4; };
+    const walk = (o, d) => {
+      if (d > 6 || !o || typeof o !== 'object' || typeof o === 'function') return o;
+      if (Array.isArray(o)) { o.forEach((x) => walk(x, d + 1)); return o; }
+      Object.keys(o).forEach((k) => {
+        const x = o[k];
+        if (K[k] && typeof x === 'number') o[k] = one(x, K[k] === 2);
+        else if (K[k] && typeof x === 'string' && /px/.test(x)) o[k] = x.replace(/(-?\d+(?:\.\d+)?)px/g, (_, n) => one(+n, false) + 'px');
+        else if (x && typeof x === 'object') walk(x, d + 1);
+      });
+      return o;
+    };
+    return walk(v, 0);
+  }
+  renderVals() { return this.g4(this.renderVals0()); }
+
+  // ---- time on top: shared pieces ----
+  later(k, fn, ms) { this._t = this._t || {}; clearTimeout(this._t[k]); this._t[k] = setTimeout(fn, ms); }
+  componentWillUnmount() { Object.values(this._t || {}).forEach((t) => clearTimeout(t)); clearInterval(this._iv); }
+  get I() {
+    return { check: 'M5 12.5l4.5 4.5L19 7.5', out: 'M7 17L17 7M8.5 7H17v8.5', clock: 'M12 7v5l3 2M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z',
+      mic: 'M12 3a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3zM5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21', arrow: 'M5 12h14M13 6l6 6-6 6',
+      cal: 'M4 6.5h16v13H4zM4 10.5h16M8.5 4v4M15.5 4v4', info: 'M12 11v6M12 7.5v.5M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z', down: 'M12 4v11M7 10l5 5 5-5M5 20h14',
+      plus: 'M12 5v14M5 12h14', undo: 'M9 7L4 12l5 5M4 12h11a5 5 0 0 1 0 10h-2', edit: 'M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4', pause: 'M8 5v14M16 5v14',
+      bag: 'M5 8h14l-1.2 11.5H6.2zM9 8V6.5a3 3 0 0 1 6 0V8', laptop: 'M5 6.5h14v9H5zM2.5 18.5h19', moon: 'M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z',
+      bell: 'M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5a2 2 0 0 0 4 0', copy: 'M8 8h11v12H8zM5 16V4h11', x: 'M7 7l10 10M17 7L7 17',
+      gear: 'M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1',
+      swap: 'M7 4L3 8l4 4M3 8h14M17 12l4 4-4 4M21 16H7', thumb: 'M7 11v9H4v-9zM7 11l4-7a2 2 0 0 1 3 2l-1 4h6a2 2 0 0 1 2 2.3l-1.2 6A2 2 0 0 1 17.8 20H7' };
+  }
+  sw(rgb) { return 'radial-gradient(110% 70% at 100% 0%, rgba(' + rgb + ',.34) 0%, rgba(' + rgb + ',.10) 45%, rgba(' + rgb + ',0) 75%)'; }
+  tint(rgb, a) { const x = 'rgba(' + rgb + ',' + (a || 0.16) + ')'; return 'linear-gradient(' + x + ', ' + x + '), #FFFFFF'; }
+  washes(rgbs, on) { return rgbs.map((rgb, n) => ({ bg: this.sw(rgb), op: n === on ? 1 : 0 })); }
+  brand(name) {
+    // the app's own icon wherever an app is named, the same set the app bundles
+    const n = (name || '').toLowerCase();
+    const K = [['swiggy instamart', 'instamart'], ['instamart', 'instamart'], ['swiggy', 'swiggy'], ['dineout', 'swiggy'], ['zomato', 'zomato'], ['eatsure', 'eatsure'], ['zepto', 'zepto'], ['blinkit', 'blinkit'],
+      ['amazon', 'amazon'], ['flipkart', 'flipkart'], ['myntra', 'myntra'], ['uber', 'uber'], ['airtel', 'airtel'], ['netflix', 'netflix'], ['figma', 'figma'], ['notion', 'notion'],
+      ['indigo', 'indigo'], ['air india', 'airindia'], ['strava', 'strava'], ['slack', 'slack'], ['phonepe', 'phonepe'], ['google pay', 'gpay'], ['gpay', 'gpay'], ['paytm', 'paytm'],
+      ['whatsapp', 'whatsapp'], ['gmail', 'gmail'], ['outlook', 'outlook'], ['teams', 'teams'], ['google meet', 'meet'], ['meet', 'meet'], ['google calendar', 'gcal'], ['calendar', 'gcal'],
+      ['google maps', 'maps'], ['maps', 'maps'], ['health connect', 'healthconnect'], ['google fit', 'fit'], ['garmin', 'garmin'], ['zoom', 'zoom']];
+    const hit = K.find(([k]) => new RegExp('(^|[^a-z])' + k + '([^a-z]|$)').test(n));
+    const B = {"airindia": "536527ecec9b933db2d89e473cd8f4af", "airtel": "273ee58cb619fe3396fac17990de33d1", "amazon": "efe4118104cba6f076b772e38c7498a1", "blinkit": "d29b1af891ec6706d31e0f6af6ce53d6", "eatsure": "1bd1c207424eb25d8ebe97e24a48c0b3", "figma": "a99adf15beab814547b9dfaa0cd7e7e6", "fit": "962cf8cc0a0e030dd969392e2aad3cfc", "flipkart": "c83e563c70b1f527bc730e97b00db172", "garmin": "ff54b1e9ca36da6b6f52881eb69d9bba", "gcal": "adfc422740ec8c5162df290249e74ea2", "gmail": "68559f35eeecbc671dedba3b601a56c2", "google": "e9ca237a3c6ec00f457a43470865edfb", "gpay": "3d27c6ee0755976fd196152872adfb29", "healthconnect": "c9969de6e3ef2df1fe753aeffdc4eeab", "indigo": "309014748ceef49054bfaeb2c9f97bb2", "instamart": "803ef26a65efb80750acb4998b63d613", "maps": "861810427cbbf1e2cf5a1c87a8125d98", "meet": "35b9819ff2677596544976f33747fd60", "myntra": "56a97072e91829d51ec5c718caf0f24d", "netflix": "eb3ef331bf309f9cc67d6215d1753c21", "notion": "e644bd9d25e60804065fe40d78b78ecf", "outlook": "56f20fd6bff5024e83542103180232d6", "paytm": "c6cc1094d8c3a05c2c38fc596aa23598", "phonepe": "0b0c79b39cb497faa7ad656b6bca767c", "slack": "786bac5dc8f59c6291499d4dfa9904a5", "strava": "217aa1dde170a8443a7c9d849fea05fd", "swiggy": "ffb63f0255059f253a0978a0b63b493d", "teams": "995fdbed1c032d51f659c091518a77fb", "uber": "dffbf2e1a3494cfb2f8eb5b57930068c", "whatsapp": "c18e40f7efd39efacf9ad800def39d14", "zepto": "2aafdd84758c6ea94df13597b50d608a", "zomato": "658b6685d184453da05caf7e4ae422bc", "zoom": "817ce0f9b97d2a1f4ff7b79c897834f6"};
+    return hit && B[hit[1]] ? '/_blob/' + B[hit[1]] : '';
+  }
+  btn(b) {
+    const k = b.kind || 'light';
+    const logo = b.app ? this.brand(b.app) : '';
+    const icon = b.icon ? (this.I[b.icon] || b.icon) : '';
+    const C = { dark: ['#1C1C1E', '#FFFFFF', 'none'], light: ['rgba(255,255,255,.9)', '#1C1C1E', 'inset 0 0 0 1px rgba(28,28,30,.12)'], white: ['#FFFFFF', '#1C1C1E', 'inset 0 0 0 1px rgba(28,28,30,.14)'],
+      ok: ['rgba(38,179,122,.16)', '#10603F', 'none'], tint: ['rgba(' + (b.rgb || '28,28,30') + ',.15)', b.accent || '#1C1C1E', 'none'], ghost: ['transparent', 'rgba(28,28,30,.62)', 'none'] }[k];
+    const busy = !!b.busy;
+    const hasLogo = !!logo && !busy, hasIcon = !!icon && !logo && !busy;
+    const lead = hasLogo || hasIcon || busy;
+    return { text: b.text || '', aria: b.aria || b.text || 'Done', bg: C[0], fg: C[1], edge: C[2], busy, hasLogo, logo, hasIcon, icon: icon || this.I.check,
+      spinBg: k === 'dark' ? 'rgba(255,255,255,.3)' : 'rgba(28,28,30,.15)', spinFg: k === 'dark' ? '#FFFFFF' : '#1C1C1E',
+      pad: !b.text ? '0' : lead ? '0 20px 0 16px' : '0 20px', spad: !b.text ? '0' : lead ? '0 12px 0 9px' : '0 13px',
+      isLink: !!b.href, isBtn: !b.href, href: b.href || '#', go: b.go || (() => {}) };
+  }
+  row(r, spine) {
+    // a row: the app's logo when an app is named, else its emoji; no icon at all when it adds nothing
+    const logo = r.app ? this.brand(r.app) : '';
+    const rgb = r.rgb || '28,28,30';
+    const hasCircle = !!(logo || r.e);
+    const ring = [spine ? '0 0 0 4px #FFFFFF' : '', logo ? 'inset 0 0 0 1px rgba(28,28,30,.08)' : ''].filter(Boolean).join(', ') || 'none';
+    // what used to be a pill is now the start of the detail line, coloured when it matters
+    const lead = r.pill || '';
+    return { e: r.e || '', hasCircle, hasEmoji: !logo, hasLogo: !!logo, logo, anim: r.anim || '', ring,
+      circle: logo ? '#FFFFFF' : r.rgb ? this.tint(r.rgb) : 'rgba(28,28,30,.06)',
+      title: r.title || '', ink: r.ink || '#1C1C1E', strike: r.strike ? 100 : 0, dim: r.dim ? 0.45 : 1,
+      hasSub: !!(r.sub || lead), sub: r.sub || '', hasLead: !!lead, lead, leadSep: lead && r.sub ? ' · ' : '', leadC: r.hot ? (r.accent || '#1C1C1E') : 'rgba(28,28,30,.75)',
+      hasBar: r.bar !== undefined, bar: r.bar || 0, barC: r.barC || 'rgb(' + rgb + ')',
+      hasRight: !!r.right, right: r.right || '', rightC: r.rightC || '#1C1C1E', hasRightSub: !!r.rightSub, rightSub: r.rightSub || '',
+      hasB: !!r.b, b: this.btn(r.b ? { kind: 'white', ...r.b } : {}),
+      mh: r.hide ? 0 : 240, op: r.hide ? 0 : 1, tap: r.tap || (() => {}), cursor: r.tap ? 'pointer' : 'default' };
+  }
+  rows(list, spine) {
+    const out = list.map((r) => this.row(r, spine));
+    let first = true;
+    out.forEach((x) => { x.line = spine || first || !x.op ? 'transparent' : 'rgba(28,28,30,.07)'; if (x.op) first = false; });
+    return out;
+  }
+  heroV(h) {
+    // the type system: 40 only for a number, 32 for every other screen title, 22 inside a sheet; never above 40
+    const size = Math.min(40, h.size || (h.num ? 40 : 32));
+    const lh = { 40: 44, 32: 38, 22: 28 }[size] || Math.round(size * 1.2);
+    return { mt: h.mt ?? 16, h: h.h ?? 0, hasE: !!h.e, e: h.e || '', anim: h.anim || '',
+      big: h.big || '', size, lh, ls: size >= 32 ? (size === 40 ? -1 : -0.7) : -0.3, strike: h.strike ? 100 : 0,
+      hasSub: !!h.sub, sub: h.sub || '', subGap: size <= 22 ? 6 : 8,
+      hasBar: !!h.bar, bar: (h.bar || []).map((s) => ({ w: s.w || 1, bg: s.bg || 'rgba(28,28,30,.08)', fill: s.fill ?? 100, c: s.c })), hasPace: !!h.pace, pace: h.pace || 0,
+      hasNote: !!h.note, note: h.note || '', hasCtas: !!(h.ctas && h.ctas.length), ctas: (h.ctas || []).map((b, n) => this.btn({ kind: n === 0 ? 'dark' : 'light', ...b })) };
+  }
+  topV(t) {
+    const logo = t.app ? this.brand(t.app) : '';
+    return { back: t.back || 'GHomeTime.dc.html', title: t.title || '', hasLogo: !!logo, logo, hasStep: !!t.step, step: t.step || '',
+      hasRight: !!(t.icon || t.rtext), icon: this.I[t.icon] || t.icon || '', rtext: t.rtext || '',
+      rpad: t.rtext ? '0 15px 0 12px' : '0', aria: t.aria || t.rtext || '', go: t.go || (() => {}) };
+  }
+  chip(c) {
+    const logo = c.app ? this.brand(c.app) : '';
+    const sel = !!c.sel;
+    return { text: c.text, hasLogo: !!logo, logo, hasEmoji: !logo && !!c.e, e: c.e || '', sel: sel ? 'true' : 'false',
+      bg: sel ? '#1C1C1E' : '#FFFFFF', fg: sel ? '#FFFFFF' : '#1C1C1E', edge: sel ? 'none' : 'inset 0 0 0 1px rgba(28,28,30,.12)',
+      pad: logo ? '0 14px 0 8px' : c.e ? '0 14px 0 12px' : '0 14px', go: c.go || (() => {}) };
+  }
+  opt(o, sel, n) {
+    // a form answer: words only, no icon
+    return { text: o.text, sub: o.sub || '', hasSub: !!o.sub, sel: sel ? 'true' : 'false',
+      edge: sel ? 'inset 0 0 0 2px #1C1C1E' : 'inset 0 0 0 1px rgba(28,28,30,.08)', ring: sel ? 'none' : '1.5px solid rgba(28,28,30,.25)', dot: sel ? '#1C1C1E' : 'transparent', tick: sel ? 1 : 0,
+      d: (0.05 + n * 0.05).toFixed(2), go: o.go || (() => {}) };
+  }
+  bottomV(list) {
+    return list.map((b) => {
+      const dark = (b.kind || 'dark') === 'dark';
+      const logo = b.app ? this.brand(b.app) : '';
+      return { text: b.text, isLink: !!b.href, isBtn: !b.href, href: b.href || '#', go: b.go || (() => {}), h: dark ? 56 : 44, fs: dark ? 16 : 15,
+        bg: b.bg || (dark ? '#1C1C1E' : 'transparent'), fg: dark ? '#FFFFFF' : 'rgba(28,28,30,.62)', edge: 'none', cls: b.breathe ? 'gk-breathe' : '',
+        hasLogo: !!logo && !b.busy, logo, hasIcon: !logo && !!b.icon && !b.busy, icon: this.I[b.icon] || b.icon || '', busy: !!b.busy };
+    });
+  }
+  // ---- end ----
+  constructor(props) { super(props); this.state = { at: 0, pinned: false, secs: 718, eta: 6, gym: false }; }
+  componentDidMount() {
+    this.cycle = setInterval(() => { if (!this.state.pinned) this.setState({ at: (this.state.at + 1) % 5 }); }, 3600);
+    this.clock = setInterval(() => this.setState({ secs: this.state.secs > 0 ? this.state.secs - 1 : 900 }), 1000);
+    this.ride = setInterval(() => this.setState({ eta: this.state.eta > 1 ? this.state.eta - 1 : 6 }), 4000);
+  }
+  componentWillUnmount() { clearInterval(this.cycle); clearInterval(this.clock); clearInterval(this.ride); }
+  renderVals0() {
+    const dark = this.props.dark ?? false;
+    const c = dark
+      ? { wall: '#23251F', card: '#1C1C1A', ink: '#F2F1EC', grey: 'rgba(242,241,236,.6)', hair: 'rgba(242,241,236,.12)', outline: 'rgba(242,241,236,.2)', outBg: 'rgba(242,241,236,.06)', btnBg: '#F2F1EC', btnFg: '#141413' }
+      : { wall: '#6F7A66', card: '#FFFFFF', ink: '#1C1C1E', grey: 'rgba(28,28,30,.6)', hair: 'rgba(28,28,30,.1)', outline: 'rgba(28,28,30,.16)', outBg: '#FFFFFF', btnBg: '#1C1C1E', btnFg: '#FFFFFF' };
+    const a = dark ? .34 : .22;
+    const W = (rgb) => 'radial-gradient(130% 120% at 100% 0%, rgba(' + rgb + ',' + a + ') 0%, rgba(' + rgb + ',0) 62%), ' + c.card;
+    const acc = dark ? { g: '#5BD3A0', o: '#FFB766', b: '#7FB0FF', p: '#B79BFF' } : { g: '#10794D', o: '#A65A05', b: '#1F5FC8', p: '#6A3FD0' };
+    const G = '38,179,122', O = '242,153,46', B = '47,123,246', P = '148,103,240';
+    const I = { check: 'M5 12.5l4.5 4.5L19 7.5', send: 'M4 12l16-8-6 16-3-7z', laptop: 'M5 6.5h14v9H5zM2.5 18.5h19', clock: 'M12 7v5l3 2M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z', move: 'M5 12h12M13 7l5 5-5 5', moon: 'M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z', track: 'M7 17L17 7M8.5 7H17v8.5', bag: 'M5 8h14l-1.2 11.5H6.2zM9 8V6.5a3 3 0 0 1 6 0V8' };
+    const pad = (n) => String(n).padStart(2, '0');
+    const mm = pad(Math.floor(this.state.secs / 60)) + ':' + pad(this.state.secs % 60);
+    const Pb = (text, icon, app) => ({ logo: this.brand(app || ''), hasLogo: !!app, noLogo: !app, text, icon: I[icon], pad: '0 14px 0 11px', bg: c.btnBg, fg: c.btnFg, edge: '1px solid transparent' });
+    const Sb = (text, icon) => ({ logo: '', hasLogo: false, noLogo: true, text, icon: I[icon], pad: text ? '0 14px 0 11px' : '0', bg: c.outBg, fg: c.ink, edge: '1px solid ' + c.outline });
+    const ST = [
+      { t: '6:40', e: '🏋️', rgb: G, accent: acc.g, title: 'Gym at 8:00', sub: 'In 1h 20m. Then Monika at 9, Modalis at 10', ctas: [Sb('Done', 'check'), Sb('Move', 'move')] },
+      { t: '7:05', e: '🛍️', rgb: O, accent: acc.o, title: 'Instamart in ' + this.state.eta + ' min', sub: '4 items, your rider is on the way', ctas: [Pb('Track', 'track', 'Swiggy'), Sb('Got it', 'check')] },
+      { t: '9:00', e: '💬', rgb: P, accent: acc.p, title: 'Text Monika', sub: 'Now. “Dinner at 9 tonight?” is written', ctas: [Pb('WhatsApp', 'track', 'WhatsApp'), Sb('10 min', 'clock'), Sb('', 'check')] },
+      { t: '9:48', e: '💻', rgb: B, accent: acc.b, title: 'Modalis at 10:00', sub: 'In ' + mm + ', with Rajat on Google Meet', ctas: [Pb('Join', 'laptop', 'Google Meet'), Sb('Running late', 'clock'), Sb('', 'check')] },
+      { t: '10:46', e: '🌙', rgb: P, accent: acc.p, title: '7 of 8 done', sub: 'One thing can move to tomorrow', ctas: [Pb('Close the day', 'moon'), Sb('Later', 'clock')] },
+    ];
+    const at = this.state.at;
+    const slides = ST.map((x, n) => ({ ...x, wash: W(x.rgb), hidden: n === at ? 'false' : 'true', op: n === at ? 1 : 0, y: n === at ? 0 : n < at ? -16 : 16, emS: n === at ? 1 : 0.4, emR: n === at ? 0 : -14 }));
+    const stops = ST.map((x, n) => ({ e: x.e, t: x.t, sel: n === at ? 'true' : 'false', bg: n === at ? '#FFFFFF' : 'rgba(255,255,255,.14)', fg: n === at ? '#1C1C1E' : 'rgba(255,255,255,.85)', pick: () => this.setState({ at: n, pinned: true }) }));
+    const g = this.state.gym;
+    const tint = (rgb) => 'rgba(' + rgb + ',' + (dark ? .26 : .15) + ')';
+    const K = '238,76,138';
+    const rows = [
+      { t: '6:46', e: '🛍️', title: 'Instamart', sub: 'Here in ' + this.state.eta + ' min', cta: 'Track', icon: I.track, rgb: O, live: true, app: 'Swiggy' },
+      { t: '9:00', e: '💬', title: 'Text Monika', sub: 'Draft ready', cta: 'Open', icon: I.track, rgb: P, app: 'WhatsApp' },
+      { t: '9:30', e: '💊', title: 'Vitamin D', sub: 'After dinner', cta: 'Taken', icon: I.check, rgb: K },
+      { t: '10:00', e: '💻', title: 'Modalis', sub: 'Google Meet', cta: 'Join', icon: I.laptop, rgb: B, app: 'Google Meet' },
+    ].map((x, n) => ({ ...x, logo: this.brand(x.app || ''), hasLogo: !!x.app, noLogo: !x.app, tint: tint(x.rgb), timeC: x.live ? acc.o : c.ink, line: n === 3 ? 'transparent' : c.hair }));
+    return {
+      c, acc, slides, stops, rows, mm, eta: this.state.eta,
+      prog: 54 + (6 - this.state.eta) * 7, ringDeg: Math.round((7 - this.state.eta) / 7 * 360),
+      washG: W(G), washO: W(O), washB: W(B), washP: W(P),
+      gym: { note: g ? 'Done, your 3rd this week' : 'In 1h 20m. Reminder at 7:45', accent: g ? c.grey : acc.g, strike: g ? 100 : 0, emOp: g ? 0.55 : 1, emS: g ? 0.85 : 1,
+        text: g ? 'Done' : 'Done', bg: g ? 'rgba(38,179,122,.18)' : c.btnBg, fg: g ? (dark ? '#7FE0B4' : '#10603F') : c.btnFg, dash: g ? 0 : 24, pressed: g ? 'true' : 'false',
+        go: () => this.setState({ gym: !g }) },
+    };
+  }
+}
+</script>
+</body>
+</html>
