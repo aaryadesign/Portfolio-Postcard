@@ -409,7 +409,7 @@
   // the screens are the app itself (its web build in pp/), each opening on its own step; loaded as they come near
   const apps = new IntersectionObserver((es) => es.forEach((e) => {
     if (!e.isIntersecting) return;
-    e.target.src = '/Portfolio-Postcard/work/pp/' + e.target.dataset.app + '?embed';
+    e.target.src = 'pp/' + e.target.dataset.app + '?embed';
     apps.unobserve(e.target);
   }), { rootMargin: '400px 0px' });
   document.querySelectorAll('iframe[data-app]').forEach((f) => apps.observe(f));

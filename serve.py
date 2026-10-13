@@ -6,10 +6,8 @@ from functools import partial
 
 
 class NoCacheHandler(http.server.SimpleHTTPRequestHandler):
-    # behave like GitHub Pages: the site lives under /Portfolio-Postcard/, and /page serves page.html
+    # behave like GitHub Pages: /page serves page.html
     def translate_path(self, path):
-        if path.startswith("/Portfolio-Postcard/"):
-            path = path[len("/Portfolio-Postcard"):]
         p = super().translate_path(path)
         if not os.path.exists(p) and os.path.exists(p + ".html"):
             return p + ".html"
