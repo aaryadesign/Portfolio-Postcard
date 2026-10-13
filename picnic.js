@@ -75,7 +75,6 @@
     { id: 'x', name: 'X', url: 'https://x.com/aaryashahh' },
     { id: 'resume', name: 'R\u00e9sum\u00e9', url: 'https://cdn.jsdelivr.net/gh/aaryadesign/Portfolio@aabe6dceda9a1a5609f563029961c5be95a03131/Aarya_Shah_Resume_linked.pdf' },
   ];
-  const RESUME = CONTACT.findIndex((c) => c.id === 'resume');
   const QUEUE = 0.7; // stamps waiting in the row are this much smaller than the one you are looking at
   const COLORS = { base: [0.98, 0.83, 0.835], dye: [0.8, 0.1, 0.18] };
 
@@ -128,7 +127,7 @@
   const logo = { open: false, at: 0, anchor: null, savedAt: 0 };
   try { if (localStorage.getItem('picnic-logo') === '1') logo.savedAt = 1; } catch (e) {}
   let sheetTex = null, sheetKey = '', contactTex = [], contactKey = '', copiedTex = null, blankTex = null, savedTex = null;
-  let foot = null, painter = null, footTex = null, footKey = '', flashTex = null;
+  let foot = null, painter = null, footTex = null, footKey = '', flashTex = null, paperTex = null;
   const clientTex = {}, assets = { clients: {}, title: null, stamps: {} };
 
   function layout() {
@@ -149,9 +148,9 @@
     maxCam = Xc + spacing * PROJECTS.length;
     sec = sectionLayout();
     // The page goes round the mat: right along the stamps, down the testimonials to the sticker sheet under
-    // them (the footer), where the portfolio ends. After that, just for fun, the Résumé sticker peels off
-    // the sheet and flies left along the bottom, turning over into the colouring page, straight under the
-    // postcard; then up the side, where the page turns over again into the postcard, and it all starts again
+    // them (the footer), where the portfolio ends. After that, just for fun, a crumpled ball of paper by the
+    // sheet rolls left along the bottom and opens out into the colouring page, straight under the postcard;
+    // then up the side, where the page turns over into the postcard, and it all starts again
     T.down = T.tf0 + Math.max(T.tf1 - T.tf0, sec.bottom / vh - 0.5);
     T.sheet = T.tf0 + Math.max(0, (sec.sheet.y - sec.sheet.H / 2) / vh - 0.3);
     T.end = T.down;
@@ -524,14 +523,24 @@
     h.ry += ((on ? lx * 0.34 : 0) - h.ry) * k;
     h.bow = (h.bow || 0) + ((on ? 1 : 0) - (h.bow || 0)) * k;
     // and turns over to its back while the cursor stays, back again when it leaves
-    h.p = clamp((h.p || 0) + ((on ? 1 : -1) * dt) / 0.6);
+    h.p = h.settle ? clamp((h.p || 0) - dt / 0.16) : clamp((h.p || 0) + ((on ? 1 : -1) * dt) / 0.7);
   }
-  // a stamp turning over on hover: it rises a little as it goes edge-on and bows with the turn
-  function flipOver(o, h, back) {
-    const f = ease(h.p), arc = Math.sin(Math.PI * f);
-    o.mode = 1; o.texB = back; o.mixB = 0; o.glossBack = 0.1;
-    o.bend = [Math.PI * f, o.bend[1] + (0.9 * arc) / o.size[0]];
-    return 60 * arc;
+  // a stamp peeling up on hover, in one unbroken motion: it starts at the lower corner and the curl
+  // straightens as it rolls across, until it lies over on its back, kept on the same spot of the mat
+  function curlOver(o, h, back) {
+    const PI = Math.PI, f = 0.5 - 0.5 * Math.cos(PI * h.p), [w, hh] = o.size;
+    o.mode = 1; o.texB = back; o.mixB = 0; o.glossBack = 0.1; o.bend = [0, 0];
+    const ang = Math.atan2(hh, w) * (1 - smooth(clamp(f / 0.65)));
+    const ux = Math.cos(ang), uy = Math.sin(ang), e = (ux * w + uy * hh) / 2;
+    const R = w * (0.06 + 0.06 * Math.sin(PI * f)), d = lerp(e, -e - PI * R, f);
+    let lo = Infinity, hi = -Infinity;
+    for (let i = 0; i <= 24; i++) {
+      const al = -e + (2 * e * i) / 24, x = al - d;
+      const an = x > 0 ? d + R * Math.sin(Math.min(x / R, PI)) - Math.max(x - PI * R, 0) : al;
+      lo = Math.min(lo, an); hi = Math.max(hi, an);
+    }
+    o.curl = [ux, uy, d, R, -(lo + hi) / 2];
+    return 12 * Math.sin(PI * f);
   }
   // lift a flat object just enough that no part of it dips into the mat
   function rest(o, z) {
@@ -587,13 +596,13 @@
     // the postcard is back as it began (everything else that changes back is far out of sight by then).
     const Ps = P >= T.u0 ? 0 : Math.min(P, T.down);
     const k1 = seg(P, T.s0, T.s1), ku = seg(P, T.u0, T.u1);
+    // the camera keeps up with the ball of paper, and is there when it opens out
+    const kc = clamp(k1 / 0.7);
     // on the way up the side, the colouring page is on its way to becoming the postcard
     const climbing = P > T.u0;
-    // the Résumé sticker peeling up off the sheet, before it sets off (and gone from it all the way round)
-    const pk = climbing ? 1 : ease(seg(P, T.down + 0.04, T.s0));
     // the long trips along the bottom and up the side are taken from a little higher up
     const up = (k, a) => a * Math.pow(Math.sin(Math.PI * k), 1.4);
-    const lz = 1 - up(k1, 0.42) - up(ku, 0.42), ls = 0;
+    const lz = 1 - up(kc, 0.42) - up(ku, 0.42), ls = 0;
     rewinding = lz < 0.97;
     // the welcome: the camera comes down from high above, turning straight, while the postcard floats
     // down onto the mat and settles
@@ -614,7 +623,7 @@
     const kf2 = ease(seg(Ps, T.tf0, T.tf1));
     let camY = Math.min(Math.max(0, Ps - T.tf0), T.down - T.tf0) * vh;
     // then left along the bottom of the mat to the colouring page, and up the side to the postcard
-    if (P > T.s0) { cam = lerp(maxCam, foot.x, ease(k1)); camY = lerp(foot.camY, 0, ease(ku)); }
+    if (P > T.s0) { cam = lerp(maxCam, foot.x, ease(kc)); camY = lerp(foot.camY, 0, ease(ku)); }
     camNow = cam; camNowY = camY;
     testOn = kf2 >= 1;
     if (logo.open && document.activeElement !== logoInput && Math.abs(target - logo.at) > 0.08) closeLogo();
@@ -680,7 +689,7 @@
       };
       const zc = lerp(p0[2] + 0.6, 0.8, kt) + peel * 90 + Math.sin(Math.PI * kt) * 230;
       if (kt < 1) coverHover.p = 0;
-      const up = coverHover.p > 0 ? flipOver(cover, coverHover, coverBack) : 0;
+      const up = coverHover.p > 0 ? curlOver(cover, coverHover, coverBack) : 0;
       if (kt >= 1) rest(cover, zc + coverHover.z + up); else cover.pos[2] = zc;
       coverObj = kt >= 1 ? cover : null;
       if (!coverHidden) {
@@ -698,8 +707,9 @@
       if (!inkAt[i] && cam > X - spacing * 0.3) inkAt[i] = now;
       const ik = inkAt[i] ? (now - inkAt[i]) / 1000 : -1;
       const bump = ik >= 0 && ik < 0.35 ? Math.sin((Math.PI * ik) / 0.35) : 0;
-      // the last stamp turns over as the page moves down: it lifts, flips, and grows into the first
-      // testimonial, written on its back. Once it has landed, the testimonials below draw it.
+      // the last stamp is caught by a gust as the page moves down: lifted on the wind, swaying and
+      // tumbling over in the air, it comes down on its back as the first testimonial,
+      // written there. Once it has landed, the testimonials below draw it.
       const turning = i === n - 1 && kf2 > 0;
       if (turning && kf2 >= 1) return;
       const g = grow(i + 1);
@@ -708,11 +718,14 @@
       const sc = g * (1 - bump * 0.02), sw = SWd * sc, bow = (0.35 * h.bow) / sw;
       let stamp;
       if (turning) {
-        const c0 = sec.cards[0], f = kf2, arc = Math.sin(Math.PI * f);
-        // it changes shape while it is edge-on, where the change can't be seen
-        const w = lerp(sw, c0.w, f), hh = lerp(SHd * sc, c0.h, smooth(clamp((f - 0.3) / 0.4)));
+        const c0 = sec.cards[0], f = kf2, arc = Math.sin(Math.PI * f), fl = arc * arc, tw = now / 1000;
+        // it goes over in the middle of its flight, and changes shape while edge-on, where it can't be seen
+        const tf = ease(clamp((f - 0.15) / 0.7));
+        const w = lerp(sw, c0.w, f), hh = lerp(SHd * sc, c0.h, smooth(clamp((tf - 0.3) / 0.4)));
         stamp = rest({
-          mode: 1, pos: [lerp(X, c0.x, f), lerp(Y, c0.y, f), 0], size: [w, hh], rot: [lerp(r, c0.r, f), 0.12 * arc, 0], bend: [Math.PI * f, (1.1 * arc) / w],
+          mode: 1, pos: [lerp(X, c0.x, f), lerp(Y, c0.y, f), 0], size: [w, hh],
+          rot: [lerp(r, c0.r, f) + 0.35 * arc, 0.12 * arc + 0.07 * fl * Math.sin(tw * 2.2), 0.06 * fl * Math.sin(tw * 1.7 + 1)],
+          bend: [Math.PI * tf, (1.1 * arc + 0.25 * fl * Math.sin(tw * 2.6)) / w],
           texA: stampTex[i].inked, texB: testTex[0], gloss: 0.06, glossBack: 0.1, sheen: 0.2,
         }, 0.8 + arc * 240);
       } else {
@@ -722,7 +735,7 @@
           texA: stampTex[i].plain, texB: stampTex[i].inked, mixB, gloss: 0.06, sheen: 0.2,
         };
         let up = 0;
-        if (h.p > 0) { stamp.texA = mixB > 0.5 ? stampTex[i].inked : stampTex[i].plain; up = flipOver(stamp, h, stampTex[i].back); }
+        if (h.p > 0) { stamp.texA = mixB > 0.5 ? stampTex[i].inked : stampTex[i].plain; up = curlOver(stamp, h, stampTex[i].back); }
         rest(stamp, 0.8 + h.z - bump * 0.6 + up);
       }
       if (turning) h.p = 0;
@@ -907,7 +920,6 @@
       };
       if (sheetIn && contactTex.length) sh.contact.forEach((c, j) => {
         // (the Résumé, once it has started to peel away on its trip, is drawn below)
-        if (j === RESUME && pk > 0) { contactHit[j] = null; return; }
         peg(j, c.x, c.y, contactTex[j]);
       });
       if (sheetIn && blankTex) {
@@ -927,27 +939,13 @@
       }
     }
 
-    // ---- the Résumé sticker's trip. Past the footer it peels off the sheet and flies left along the mat,
-    // growing and turning over: its back is the colouring page. On the way up the side, the page turns over
-    // again and comes down as the postcard, just where the postcard lay at the start. Each changes shape only
-    // while edge-on, where the change can't be seen ----
+    // ---- on the way up the side, the colouring page turns over and comes down as the postcard, just where
+    // the postcard lay at the start. It changes shape only while edge-on, where the change can't be seen ----
     if (painter && footTex && painter.tick(now)) scene.upload(footTex, painter.canvas);
-    if (sec && foot && footTex && contactTex[RESUME] && pk > 0 && (k1 < 1 || climbing)) {
-      const F = foot, t = contactTex[RESUME];
+    if (sec && foot && footTex && climbing) {
+      const F = foot;
       let trip;
-      if (!climbing) {
-        const sh = sec.sheet, c = sh.contact[RESUME], dx = c.x - sh.W / 2, dy = c.y - sh.H / 2, cr = Math.cos(sh.r), sr = Math.sin(sh.r);
-        const x0 = sh.x + dx * cr - dy * sr, y0 = sh.y + dx * sr + dy * cr;
-        const e = ease(k1), arc = Math.sin(Math.PI * k1);
-        const fk = smooth(clamp((k1 - 0.2) / 0.6)), sw = smooth(clamp((fk - 0.35) / 0.3));
-        const w = lerp(t.w, F.w, e), h = w / lerp(t.w / t.h, F.w / F.h, sw);
-        trip = rest({
-          mode: 1, pos: [lerp(x0, F.x, e), lerp(y0, F.y, e), 0], size: [w, h],
-          rot: [lerp(sh.r + 0.1 * pk, F.r, e) + 0.3 * arc, 0.12 * arc, 0],
-          bend: [Math.PI * fk - 0.55 * pk * (1 - fk), (3 * pk * (1 - fk) + 1.1 * Math.sin(Math.PI * fk)) / w],
-          texA: t.tex, texB: footTex, gloss: 0.3, glossBack: 0.08, sheen: 0.12,
-        }, lerp(2 + 70 * pk, 0.6, e) + 320 * arc);
-      } else {
+      {
         const e = ease(ku), arc = Math.sin(Math.PI * ku);
         const fk = smooth(clamp((ku - 0.2) / 0.6)), sw = smooth(clamp((fk - 0.35) / 0.3));
         const w = lerp(F.w, cw, e), h = w / lerp(F.w / F.h, cw / ch, sw);
@@ -960,10 +958,28 @@
       }
       objects.push(trip);
       // (anything resting on it slides off as it goes)
-      supports.push({ id: k1 > 0 || climbing ? 'foot' : 'c' + RESUME, obj: trip, stable: false });
+      supports.push({ id: 'foot', obj: trip, stable: false });
     }
 
-    // ---- the colouring page, lying where the sticker landed, until it heads up the side ----
+    // ---- the drawing sheet, crumpled into a ball by a corner of the sticker sheet. Past the footer it rolls
+    // off left along the mat with the camera, and where the colouring page goes it opens out flat into it ----
+    if (sec && foot && footTex && !climbing && k1 < 1) {
+      const F = foot, sh = sec.sheet, R = clamp(Math.min(vw, vh) * 0.085, 42, 84);
+      // (on a phone the sheet fills the width, so it lies on the sheet's corner instead of beside it)
+      const bx = portrait ? sh.x - sh.W / 2 + R * 0.9 : sh.x - sh.W / 2 - R * 1.7, by = portrait ? sh.y + sh.H / 2 - R * 0.5 : sh.y + sh.H / 2 - R * 1.3;
+      const tr = ease(kc), op = smooth(clamp((k1 - 0.68) / 0.32));
+      const x = lerp(bx, F.x, tr), y = lerp(by, F.y, tr);
+      // it starts with its gathered edges underneath, and rolls a half turn more than whole turns so they come up top to open
+      const turns = Math.max(1, Math.round(Math.hypot(F.x - bx, F.y - by) / (2 * Math.PI * R)));
+      if (Math.abs(x - cam) < (vw / 2) * zv + F.w && Math.abs(y - camY) < (vh / 2) * zv + F.h) {
+        if (!paperTex) { const c = document.createElement('canvas'); c.width = c.height = 256; Print.paper(c.getContext('2d'), 256, 256, '#fbf7ec', 41, 15); paperTex = scene.texture(c); }
+        const ball = { mode: 1, pos: [x, y, portrait ? lerp(4, 0.6, tr) : 0.6], size: [F.w, F.h], rot: [lerp(-0.3, F.r, op), 0, 0], crumple: [1 - op, R, Math.PI - Math.PI * (2 * turns + 1) * tr, Math.hypot(F.w, F.h) / 2],
+          texA: footTex, texB: paperTex, gloss: 0, glossBack: 0, sheen: 0 };
+        objects.push(ball);
+      }
+    }
+
+    // ---- the colouring page, once it has opened out ----
     paintOn = false;
     let overPage = false;
     if (foot && footTex && k1 >= 1 && !climbing && Math.abs(foot.x - cam) < (vw / 2) * zv + foot.w && Math.abs(foot.y - camY) < (vh / 2) * zv + foot.h) {
@@ -1012,7 +1028,7 @@
     });
 
     ptr.speed *= Math.exp(-dt * 2.5);
-    const gg = 0.85 + 0.3 * Math.sin(tt * 0.21) * Math.sin(tt * 0.13 + 2) + Math.min(ptr.speed / 1800, 1.1);
+    const gg = 0.85 + 0.3 * Math.sin(tt * 0.21) * Math.sin(tt * 0.13 + 2) + Math.min(ptr.speed / 1800, 1.1) + 1.5 * Math.sin(Math.PI * kf2);
     gust += (gg - gust) * (1 - Math.exp(-dt * 1.5));
     if (logo.open && logo.anchor) placeLogo(cam, camY);
     scene.render({ cam, camY, time: tt, gust, soft: 1.25, drags, dragR, colors: COLORS, objects, meshes, zoom, spin });
@@ -1049,11 +1065,17 @@
   const projIdx = (id) => PROJECTS.findIndex((p) => p.id === id);
   window.Picnic = {
     art: (id) => (id === COVER.id ? coverArt : projArt[id] || {}),
-    flip: (id) => (id === COVER.id ? ease(coverHover.p || 0) : ease((stampHover[projIdx(id)] || {}).p || 0)),
+    // picked up: a stamp curled over on hover lies flat again first, quickly, before it is carried off
+    settle: (id) => new Promise((done) => {
+      const h = id === COVER.id ? coverHover : stampHover[projIdx(id)] || {};
+      h.settle = true;
+      const check = () => (h.p > 0 ? requestAnimationFrame(check) : (h.settle = false, done()));
+      check();
+    }),
     rect(id) {
       const ob = id === COVER.id ? coverObj : (projObj[projIdx(id)] || {}).obj;
       if (!ob) return null;
-      const o = { ...ob, bend: [0, 0] }, [w, h] = o.size;
+      const o = { ...ob, bend: [0, 0], curl: null }, [w, h] = o.size;
       const at = (s, t) => scene.toScreen(scene.point(o, s, t), camNow, camNowY);
       const c = at(0, 0), a = at(w / 2, 0), b = at(0, h / 2);
       return { x: c[0], y: c[1], w: 2 * Math.hypot(a[0] - c[0], a[1] - c[1]), h: 2 * Math.hypot(b[0] - c[0], b[1] - c[1]), r: Math.atan2(a[1] - c[1], a[0] - c[0]) };

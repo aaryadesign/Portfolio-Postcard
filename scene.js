@@ -166,21 +166,108 @@ window.Scene = (() => {
   uniform vec2 size;
   uniform vec3 rot;
   uniform vec2 bend;
+  uniform vec3 curlA;
+  uniform vec2 curlB;
+  uniform vec4 crumple;
   uniform vec3 quad;
   uniform float shape;
   uniform vec2 cam;
   uniform float zoom, spin;
   uniform vec2 view;
   uniform vec4 wrect;
-  out vec3 vP; out vec3 vN; out vec2 vUV;
+  out vec3 vP; out vec3 vN; out vec2 vUV; out vec3 vQ; out vec3 vT; out vec3 vO; out float vC;
   ${COMMON}
+  float ch(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7)))*43758.5453); }
+  const float FSZ = 2.1;
+  vec3 h3(vec3 p){ p = vec3(dot(p, vec3(127.1, 311.7, 74.7)), dot(p, vec3(269.5, 183.3, 246.1)), dot(p, vec3(113.5, 271.9, 124.6))); return fract(sin(p)*43758.5453); }
+  // the facets of a crumpled ball: each patch of paper is a flat plane, tipped a little and set a little in or
+  // out; where a lower plane meets a higher one there is a lip, and a shadow tucked under it. p is where this
+  // bit of paper sits on the finished ball (a unit sphere), scaled to the facet size.
+  // returns (height off the sphere, as a share of its radius; how deep in shadow; distance to the edge), and the plane's tilt
+  vec3 warp(vec3 p){ return p + (vec3(sin(p.y*1.7 + 1.3), sin(p.z*1.9 + 4.1), sin(p.x*1.5 + 2.7)) + .5*vec3(sin(p.z*3.1), sin(p.x*2.9 + 1.), sin(p.y*3.3 + 2.)))*.32; }
+  vec3 facets(vec3 p, float TL, float OF, float W, out vec3 tilt){
+    vec3 P = normalize(p), i = floor(p);
+    float d1 = 9., d2 = 9.; vec3 a1, a2;
+    for (int z = -1; z <= 1; z++) for (int y = -1; y <= 1; y++) for (int x = -1; x <= 1; x++) {
+      vec3 g = i + vec3(x, y, z), fp = g + h3(g);
+      // weighted, so some facets grow big and others stay small, and every edge stays straight
+      vec3 df = fp - p; float d = dot(df, df) - h3(g + 2.9).y*.55;
+      if (d < d1) { d2 = d1; a2 = a1; d1 = d; a1 = g; } else if (d < d2) { d2 = d; a2 = g; }
+    }
+    vec3 c1 = normalize(a1 + h3(a1)), c2 = normalize(a2 + h3(a2));
+    vec3 n1 = normalize(c1 + (h3(a1 + 31.7) - .5)*TL), n2 = normalize(c2 + (h3(a2 + 31.7) - .5)*TL);
+    float o1 = (h3(a1 + 7.3).x - .5)*OF, o2 = (h3(a2 + 7.3).x - .5)*OF;
+    float k1 = dot(c1*(1. + o1), n1)/max(dot(P, n1), .3) - 1., k2 = dot(c2*(1. + o2), n2)/max(dot(P, n2), .3) - 1.;
+    // the step between two planes is eased over a short width, so it reads as a lip, not a stair
+    float e = d2 - d1, w = smoothstep(0., W, e);
+    tilt = n1 - P*dot(n1, P);
+    return vec3(mix((k1 + k2)*.5, k1, w), smoothstep(.02, .07, k2 - k1)*exp(-e*16.), e);
+  }
+  // the same planes, blended smoothly, for the shape itself: the mesh can't hold a sharp step, the shading can
+  float lumps(vec3 p, float TL, float OF){
+    vec3 P = normalize(p), i = floor(p);
+    float sw = 0., sh = 0.;
+    for (int z = -1; z <= 1; z++) for (int y = -1; y <= 1; y++) for (int x = -1; x <= 1; x++) {
+      vec3 g = i + vec3(x, y, z), fp = g + h3(g), c1 = normalize(fp);
+      vec3 df = fp - p; float w = exp(-(dot(df, df) - h3(g + 2.9).y*.55)*10.);
+      vec3 n1 = normalize(c1 + (h3(g + 31.7) - .5)*TL);
+      float o1 = (h3(g + 7.3).x - .5)*OF;
+      sh += w*(dot(c1*(1. + o1), n1)/max(dot(P, n1), .3) - 1.); sw += w;
+    }
+    return sh/max(sw, 1e-5);
+  }
   void main(){
     float s = a.x*size.x, t = a.y*size.y;
     vec3 lp, ln;
+    vQ = vec3(0., 0., 1.); vT = vec3(1., 0., 0.); vO = vec3(1., 0., 0.); vC = 0.;
     if (shape > .5) {
       // a leaf or a flower: curled along its length, cupped across it, and twisted
       lp = vec3(s, t, quad.x*s*s + quad.y*t*t + quad.z*s*t);
       ln = normalize(vec3(-(2.*quad.x*s + quad.z*t), -(2.*quad.y*t + quad.z*s), 1.));
+    } else if (crumple.y > 0.) {
+      // a sheet crumpled into a ball (crumple: how crumpled, ball radius, roll, half its diagonal). The sheet is
+      // drawn round a sphere from its middle, square mapped to a disc so every edge closes at the same point,
+      // drawing side in. On it, flat facets between straight creases, lumps where they sit in or out
+      float c = crumple.x, R = crumple.y;
+      vec2 q = a*2., dk = vec2(q.x*sqrt(1. - q.y*q.y*.5), q.y*sqrt(1. - q.x*q.x*.5));
+      float rd = min(length(dk), 1.), th1 = 2.*asin(rd*.999), pd = atan(dk.y*size.y, dk.x*size.x);
+      // it doesn't open evenly: some flaps let go before others, the outside before the middle
+      float wv = .5 + .22*sin(2.*pd + 1.3) + .18*sin(3.*pd + 4.1) + .1*sin(5.*pd + 2.2);
+      float o = clamp(((1. - c) - .25*wv*(1. - .5*rd))/.75, 0., 1.), cl = 1. - smoothstep(0., 1., o);
+      float m = smoothstep(0., 1., cl), D = crumple.w;
+      float L = length(vec2(s, t)), ph = atan(mix(t, dk.y*size.y, m), mix(s, dk.x*size.x, m));
+      float r = R/max(pow(cl, 1.6), 1e-4), th = mix(L, th1*R, m)/r;
+      lp = vec3(sin(th)*cos(ph), sin(th)*sin(ph), 1. - cos(th))*r;
+      ln = vec3(-sin(th)*cos(ph), -sin(th)*sin(ph), cos(th));
+      // where this bit of paper sits on the finished ball: the facets belong to it, so they keep their place as it opens
+      vec3 P = vec3(sin(th1)*cos(pd), sin(th1)*sin(pd), -cos(th1));
+      float h = clamp(lumps(P*FSZ, .55, .1), -.3, .3) + lumps(P*FSZ*2.4 + 11.3, .5, .05)*.25;
+      // half open it is still rumpled: the creases stand big against the sheet
+      lp -= ln*h*(R*cl + D*.3*cl*(1. - cl));
+      lp.z *= mix(1., .86, m);
+      vQ = P; vC = cl;
+      // the frame the facets tilt in: on the ball, and here, as it opens (along the sheet from its middle; outward)
+      vT = vec3(cos(th)*cos(ph), cos(th)*sin(ph), sin(th));
+      vO = vec3(cos(th1)*cos(pd), cos(th1)*sin(pd), sin(th1));
+      // rolling, about the ball's own centre
+      float ca = cos(crumple.z), sa = sin(crumple.z);
+      lp.z -= R; lp = vec3(lp.x*ca + lp.z*sa, lp.y, -lp.x*sa + lp.z*ca); lp.z += R;
+      ln = vec3(ln.x*ca + ln.z*sa, ln.y, -ln.x*sa + ln.z*ca);
+      vT = vec3(vT.x*ca + vT.z*sa, vT.y, -vT.x*sa + vT.z*ca);
+    } else if (curlB.x > 0.) {
+      // peeling up: past the fold line (across direction u, at d) the paper rolls round a cylinder of
+      // radius R and lies back over itself, face down; the whole of it slid along u to stay in place
+      vec2 u = curlA.xy, v = vec2(-u.y, u.x);
+      float al = dot(vec2(s, t), u), x = al - curlA.z, R = curlB.x, an = al, z = 0.;
+      vec2 nn = vec2(0., 1.);
+      if (x > 0.) {
+        float ag = min(x/R, 3.14159265);
+        an = curlA.z + R*sin(ag) - max(x - 3.14159265*R, 0.);
+        z = R*(1. - cos(ag));
+        nn = vec2(-sin(ag), cos(ag));
+      }
+      lp = vec3(u*(an + curlB.y) + v*dot(vec2(s, t), v), z);
+      ln = vec3(u*nn.x, nn.y);
     } else {
       float th0 = bend.x, k = bend.y, th = th0 + k*s;
       lp = abs(k) < 1e-6 ? vec3(s*cos(th0), t, s*sin(th0)) : vec3((sin(th) - sin(th0))/k, t, (cos(th0) - cos(th))/k);
@@ -189,12 +276,15 @@ window.Scene = (() => {
     float c = cos(rot.y), sn = sin(rot.y);
     lp = vec3(lp.x, lp.y*c - lp.z*sn, lp.y*sn + lp.z*c);
     ln = vec3(ln.x, ln.y*c - ln.z*sn, ln.y*sn + ln.z*c);
+    vT = vec3(vT.x, vT.y*c - vT.z*sn, vT.y*sn + vT.z*c);
     c = cos(rot.z); sn = sin(rot.z);
     lp = vec3(lp.x*c + lp.z*sn, lp.y, -lp.x*sn + lp.z*c);
     ln = vec3(ln.x*c + ln.z*sn, ln.y, -ln.x*sn + ln.z*c);
+    vT = vec3(vT.x*c + vT.z*sn, vT.y, -vT.x*sn + vT.z*c);
     c = cos(rot.x); sn = sin(rot.x);
     lp = vec3(lp.x*c - lp.y*sn, lp.x*sn + lp.y*c, lp.z);
     ln = vec3(ln.x*c - ln.y*sn, ln.x*sn + ln.y*c, ln.z);
+    vT = vec3(vT.x*c - vT.y*sn, vT.x*sn + vT.y*c, vT.z);
     vP = pos + lp; vN = ln; vUV = a + .5;
   #ifdef OCC
     vec2 g = vP.xy - L.xy/L.z*vP.z;
@@ -401,7 +491,7 @@ window.Scene = (() => {
 
   const OBJ_FS = `#version 300 es
   precision highp float;
-  in vec3 vP; in vec3 vN; in vec2 vUV;
+  in vec3 vP; in vec3 vN; in vec2 vUV; in vec3 vQ; in vec3 vT; in vec3 vO; in float vC;
   out vec4 o;
   uniform sampler2D texA, texB, texS, leafTex, occT, occW;
   uniform int mode;
@@ -409,10 +499,62 @@ window.Scene = (() => {
   uniform vec2 cam;
   uniform vec4 wrect;
   ${COMMON}
+  uniform vec4 crumple;
+  float ch(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7)))*43758.5453); }
+  const float FSZ = 2.1;
+  vec3 h3(vec3 p){ p = vec3(dot(p, vec3(127.1, 311.7, 74.7)), dot(p, vec3(269.5, 183.3, 246.1)), dot(p, vec3(113.5, 271.9, 124.6))); return fract(sin(p)*43758.5453); }
+  // the facets of a crumpled ball: each patch of paper is a flat plane, tipped a little and set a little in or
+  // out; where a lower plane meets a higher one there is a lip, and a shadow tucked under it. p is where this
+  // bit of paper sits on the finished ball (a unit sphere), scaled to the facet size.
+  // returns (height off the sphere, as a share of its radius; how deep in shadow; distance to the edge), and the plane's tilt
+  vec3 warp(vec3 p){ return p + (vec3(sin(p.y*1.7 + 1.3), sin(p.z*1.9 + 4.1), sin(p.x*1.5 + 2.7)) + .5*vec3(sin(p.z*3.1), sin(p.x*2.9 + 1.), sin(p.y*3.3 + 2.)))*.32; }
+  vec3 facets(vec3 p, float TL, float OF, float W, out vec3 tilt){
+    vec3 P = normalize(p), i = floor(p);
+    float d1 = 9., d2 = 9.; vec3 a1, a2;
+    for (int z = -1; z <= 1; z++) for (int y = -1; y <= 1; y++) for (int x = -1; x <= 1; x++) {
+      vec3 g = i + vec3(x, y, z), fp = g + h3(g);
+      // weighted, so some facets grow big and others stay small, and every edge stays straight
+      vec3 df = fp - p; float d = dot(df, df) - h3(g + 2.9).y*.55;
+      if (d < d1) { d2 = d1; a2 = a1; d1 = d; a1 = g; } else if (d < d2) { d2 = d; a2 = g; }
+    }
+    vec3 c1 = normalize(a1 + h3(a1)), c2 = normalize(a2 + h3(a2));
+    vec3 n1 = normalize(c1 + (h3(a1 + 31.7) - .5)*TL), n2 = normalize(c2 + (h3(a2 + 31.7) - .5)*TL);
+    float o1 = (h3(a1 + 7.3).x - .5)*OF, o2 = (h3(a2 + 7.3).x - .5)*OF;
+    float k1 = dot(c1*(1. + o1), n1)/max(dot(P, n1), .3) - 1., k2 = dot(c2*(1. + o2), n2)/max(dot(P, n2), .3) - 1.;
+    // the step between two planes is eased over a short width, so it reads as a lip, not a stair
+    float e = d2 - d1, w = smoothstep(0., W, e);
+    tilt = n1 - P*dot(n1, P);
+    return vec3(mix((k1 + k2)*.5, k1, w), smoothstep(.02, .07, k2 - k1)*exp(-e*16.), e);
+  }
+  // the same planes, blended smoothly, for the shape itself: the mesh can't hold a sharp step, the shading can
+  float lumps(vec3 p, float TL, float OF){
+    vec3 P = normalize(p), i = floor(p);
+    float sw = 0., sh = 0.;
+    for (int z = -1; z <= 1; z++) for (int y = -1; y <= 1; y++) for (int x = -1; x <= 1; x++) {
+      vec3 g = i + vec3(x, y, z), fp = g + h3(g), c1 = normalize(fp);
+      vec3 df = fp - p; float w = exp(-(dot(df, df) - h3(g + 2.9).y*.55)*10.);
+      vec3 n1 = normalize(c1 + (h3(g + 31.7) - .5)*TL);
+      float o1 = (h3(g + 7.3).x - .5)*OF;
+      sh += w*(dot(c1*(1. + o1), n1)/max(dot(P, n1), .3) - 1.); sw += w;
+    }
+    return sh/max(sw, 1e-5);
+  }
   void main(){
     vec3 V = normalize(vec3(cam, D/zoom) - vP);
     bool front = dot(vN, V) >= 0.;
     vec3 N = front ? vN : -vN;
+    // a crumpled sheet: each facet's tilt is worked out here for every pixel so its creases are straight and
+    // sharp, carried from the ball's frame into the sheet's as it opens
+    float fold = 0.;
+    if (crumple.y > 0.) {
+      vec3 Q = normalize(vQ), t1, t2, t3;
+      vec3 f = facets(Q*FSZ, .55, .1, .02, t1), g = facets(Q*FSZ*2.4 + 11.3, .5, .05, .02, t2), k = facets(Q*FSZ*6. + 5.1, .5, .02, .02, t3);
+      vec3 dn = t1 + t2*.6 + t3*.35, E1 = normalize(vO - Q*dot(vO, Q)), E2 = cross(Q, E1);
+      vec3 no = -normalize(vN), T = normalize(vT - no*dot(vT, no)), B = cross(no, T);
+      vec3 Nout = normalize(no + (T*dot(dn, E1) + B*dot(dn, E2))*pow(vC, .35)*2.6);
+      N = front ? -Nout : Nout;
+      fold = .75*smoothstep(0., .5, (f.y + g.y*.7 + k.y*.4)*vC*vC);
+    }
     vec4 c;
     if (mode == 1) {
       if (front) {
@@ -445,7 +587,7 @@ window.Scene = (() => {
     float occ = mix(tT.r, tW.r, clamp((hgt - vP.z)/150., 0., 1.))*smoothstep(vP.z + 3., vP.z + 28., hgt);
     float nl = dot(N, L);
     float d = max(nl, 0.)/L.z;
-    vec3 light = AMB + (SUN - AMB)*S*d*(1. - occ*.96);
+    vec3 light = (AMB + (SUN - AMB)*S*d*(1. - occ*.96))*(1. - fold);
     // leaves and petals are thin: sun on the far side still glows through, warmer and greener
     if (mode == 2) light += vec3(.5, .56, .3)*S*max(-nl, 0.)/L.z*(1. - occ)*.75;
     vec3 H = normalize(L + V);
@@ -555,9 +697,9 @@ window.Scene = (() => {
       gl.bindVertexArray(null);
       return { vao, count: idx.length };
     }
-    const cardGrid = grid(48, 8), squareGrid = grid(14, 14);
+    const cardGrid = grid(48, 8), squareGrid = grid(14, 14), paperGrid = grid(160, 160);
     const draw = (o) => {
-      const g = o.quad ? squareGrid : cardGrid;
+      const g = o.crumple ? paperGrid : o.quad ? squareGrid : cardGrid;
       gl.bindVertexArray(g.vao);
       gl.drawElements(gl.TRIANGLES, g.count, gl.UNSIGNED_SHORT, 0);
     };
@@ -643,6 +785,11 @@ window.Scene = (() => {
       gl.uniform2f(prog.u('size'), o.size[0], o.size[1]);
       gl.uniform3f(prog.u('rot'), o.rot ? o.rot[0] : 0, o.rot ? o.rot[1] : 0, o.rot ? o.rot[2] : 0);
       gl.uniform2f(prog.u('bend'), o.bend ? o.bend[0] : 0, o.bend ? o.bend[1] : 0);
+      const cu = o.curl || [1, 0, 0, 0, 0];
+      gl.uniform3f(prog.u('curlA'), cu[0], cu[1], cu[2]);
+      gl.uniform2f(prog.u('curlB'), cu[3], cu[4]);
+      const cm = o.crumple || [0, 0, 0, 0];
+      gl.uniform4f(prog.u('crumple'), cm[0], cm[1], cm[2], cm[3]);
       gl.uniform1f(prog.u('shape'), o.quad ? 1 : 0);
       gl.uniform3f(prog.u('quad'), ...(o.quad || [0, 0, 0]));
       gl.uniform2f(prog.u('cam'), cam[0], cam[1]);
@@ -783,6 +930,13 @@ window.Scene = (() => {
       const [th0, k] = o.bend || [0, 0];
       const th = th0 + k * s;
       let p = Math.abs(k) < 1e-6 ? [s * Math.cos(th0), t, s * Math.sin(th0)] : [(Math.sin(th) - Math.sin(th0)) / k, t, (Math.cos(th0) - Math.cos(th)) / k];
+      if (o.curl && o.curl[3] > 0) {
+        const [ux, uy, d, R, sh] = o.curl, al = s * ux + t * uy, pe = -s * uy + t * ux, x = al - d;
+        let an = al, z = 0;
+        if (x > 0) { const ag = Math.min(x / R, Math.PI); an = d + R * Math.sin(ag) - Math.max(x - Math.PI * R, 0); z = R * (1 - Math.cos(ag)); }
+        an += sh;
+        p = [ux * an - uy * pe, uy * an + ux * pe, z];
+      }
       const [rz, rx, ry] = o.rot || [0, 0, 0];
       let c = Math.cos(rx), sn = Math.sin(rx);
       p = [p[0], p[1] * c - p[2] * sn, p[1] * sn + p[2] * c];

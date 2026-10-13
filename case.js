@@ -1,5 +1,5 @@
-// Opening a case study. The stamp is picked up off the mat (turning back to its face if it was showing its
-// back), a letter slides up over the picnic, and the stamp is carried onto the letter's corner, where it is
+// Opening a case study. The stamp is picked up off the mat (lying flat again first if it was curled over),
+// a letter slides up over the picnic, and the stamp is carried onto the letter's corner, where it is
 // postmarked. The letter is its own page (work/<id>.html) in a frame over the scene, so the mat and
 // everything on it stay just where they were. Closing runs it all backwards. While a letter is open the
 // address reads /work/<id>, the letter's own page, so a copied link carries that case's preview.
@@ -58,6 +58,8 @@ window.Case = (() => {
     busy = true; openId = id; heldAt = scrollY;
     if (location.pathname !== at(id)) history.pushState({ case: id }, '', at(id));
     const art = window.Picnic ? Picnic.art(id) : {};
+    // a stamp curled over on hover lies flat again first, quickly, so it is measured and carried off flat
+    if (flyIn && art.front) await Picnic.settle(id);
     const rect = flyIn && art.front ? onScreen(Picnic.rect(id)) : null;
 
     document.body.classList.add('case');
@@ -67,16 +69,13 @@ window.Case = (() => {
     document.body.appendChild(frame);
     const loaded = new Promise((r) => frame.addEventListener('load', r, { once: true }));
 
-    // picked up off the mat, turning over to its face on the way
+    // picked up off the mat
     let fly = null, P = null, lifted = null;
     if (rect) {
       fly = copyOf(rect, art); P = pose(rect.w, rect.h);
-      const f0 = Picnic.flip(id);
       Picnic.hide(id, true);
       lifted = { x: rect.x, y: rect.y - 26, r: rect.r * 0.5, l: 1 };
       fly.animate([P(rect), P(lifted)], { duration: 420, easing: 'cubic-bezier(.3,1.3,.5,1)', fill: 'forwards' });
-      if (f0 > 0) fly.firstChild.animate([{ transform: `perspective(1400px) rotateY(${f0 * 180}deg)` }, { transform: 'perspective(1400px) rotateY(0deg)' }],
-        { duration: 520, easing: 'cubic-bezier(.3,1.1,.5,1)', fill: 'forwards' });
     }
     await loaded;
     contain();
