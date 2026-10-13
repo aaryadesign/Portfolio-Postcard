@@ -1,10 +1,20 @@
 # Static dev server with caching disabled, so edits show up on a plain reload.
 import http.server
+import os
 import sys
 from functools import partial
 
 
 class NoCacheHandler(http.server.SimpleHTTPRequestHandler):
+    # behave like GitHub Pages: the site lives under /Portfolio-Postcard/, and /page serves page.html
+    def translate_path(self, path):
+        if path.startswith("/Portfolio-Postcard/"):
+            path = path[len("/Portfolio-Postcard"):]
+        p = super().translate_path(path)
+        if not os.path.exists(p) and os.path.exists(p + ".html"):
+            return p + ".html"
+        return p
+
     def end_headers(self):
         self.send_header("Cache-Control", "no-store")
         super().end_headers()

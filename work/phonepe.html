@@ -126,104 +126,7 @@
   /* the app, in its own dark theme */
   .phone{position:relative; width:300px; height:620px; border-radius:46px; background:var(--pp-page); border:10px solid var(--ink); overflow:hidden; box-shadow:0 30px 50px -20px rgba(20,18,16,.35); color:#fff; font-family:'Inter',system-ui,sans-serif}
   .phone::before{content:""; position:absolute; top:10px; left:50%; width:84px; height:22px; margin-left:-42px; background:#000; border-radius:12px; z-index:5}
-  .scr{position:absolute; inset:0; padding:52px 14px 18px; display:flex; flex-direction:column}
-  .bar-t{display:flex; align-items:center; gap:10px; font-size:14px; font-weight:500; margin-bottom:14px}
-  .bar-t::before{content:"←"; font-size:16px}
-  .cta{height:46px; border-radius:12px; background:var(--pp-brand); display:grid; place-items:center; font-size:15px; font-weight:600; flex:none}
-  .plate{display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 10px 0 4px; border-radius:6px; background:#fff; color:#111; font-weight:600; font-size:14px; letter-spacing:.02em; white-space:nowrap; box-shadow:0 4px 10px rgba(0,0,0,.3)}
-  .plate i{font-style:normal; font-size:8px; font-weight:700; background:#103ee5; color:#fff; padding:5px 3px; border-radius:3px}
-
-  /* 1. find the car: the plate lifts off the input and lands on the car */
-  .find{background:radial-gradient(120% 60% at 50% 28%, #5a1fa8 0%, #2a0f52 45%, var(--pp-page) 75%)}
-  .find .car{position:absolute; left:0; right:0; top:84px; height:194px; background:url(assets/phonepe/car-front.webp) right center/cover no-repeat; opacity:0; transition:opacity .6s var(--ease)}
-  .find .looking{position:absolute; left:0; right:0; top:170px; text-align:center; font-size:13px; color:rgba(255,255,255,.7); opacity:0; transition:opacity .4s}
-  .find .plate{position:absolute; left:28px; top:520px; transform:scale(1.25); transform-origin:left center; transition:all .9s cubic-bezier(.6,0,.2,1); z-index:3}
-  .find .input{position:absolute; left:14px; right:14px; top:506px; height:58px; border-radius:12px; border:1px solid var(--pp-border); background:var(--pp-raised); transition:opacity .4s}
-  .find .input b{position:absolute; right:8px; top:8px; width:56px; height:40px; border-radius:8px; background:var(--pp-brand); display:grid; place-items:center; font-weight:500}
-  .find .sheet{position:absolute; left:0; right:0; bottom:0; top:288px; background:var(--pp-surface); border-radius:20px 20px 0 0; padding:18px 14px 18px; display:flex; flex-direction:column; transform:translateY(100%); transition:transform .7s var(--ease)}
-  .find .sheet .two{display:grid; grid-template-columns:1fr 1fr; gap:8px}
-  .find .sheet .two div{border:1px solid var(--pp-border); border-radius:10px; padding:8px 10px; font-size:11px; color:var(--pp-dim)}
-  .find .sheet .two b{display:block; color:#fff; font-size:14px; font-weight:500; margin-top:2px}
-  .find .kv{display:flex; justify-content:space-between; font-size:12px; color:var(--pp-dim); margin-top:12px}
-  .find .kv b{color:#fff; font-weight:500}
-  .find .kv em{font-style:normal; background:#fde2e2; color:#e5484d; padding:2px 6px; border-radius:4px; font-weight:500}
-  .find .claim{display:flex; gap:12px; align-items:center; font-size:12px; color:#fff; margin-top:14px}
-  .find .claim span{margin-left:auto; display:flex; gap:12px}
-  .find .claim i{display:inline-block; width:12px; height:12px; border-radius:50%; border:1.5px solid #999; vertical-align:-2px; margin-right:4px}
-  .find .claim i.on{background:var(--pp-brand); border-color:#fff}
-  .find .sheet .cta{margin-top:auto}
-  .find.s1 .input{opacity:0}
-  .find.s1 .plate{left:50%; top:200px; transform:translate(-50%,-50%) scale(1.45)}
-  .find.s1 .looking{opacity:1}
-  .find.s2 .input, .find.s3 .input{opacity:0}
-  .find.s2 .car, .find.s3 .car{opacity:1}
-  .find.s2 .plate, .find.s3 .plate{left:16px; top:250px; transform:scale(1.05)}
-  .find.s3 .sheet{transform:none}
-
-  /* 2. IDV: the car fills with colour as the value goes up */
-  .idv{background:radial-gradient(90% 40% at 50% 26%, rgba(140,1,204,var(--glow,.4)) 0%, transparent 70%), var(--pp-page)}
-  .idv .carbox{position:relative; margin:28px -6px 0; aspect-ratio:900/390}
-  .idv .carbox img{position:absolute; inset:0; width:100%; height:100%}
-  .idv .carbox .colour{position:absolute; inset:0; overflow:hidden; width:calc(var(--t) * 100%)}
-  .idv .carbox .colour img{width:auto; height:100%; max-width:none; aspect-ratio:900/390}
-  .idv .panel{margin-top:auto; background:var(--pp-surface); border-radius:16px; padding:18px 14px 14px}
-  .idv .lbl{font-size:12px; color:var(--pp-dim); text-align:center}
-  .idv .val{font-size:30px; font-weight:600; letter-spacing:-.02em; text-align:center; margin-top:4px; font-variant-numeric:tabular-nums}
-  .idv .ins{font-size:12px; color:var(--pp-dim); text-align:center; margin-top:4px}
-  .idv .ins b{color:#fff; font-weight:500}
-  .idv input{width:100%; margin:18px 0 6px; -webkit-appearance:none; appearance:none; height:30px; border-radius:15px; background:linear-gradient(90deg, #8c01cc 0, #c353f7 calc(var(--t) * 100%), #2a2a2a calc(var(--t) * 100%)); outline:none; cursor:grab}
-  .idv input::-webkit-slider-thumb{-webkit-appearance:none; width:26px; height:26px; border-radius:50%; background:radial-gradient(circle at 40% 35%, #fff, #d8d8d8); box-shadow:0 2px 6px rgba(0,0,0,.4)}
-  .idv input::-moz-range-thumb{width:26px; height:26px; border:0; border-radius:50%; background:radial-gradient(circle at 40% 35%, #fff, #d8d8d8)}
-  .idv .ends{display:flex; justify-content:space-between; font-size:11px; color:var(--pp-dim)}
-  .idv .hint{font-size:11px; color:var(--pp-dim); text-align:center; margin:10px 0 12px}
-
-  /* 3. plan: the illustration shows what each plan covers */
-  .plan .ill{position:relative; margin:4px 8px 0; aspect-ratio:700/505}
-  .plan .ill img{position:absolute; inset:0; width:100%; height:100%; transition:opacity .35s var(--ease)}
-  .plan .cap{font-size:12px; line-height:1.45; color:var(--pp-dim); text-align:center; margin:10px 10px 0; min-height:36px}
-  .plan .sec{margin:14px -14px 0; padding:16px 12px 0; background:var(--pp-surface); flex:1; display:flex; flex-direction:column; border-radius:20px 20px 0 0}
-  .plan .sec h4{margin:0 4px 10px; font-size:14px; font-weight:500}
-  .plan button{display:flex; align-items:center; gap:10px; width:100%; margin-bottom:8px; padding:12px; border-radius:14px; border:1px solid var(--pp-raised); background:var(--pp-surface); color:#fff; font:500 14px/1.3 'Inter',sans-serif; text-align:left; cursor:pointer}
-  .plan button small{display:block; color:var(--pp-dim); font-size:11px; font-weight:400; margin-top:2px}
-  .plan button em{margin-left:auto; font-style:normal; font-weight:500}
-  .plan button i{width:16px; height:16px; border-radius:50%; border:1.5px solid #999; flex:none}
-  .plan button.on{border-color:var(--pp-brand2); background:var(--pp-raised)}
-  .plan button.on i{background:var(--pp-brand); border-color:#fff}
-  .plan .cta{margin-top:auto}
-
-  /* 4. listing: six insurers, sortable */
-  .list .sort{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; margin:0 -14px 12px; padding:0 14px}
-  .list .sort::-webkit-scrollbar{display:none}
-  .list .sort button{flex:none; height:28px; padding:0 10px; border-radius:999px; border:1px solid var(--pp-border); background:none; color:#ddd; font:500 11px 'Inter',sans-serif; cursor:pointer}
-  .list .sort button.on{background:#fff; color:#111; border-color:#fff}
-  .list .cards{position:relative; flex:1}
-  .ins-card{position:absolute; left:0; right:0; height:96px; background:var(--pp-surface); border-radius:14px; padding:12px; display:grid; grid-template-columns:36px 1fr auto; gap:4px 10px; align-items:center; transition:transform .6s var(--ease)}
-  .ins-card img, .ins-card .mono{width:36px; height:36px; border-radius:9px; grid-row:span 2}
-  .ins-card .mono{display:grid; place-items:center; font-weight:600; font-size:13px}
-  .ins-card b{font-size:13px; font-weight:500}
-  .ins-card small{font-size:10px; color:var(--pp-dim); grid-column:2}
-  .ins-card .buy{grid-row:span 2; grid-column:3; grid-row-start:1; background:var(--pp-page); border-radius:8px; padding:6px 10px; text-align:center; font-size:10px; color:var(--pp-brand2)}
-  .ins-card .buy span{display:block; font-size:13px; font-weight:600; color:#d9c2ff; margin-top:2px}
-  .ins-card .stats{grid-column:1 / -1; display:flex; gap:14px; font-size:10px; color:var(--pp-dim); border-top:1px solid var(--pp-raised); padding-top:6px; margin-top:2px}
-  .ins-card .stats b{font-size:11px; color:#fff}
-
-  /* 5. you're covered */
-  .done{background:radial-gradient(120% 55% at 50% 62%, #0f822b 0%, #064a25 40%, #04150b 70%, var(--pp-page) 100%); align-items:center; text-align:center}
-  .done .tick{width:30px; height:30px; border-radius:50%; border:2px solid #bfedd1; color:#bfedd1; display:grid; place-items:center; font-size:15px; margin-top:6px}
-  .done h4{margin:10px 0 0; font-size:18px; font-weight:600; color:#d6f0db}
-  .done .sub2{font-size:12px; color:#bfe6c8; margin-top:4px}
-  .done .car{width:100%; margin-top:8px}
-  .ticket{position:relative; width:100%; margin-top:auto; background:var(--pp-surface); border-radius:20px; text-align:left; overflow:hidden}
-  .ticket .top{background:var(--pp-raised); padding:12px 14px; display:flex; align-items:center; gap:10px}
-  .ticket .top img{width:32px; height:32px; border-radius:8px}
-  .ticket .top b{font-size:13px; font-weight:500}
-  .ticket .top small{display:block; font-size:10px; color:var(--pp-dim)}
-  .ticket .seam{height:0; border-top:1.5px dashed #333}
-  .ticket .rows{padding:10px 14px 0; display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:10px; color:var(--pp-dim)}
-  .ticket .rows b{display:block; color:#fff; font-size:12px; font-weight:500}
-  .ticket .acts{display:flex; gap:8px; padding:12px 14px 14px}
-  .ticket .acts span{flex:2; height:40px; border-radius:10px; background:#5e0fb3; display:grid; place-items:center; font-size:13px; font-weight:600}
-  .ticket .acts span + span{flex:1; background:var(--pp-page)}
+  .phone iframe{position:absolute; left:0; top:30px; width:390px; height:794px; border:0; transform-origin:0 0; transform:scale(.71795)}
 
   /* ---------- how it was made ---------- */
   .sub{margin-top:72px}
@@ -270,6 +173,7 @@
     .problems li{grid-template-columns:40px minmax(0,1fr)}
     .log div{grid-template-columns:72px minmax(0,1fr); gap:16px}
     .phone{width:280px; height:580px}
+    .phone iframe{top:28px; height:798px; transform:scale(.66667)}
   }
 </style>
 </head>
@@ -354,21 +258,8 @@
 
     <div class="duo rv">
       <div class="shot">
-        <div class="phone"><div class="scr find" id="find">
-          <div class="car"></div>
-          <div class="looking">Looking for your vehicle…</div>
-          <div class="input"><b>→</b></div>
-          <div class="plate"><i>IND</i>MH 01 AB 0011</div>
-          <div class="sheet">
-            <div class="two"><div>Vehicle<b>Tata Nexon</b></div><div>Owner<b>A*R*A *H*H</b></div></div>
-            <div class="kv"><span>Variant</span><b>XM 1.2 Turbo</b></div>
-            <div class="kv"><span>Registration year</span><b>2020</b></div>
-            <div class="kv"><span>Policy expiry</span><em>Expires in 3 days</em></div>
-            <div class="claim">Did you make a claim?<span><span><i class="on"></i>Yes</span><span><i></i>No</span></span></div>
-            <div class="cta">Explore Plans</div>
-          </div>
-        </div></div>
-        <span class="label">Recording to add</span>
+        <div class="phone"><iframe data-app="searching" title="PhonePe Car Insurance: confirming your car" loading="lazy"></iframe></div>
+        <span class="label">Did you make a claim?</span>
       </div>
       <div>
         <h3>Confirm the car before anything else</h3>
@@ -383,22 +274,7 @@
 
     <div class="duo flip rv">
       <div class="shot">
-        <div class="phone"><div class="scr idv" id="idv" style="--t:.35">
-          <div class="bar-t">Select IDV</div>
-          <div class="carbox">
-            <img src="assets/phonepe/car-side-grey.webp" alt="">
-            <div class="colour"><img src="assets/phonepe/car-side.webp" alt=""></div>
-          </div>
-          <div class="panel">
-            <div class="lbl">Insured Declared Value</div>
-            <div class="val" id="idvVal">₹2,44,050</div>
-            <div class="ins"><b id="idvIns">345</b> insurers cover this</div>
-            <input type="range" min="0" max="1000" value="347" id="idvIn" aria-label="Choose your IDV">
-            <div class="ends"><span>₹1,06,050</span><span>₹5,04,050</span></div>
-            <div class="hint">Higher IDV, more cover, higher premium</div>
-            <div class="cta">Apply</div>
-          </div>
-        </div></div>
+        <div class="phone"><iframe data-app="select-idv" title="PhonePe Car Insurance: choosing your IDV" loading="lazy"></iframe></div>
         <span class="label">Drag the slider</span>
       </div>
       <div>
@@ -410,17 +286,7 @@
 
     <div class="duo rv">
       <div class="shot">
-        <div class="phone"><div class="scr plan" id="plan">
-          <div class="bar-t">Choose your preferences</div>
-          <div class="ill"><img src="assets/phonepe/plan-color.webp" alt="" id="illC"><img src="assets/phonepe/plan-third.webp" alt="" id="illT" style="opacity:0"></div>
-          <p class="cap" id="cap">Comprehensive covers damage to your car, plus damage you cause to others.</p>
-          <div class="sec">
-            <h4>Choose your plan</h4>
-            <button type="button" data-p="third"><i></i><span>Third party<small>Only others' damage</small></span><em>₹1,540</em></button>
-            <button type="button" data-p="comp" class="on"><i></i><span>Comprehensive<small>Your car, and others'</small></span><em>₹3,540</em></button>
-            <div class="cta">Explore Plans</div>
-          </div>
-        </div></div>
+        <div class="phone"><iframe data-app="plans" title="PhonePe Car Insurance: choosing your plan" loading="lazy"></iframe></div>
         <span class="label">Tap a plan</span>
       </div>
       <div>
@@ -436,15 +302,7 @@
 
     <div class="duo flip rv">
       <div class="shot">
-        <div class="phone"><div class="scr list" id="list">
-          <div class="bar-t">Select Plan</div>
-          <div class="sort" id="sort">
-            <button type="button" data-k="pop" class="on">Most popular</button>
-            <button type="button" data-k="claim">Highest claim %</button>
-            <button type="button" data-k="price">Lowest price</button>
-          </div>
-          <div class="cards" id="cards"></div>
-        </div></div>
+        <div class="phone"><iframe data-app="select-plan" title="PhonePe Car Insurance: the insurer listing" loading="lazy"></iframe></div>
         <span class="label">Sort the list</span>
       </div>
       <div>
@@ -462,19 +320,8 @@
 
     <div class="duo rv">
       <div class="shot">
-        <div class="phone"><div class="scr done">
-          <div class="tick">✓</div>
-          <h4>Congratulations!</h4>
-          <div class="sub2">Your coverage starts on 2 Nov</div>
-          <img class="car" src="assets/phonepe/car-main.webp" alt="">
-          <div class="ticket">
-            <div class="top"><img src="assets/phonepe/citi.webp" alt=""><div><b>Citi Bank</b><small>Comprehensive plan</small></div></div>
-            <div class="seam"></div>
-            <div class="rows"><div>Vehicle<b>MH 01 AB 0011</b></div><div>Valid till<b>2 Nov 2027</b></div></div>
-            <div class="acts"><span>Download Policy</span><span>Share</span></div>
-          </div>
-        </div></div>
-        <span class="label">Recording to add</span>
+        <div class="phone"><iframe data-app="congratulations" title="PhonePe Car Insurance: you're covered" loading="lazy"></iframe></div>
+        <span class="label">Scroll for more</span>
       </div>
       <div>
         <h3>You're covered</h3>
@@ -559,63 +406,13 @@
   }), { threshold: 0.2 });
   document.querySelectorAll('.rv').forEach((el) => io.observe(el));
 
-  // 1. the plate: on the input, searching, landed on the car, then the details come up
-  const find = document.getElementById('find');
-  let fs = 0;
-  const FIND_T = [1600, 1700, 900, 3600];
-  (function step() {
-    fs = (fs + 1) % 4;
-    find.className = 'scr find' + (fs ? ' s' + fs : '');
-    if (fs === 3) find.classList.add('s2');
-    setTimeout(step, FIND_T[fs]);
-  })();
-
-  // 2. IDV: the same numbers as the app: ₹1,06,050 to ₹5,04,050, rounded to 50, with fewer insurers as it rises
-  const idv = document.getElementById('idv'), idvIn = document.getElementById('idvIn');
-  const REC = (244050 - 106050) / 398000; // the recommended value, where the slider opens
-  const inr = (n) => '₹' + n.toLocaleString('en-IN');
-  const insurers = (t) => Math.round(t < REC ? 380 - (35 * t) / REC : 345 - (343 * (t - REC)) / (1 - REC));
-  function setIdv(t) {
-    idv.style.setProperty('--t', t);
-    idv.style.setProperty('--glow', (0.12 + 0.6 * t).toFixed(2));
-    document.getElementById('idvVal').textContent = inr(Math.round((106050 + t * 398000) / 50) * 50);
-    document.getElementById('idvIns').textContent = insurers(t);
-  }
-  idvIn.addEventListener('input', () => {
-    let t = idvIn.value / 1000;
-    if (Math.abs(t - REC) < 0.03) t = REC;
-    setIdv(t);
-  });
-  setIdv(REC);
-
-  // 3. plan: the illustration greys out everything you wouldn't be covering
-  const CAP = { comp: 'Comprehensive covers damage to your car, plus damage you cause to others.', third: 'Third party covers only the damage your vehicle causes to others.' };
-  document.querySelectorAll('#plan button').forEach((b) => b.addEventListener('click', () => {
-    document.querySelectorAll('#plan button').forEach((x) => x.classList.toggle('on', x === b));
-    const third = b.dataset.p === 'third';
-    document.getElementById('illT').style.opacity = third ? 1 : 0;
-    document.getElementById('illC').style.opacity = third ? 0 : 1;
-    document.getElementById('cap').textContent = CAP[b.dataset.p];
-  }));
-
-  // 4. listing: four of the app's six insurers, with its numbers, reordered by the chip you pick
-  const INS = [
-    { n: 'Axis Bank', logo: 'axis', idv: '2,38,400', price: 4610, claim: 97.2, garage: '9,500+', pop: 1 },
-    { n: 'Citi Bank', logo: 'citi', idv: '2,44,050', price: 4750, claim: 98.8, garage: '12,000+', pop: 2 },
-    { n: 'ICICI Lombard', logo: 'icici', idv: '2,49,600', price: 4980, claim: 99.1, garage: '13,400+', pop: 3 },
-    { n: 'HDFC Ergo', logo: 'hdfc', idv: '2,33,900', price: 4520, claim: 96.5, garage: '8,700+', pop: 4 },
-  ];
-  const cards = document.getElementById('cards');
-  cards.innerHTML = INS.map((x) => `<div class="ins-card"><img src="assets/phonepe/${x.logo}.webp" alt=""><b>${x.n}</b><small>IDV ₹${x.idv}</small>
-    <div class="buy">Buy Now<span>${inr(x.price)}</span></div><div class="stats"><span><b>${x.garage}</b> garages</span><span><b>${x.claim}%</b> claims settled</span></div></div>`).join('');
-  const els = [...cards.children];
-  const ORDER = { pop: (a, b) => a.pop - b.pop, claim: (a, b) => b.claim - a.claim, price: (a, b) => a.price - b.price };
-  function sortBy(k) {
-    [...INS].sort(ORDER[k]).forEach((x, i) => { els[INS.indexOf(x)].style.transform = `translateY(${i * 106}px)`; });
-    document.querySelectorAll('#sort button').forEach((b) => b.classList.toggle('on', b.dataset.k === k));
-  }
-  document.querySelectorAll('#sort button').forEach((b) => b.addEventListener('click', () => sortBy(b.dataset.k)));
-  sortBy('pop');
+  // the screens are the app itself (its web build in pp/), each opening on its own step; loaded as they come near
+  const apps = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    e.target.src = '/Portfolio-Postcard/work/pp/' + e.target.dataset.app + '?embed';
+    apps.unobserve(e.target);
+  }), { rootMargin: '400px 0px' });
+  document.querySelectorAll('iframe[data-app]').forEach((f) => apps.observe(f));
 
   // ---- the letter ----
   const embed = document.documentElement.classList.contains('embed');
