@@ -626,7 +626,7 @@ window.Print = (() => {
   // all in sheet units from the top left, centres for holes. Printed like a shop sticker sheet: one warm
   // yellow all over, the title stacked in fat round black letters in the top corner, and a hello over the
   // contact stickers in the same letters.
-  const SHEET = { yellow: '#ffbe12', ink: '#141210', cream: '#fff8e4', blue: '#1d3fa6', blueDeep: '#0b1650' };
+  const SHEET = { yellow: '#eeac0c', ink: '#141210', cream: '#fff8e4', blue: '#1a3794', blueDeep: '#0b1650' };
   function stickerSheet(s) {
     const { W, H, K, pad } = s, c = canvas(W * K, H * K), ctx = c.getContext('2d');
     paper(ctx, W, H, '#fbfaf5', 131, 5);
