@@ -78,6 +78,7 @@
   .facts dd{margin-top:6px; font-size:16px; font-weight:600; line-height:1.4}
   .photo{margin-top:48px; border-radius:20px; overflow:hidden; border:1px solid var(--line)}
   .photo img{width:100%; aspect-ratio:1800/819; object-fit:cover}
+  .photo video{display:block; width:100%; aspect-ratio:16/9; object-fit:cover}
 
   /* ---------- sections ---------- */
   section{padding-top:144px}
@@ -284,7 +285,7 @@
       <div><dt>Timeline</dt><dd>6 to 8 months</dd></div>
       <div><dt>Status</dt><dd>Live across the network</dd></div>
     </dl>
-    <div class="photo"><img src="assets/quickmart/hero.jpg" alt="A QuickMart store front, open 24/7"></div>
+    <div class="photo"><video id="intro" src="assets/quickmart/intro.mp4" poster="assets/quickmart/intro.jpg" muted loop playsinline preload="metadata" aria-label="QuickMart: the store, then the backend for customers, vouchers, stock and pricing"></video></div>
   </header>
 
   <!-- WHERE IT STARTED -->
@@ -451,7 +452,10 @@
 <script>
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const N = (n) => '₦' + n.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  // the opening video plays only while it's on screen
+  const intro = $('#intro');
+  new IntersectionObserver(([e]) => { if (e.isIntersecting) intro.play().catch(() => {}); else intro.pause(); }, { threshold: 0.4 }).observe(intro);
+  const N =(n) => '₦' + n.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const io = new IntersectionObserver((es) => es.forEach((e) => {
     if (!e.isIntersecting) return;
     e.target.classList.add('in');
