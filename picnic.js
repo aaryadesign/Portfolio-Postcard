@@ -1288,12 +1288,32 @@
 
   // sound is off until asked for; once asked, it comes back on the next visit at the first touch
   const btn = $('#sound');
+  // the three dots: each bar picks a new height on its own beat, the middle one reaching furthest; off, they settle
+  // back into dots. Still, for reduced motion: three fixed heights
+  const dots = [...btn.querySelectorAll('i')], timers = [];
+  const meter = (v) => {
+    timers.forEach(clearTimeout); timers.length = 0;
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    dots.forEach((d, i) => {
+      if (!v) { d.style.height = ''; return; }
+      if (still) { d.style.height = [12, 18, 12][i] + 'px'; return; }
+      const reach = i === 1 ? 20 : 14;
+      const beat = () => {
+        const ms = 120 + Math.random() * 160;
+        d.style.setProperty('--d', (ms / 1000).toFixed(2) + 's');
+        d.style.height = (6 + Math.random() * reach).toFixed(1) + 'px';
+        timers[i] = setTimeout(beat, ms);
+      };
+      timers[i] = setTimeout(beat, i * 70);
+    });
+  };
   const store = (v) => { try { localStorage.setItem('picnic-sound', v ? '1' : '0'); } catch (e) {} };
   const setSound = (v) => {
     Garden.set(v);
     if (props) props.setRadio(v);
     btn.setAttribute('aria-pressed', String(v));
-    btn.querySelector('.label').textContent = v ? 'Sound on' : 'Sound off';
+    btn.setAttribute('aria-label', v ? 'Sound on' : 'Sound off');
+    meter(v);
   };
   btn.addEventListener('click', () => { const v = !Garden.on; setSound(v); store(v); });
   let wanted = false;

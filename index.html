@@ -38,21 +38,17 @@
   /* tabbing to a link brings the words into view, so focus is never invisible */
   .copy:focus-within { position: fixed; left: 16px; top: 16px; z-index: 2; width: auto; height: auto; max-height: calc(100% - 32px); overflow: auto;
     clip-path: none; padding: 16px 20px; border-radius: 12px; background: rgba(251, 247, 238, 0.97); line-height: 1.5; }
-  #sound { position: fixed; right: 16px; bottom: 16px; display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 12px;
+  /* the sound pill: three dots at rest; with the sound on they stretch and fall like a level meter */
+  #sound { position: fixed; right: 16px; bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 4px; width: 56px; height: 36px; padding: 0;
     border: 0; border-radius: 999px; background: rgba(251, 247, 238, 0.94); color: #2b2824; cursor: pointer;
-    font: 500 12px/1 'Geist Mono', ui-monospace, monospace; letter-spacing: 0.06em; text-transform: uppercase;
     box-shadow: 0 1px 2px rgba(70, 20, 25, 0.2), 0 8px 20px rgba(70, 20, 25, 0.16);
     opacity: 0; transition: opacity 0.9s ease 0.6s, transform 0.2s ease; }
   body.on #sound { opacity: 1; }
   #sound:hover { transform: translateY(-1px); }
   #sound:focus-visible { outline: 2px solid #2b2824; outline-offset: 2px; }
-  #sound .bars { display: flex; align-items: flex-end; gap: 2px; width: 14px; height: 12px; }
-  #sound .bars i { flex: 1; height: 3px; border-radius: 1px; background: currentColor; transition: height 0.3s ease; }
-  #sound[aria-pressed="true"] .bars i { animation: bar 0.9s ease-in-out infinite alternate; }
-  #sound[aria-pressed="true"] .bars i:nth-child(2) { animation-delay: -0.3s; }
-  #sound[aria-pressed="true"] .bars i:nth-child(3) { animation-delay: -0.6s; }
-  @keyframes bar { from { height: 3px; } to { height: 12px; } }
-  @media (prefers-reduced-motion: reduce) { #sound[aria-pressed="true"] .bars i { animation: none; height: 8px; } }
+  #sound i { display: block; width: 6px; height: 6px; border-radius: 3px; background: currentColor; transition: height 0.45s cubic-bezier(0.4, 0, 0.2, 1); }
+  #sound[aria-pressed="true"] i { transition-duration: var(--d, 0.16s); }
+  @media (prefers-reduced-motion: reduce) { #sound i { transition: none; } }
   .nogl #sound { display: none; }
   /* leaving an email on the sticker sheet's blank: a cream card that pops up beside it */
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
@@ -169,7 +165,7 @@
 <body>
   <div id="track"></div>
   <canvas id="scene" aria-hidden="true"></canvas>
-  <button id="sound" type="button" aria-pressed="false"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="label">Sound off</span></button>
+  <button id="sound" type="button" aria-pressed="false" aria-label="Sound off"><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i></button>
   <main class="copy">
     <h1>Aarya Shah</h1>
     <p>AI Product Designer, 3+ years of experience. Open to work.</p>
