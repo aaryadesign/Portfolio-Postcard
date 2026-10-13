@@ -1,9 +1,13 @@
 // Opening a case study. The stamp is picked up off the mat (turning back to its face if it was showing its
 // back), a letter slides up over the picnic, and the stamp is carried onto the letter's corner, where it is
 // postmarked. The letter is its own page (work/<id>.html) in a frame over the scene, so the mat and
-// everything on it stay just where they were. Closing runs it all backwards.
+// everything on it stay just where they were. Closing runs it all backwards. While a letter is open the
+// address reads /work/<id>, the letter's own page, so a copied link carries that case's preview.
 window.Case = (() => {
-  const PAGES = { goalkeeper: 'work/goalkeeper.html', phonepe: 'work/phonepe.html', 'ride-through-the-valley': 'work/ride-through-the-valley.html', dayro: 'work/dayro.html', lamad: 'work/lamad.html', transporter: 'work/transporter.html', quickmart: 'work/quickmart.html' };
+  const PAGES = { goalkeeper: '/work/goalkeeper.html', phonepe: '/work/phonepe.html', 'ride-through-the-valley': '/work/ride-through-the-valley.html', dayro: '/work/dayro.html', lamad: '/work/lamad.html', transporter: '/work/transporter.html', quickmart: '/work/quickmart.html' };
+  const at = (id) => '/work/' + id;
+  // the case in the address: /work/<id>, or #<id> from older links and from a letter's page sending you here
+  const inAddress = () => { const m = location.pathname.match(/^\/work\/([^/.]+)(\.html)?$/); return m ? m[1] : location.hash.slice(1); };
   let frame = null, openId = null, busy = false;
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -52,7 +56,7 @@ window.Case = (() => {
   async function open(id, flyIn = true) {
     if (busy || openId || !PAGES[id]) return;
     busy = true; openId = id; heldAt = scrollY;
-    if (location.hash !== '#' + id) history.pushState({ case: id }, '', '#' + id);
+    if (location.pathname !== at(id)) history.pushState({ case: id }, '', at(id));
     const art = window.Picnic ? Picnic.art(id) : {};
     const rect = flyIn && art.front ? onScreen(Picnic.rect(id)) : null;
 
@@ -105,7 +109,7 @@ window.Case = (() => {
   function close() {
     if (!openId || busy) return;
     if (history.state && history.state.case === openId) history.back();
-    else { history.replaceState(null, '', location.pathname + location.search); shut(); }
+    else { history.replaceState(null, '', '/' + location.search); shut(); }
   }
   async function shut() {
     if (!openId || busy) return;
@@ -145,20 +149,22 @@ window.Case = (() => {
     if (!openId || busy || !PAGES[id] || id === openId) return;
     if (window.Picnic) Picnic.hide(openId, false);
     openId = id;
-    history.replaceState({ case: id }, '', '#' + id);
+    history.replaceState({ case: id }, '', at(id));
     frame.addEventListener('load', () => { contain(); frame.contentWindow.scrollTo(0, 0); frame.contentWindow.Letter.land(); frame.focus(); }, { once: true });
     // replace, so the browser's back button still closes the letter rather than turning back a page
     frame.contentWindow.location.replace(new URL(PAGES[id] + '?embed', location.href).href);
   }
 
   addEventListener('popstate', () => {
-    const id = location.hash.slice(1);
+    const id = inAddress();
     if (openId && id !== openId) shut();
     else if (!openId && PAGES[id]) open(id);
   });
   // arriving with a case study in the address: the letter slides up once the picnic is showing
-  if (PAGES[location.hash.slice(1)]) {
-    const id = location.hash.slice(1);
+  if (PAGES[inAddress()]) {
+    const id = inAddress();
+    // no state: closing this one clears the address rather than stepping back off the site
+    history.replaceState(null, '', at(id));
     const go = () => (document.body.classList.contains('on') ? setTimeout(() => open(id, false), 600) : setTimeout(go, 200));
     addEventListener('load', go);
   }
