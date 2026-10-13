@@ -279,11 +279,26 @@ window.Print = (() => {
   }
   const SLOT_ROT = 0.05;
 
+  // The border round the back: airmail dashes, slanted, in the card's red and green, a little way in from the edge
+  function frame(ctx, H, portrait) {
+    const W = 1000, o = portrait ? 26 : 20, b = portrait ? 9 : 7, d = portrait ? 20 : 16, g = portrait ? 10 : 8;
+    ctx.save();
+    ctx.globalCompositeOperation = 'multiply';
+    ctx.beginPath(); ctx.rect(o, o, W - 2 * o, H - 2 * o); ctx.rect(o + b, o + b, W - 2 * (o + b), H - 2 * (o + b));
+    ctx.clip('evenodd');
+    for (let t = -H, i = 0; t < W + H; t += d + g, i++) {
+      ctx.fillStyle = i % 2 ? '#3f6e50' : '#c8283a';
+      ctx.beginPath(); ctx.moveTo(t, 0); ctx.lineTo(t + d, 0); ctx.lineTo(t + d - H, H); ctx.lineTo(t - H, H); ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+  }
+
   function back({ cw, ch, TW, portrait, cover, mark, peeled, intro, lines }) {
     const U = 1000, H = (ch / cw) * U, k = TW / U;
     const c = canvas(TW, H * k), ctx = c.getContext('2d');
     paper(ctx, c.width, c.height, PAPER, 71, 12);
     ctx.scale(k, k);
+    frame(ctx, H, portrait);
     const Lo = backLayout(portrait, H), s = Lo.slot, sh = (s.w * SH) / SW;
     ctx.fillStyle = INK;
     ctx.textBaseline = 'alphabetic';
