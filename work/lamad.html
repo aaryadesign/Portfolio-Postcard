@@ -22,7 +22,9 @@
 <meta name="twitter:image" content="https://aarya.wtf/work/og/lamad.jpg">
 <script>if (/[?&]embed/.test(location.search)) document.documentElement.classList.add('embed');</script>
 <!-- opened on its own, this page is the letter's address: people go to the picnic, with it open; link previews still read this page -->
-<script>if (!/[?&]embed/.test(location.search) && window.top === window) location.replace('/#lamad');</script>
+<script>if (!/[?&](embed|minimal)/.test(location.search) && window.top === window) location.replace('/#lamad');</script>
+<!-- opened from the minimal portfolio, it stays there: on that paper, in the theme picked there, and every way out leads back to it -->
+<script>if (/[?&]minimal/.test(location.search)) { const h = document.documentElement; let t = null; try { t = localStorage.getItem('minimal-theme'); } catch (e) {} h.classList.add('minimal'); h.dataset.theme = t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; }</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
@@ -48,6 +50,7 @@
     background-image:linear-gradient(90deg, rgba(204,26,46,.42) 50%, transparent 50%), linear-gradient(rgba(204,26,46,.42) 50%, transparent 50%);
     background-size:88px 88px}
   html.embed, html.embed body{background:transparent}
+  html.minimal, html.minimal body{background:#fbf7ec} html.minimal[data-theme="dark"], html.minimal[data-theme="dark"] body{background:#171512}
   .back{position:fixed; top:16px; left:16px; z-index:10; display:inline-flex; gap:8px; align-items:center; height:40px; padding:0 16px; border:0; border-radius:999px; background:var(--paper); color:var(--ink); font:500 15px/1 'Geist',system-ui,sans-serif; cursor:pointer;
     box-shadow:0 1px 2px rgba(70,20,25,.2), 0 8px 20px rgba(70,20,25,.16); transition:transform .2s var(--ease)}
   .back:hover{transform:translateY(-1px)}
@@ -571,11 +574,13 @@
       });
     },
   };
-  const leave = () => (host && host.Case ? host.Case.close() : (location.href = '../'));
+  const minimal = document.documentElement.classList.contains('minimal');
+  const leave = () => (host && host.Case ? host.Case.close() : (location.href = minimal ? '../minimal/' : '../'));
   document.getElementById('back').addEventListener('click', leave);
   addEventListener('keydown', (e) => { if (e.key === 'Escape' && !e.target.isContentEditable && e.target.tagName !== 'TEXTAREA') leave(); });
   document.querySelectorAll('[data-go]').forEach((a) => a.addEventListener('click', (e) => {
     if (host && host.Case) { e.preventDefault(); host.Case.go(a.dataset.go); }
+    else if (minimal) { e.preventDefault(); location.href = a.dataset.go + '.html?minimal'; }
   }));
 </script>
 </body>

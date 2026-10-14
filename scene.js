@@ -912,7 +912,7 @@ window.Scene = (() => {
         bindTex(po, 'texB', 1, o.texB || o.texA);
         bindTex(po, 'texS', 2, o.texS);
         gl.uniform1f(po.u('mixB'), o.mixB || 0);
-        gl.uniform1f(po.u('sigReveal'), o.sig == null ? 2 : o.sig);
+        gl.uniform1f(po.u('sigReveal'), o.sig == null ? (o.texS ? 2 : -1) : o.sig);
         gl.uniform1f(po.u('gloss'), o.gloss == null ? 0.05 : o.gloss);
         gl.uniform1f(po.u('glossBack'), o.glossBack == null ? 0.05 : o.glossBack);
         gl.uniform1f(po.u('sheen'), o.sheen || 0);

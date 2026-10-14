@@ -18,7 +18,7 @@
 <meta property="og:image" content="https://aarya.wtf/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="A postcard reading Aarya Shah on a red gingham picnic mat, stamped Product Designer">
+<meta property="og:image:alt" content="A postcard photo of Aarya Shah on a red gingham picnic mat">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Aarya Shah — Product Designer">
 <meta name="twitter:description" content="Product designer who designs and builds. Case studies on PhonePe, Dayro, LAMAD, Transporter and Goalkeeper, spread out on a picnic mat.">
@@ -53,6 +53,15 @@
   /* tabbing to a link brings the words into view, so focus is never invisible */
   .copy:focus-within { position: fixed; left: 16px; top: 16px; z-index: 2; width: auto; height: auto; max-height: calc(100% - 32px); overflow: auto;
     clip-path: none; padding: 16px 20px; border-radius: 12px; background: rgba(251, 247, 238, 0.97); line-height: 1.5; }
+  /* the way to the minimal portfolio: on the hero only, it fades away as soon as the postcard starts to turn */
+  #minimal { position: fixed; right: 16px; top: 16px; z-index: 4; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px;
+    border-radius: 999px; background: rgba(251, 247, 238, 0.94); color: #2b2824; font: 500 15px/1 'Geist', system-ui, sans-serif; text-decoration: none;
+    box-shadow: 0 1px 2px rgba(70, 20, 25, 0.2), 0 8px 20px rgba(70, 20, 25, 0.16);
+    opacity: 0; visibility: hidden; translate: 0 -6px; transition: opacity 0.5s ease, translate 0.5s ease, visibility 0s 0.5s, transform 0.2s ease; }
+  body.on #minimal.on { opacity: 1; visibility: visible; translate: 0 0; transition: opacity 0.6s ease, translate 0.6s ease, visibility 0s, transform 0.2s ease; }
+  #minimal:hover { transform: translateY(-1px); }
+  #minimal:focus-visible { outline: 2px solid #2b2824; outline-offset: 2px; }
+  .nogl #minimal { display: none; }
   /* the sound pill: three dots at rest; with the sound on they stretch and fall like a level meter */
   #sound { position: fixed; right: 16px; bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 4px; width: 56px; height: 36px; padding: 0;
     border: 0; border-radius: 999px; background: rgba(251, 247, 238, 0.94); color: #2b2824; cursor: pointer;
@@ -239,6 +248,7 @@
   </script>
   <div id="track"></div>
   <canvas id="scene" aria-hidden="true"></canvas>
+  <a id="minimal" class="on" href="/minimal/">Minimal portfolio &rarr;</a>
   <div id="more" aria-hidden="true"><span class="m"><i></i></span><span class="t"><i></i></span></div>
   <button id="sound" type="button" aria-pressed="false" aria-label="Sound off"><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i></button>
   <main class="copy">

@@ -1,4 +1,4 @@
-// Everything printed: the postcard (front, signature, back), the stamps, postmarks, stickers and the section title.
+// Everything printed: the postcard (front and back), the stamps, postmarks, stickers and the section title.
 // All of it is drawn to canvases that become textures in the scene.
 window.Print = (() => {
   const TAU = Math.PI * 2;
@@ -198,27 +198,22 @@ window.Print = (() => {
   }
 
   // ---- the postcard ----
-  function front(cw, ch, TW) {
+  // the front: a photo of Aarya, printed edge to edge inside a thin paper border, nothing written on it.
+  // It fills the card whatever its shape, cropped around the face (fx, fy, as fractions of the photo)
+  function front(cw, ch, TW, photo) {
     const k = TW / cw, c = canvas(TW, ch * k), ctx = c.getContext('2d');
     paper(ctx, c.width, c.height, '#f6f0e3', 61, 10);
     const b = cw * 0.034 * k;
     const ph = canvas(c.width - 2 * b, c.height - 2 * b);
-    Paint.paint(ph, 'town');
+    if (photo) {
+      const fx = 0.47, fy = 0.5, s = Math.max(ph.width / photo.width, ph.height / photo.height);
+      const w = photo.width * s, h = photo.height * s;
+      const x = Math.min(0, Math.max(ph.width - w, ph.width / 2 - fx * w)), y = Math.min(0, Math.max(ph.height - h, ph.height / 2 - fy * h));
+      ph.getContext('2d').drawImage(photo, x, y, w, h);
+    } else Paint.paint(ph, 'town');
     ctx.save(); rr(ctx, b, b, ph.width, ph.height, k * 2); ctx.clip(); ctx.drawImage(ph, b, b); ctx.restore();
     return c;
   }
-  function signature(cw, ch, TW, portrait) {
-    const k = TW / cw, c = canvas(TW, ch * k), ctx = c.getContext('2d');
-    const size = cw * (portrait ? 0.17 : 0.152) * k;
-    ctx.translate(cw * 0.08 * k, ch * (portrait ? 0.9 : 0.86) * k);
-    ctx.rotate(-0.12);
-    font(ctx, 400, size, 'script');
-    ctx.shadowColor = 'rgba(40,18,10,.32)'; ctx.shadowBlur = size * 0.06; ctx.shadowOffsetY = size * 0.015;
-    ctx.fillStyle = '#fbf3e2';
-    ctx.fillText('Aarya Shah', 0, 0);
-    return c;
-  }
-
   // little printed pictograms, two inks slightly out of register
   function pictogram(ctx, kind, x, y, S) {
     const C = { research: '#3a8a55', design: '#e2533a', prototype: '#2c56c4', build: '#f2b52f' }[kind];
@@ -815,5 +810,5 @@ window.Print = (() => {
     return c;
   }
 
-  return { navStamp, rng, paper, postmark, stickerSheet, blankSticker, contactSticker, inkStamp, CONTACT_DIMS, testimonial, stampBack, dieCut, cleanSticker, letter, stamp, sticker, front, signature, back, coverStamp, openMark, title, SW, SH, backLayout, SLOT_ROT };
+  return { navStamp, rng, paper, postmark, stickerSheet, blankSticker, contactSticker, inkStamp, CONTACT_DIMS, testimonial, stampBack, dieCut, cleanSticker, letter, stamp, sticker, front, back, coverStamp, openMark, title, SW, SH, backLayout, SLOT_ROT };
 })();

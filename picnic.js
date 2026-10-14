@@ -128,7 +128,7 @@
   try { if (localStorage.getItem('picnic-logo') === '1') logo.savedAt = 1; } catch (e) {}
   let sheetTex = null, sheetKey = '', contactTex = [], contactKey = '', copiedTex = null, blankTex = null, savedTex = null;
   let foot = null, painter = null, footTex = null, footKey = '', flashTex = null, paperTex = null;
-  const clientTex = {}, assets = { clients: {}, title: null, stamps: {} };
+  const clientTex = {}, assets = { clients: {}, title: null, stamps: {}, photo: null };
 
   function layout() {
     vw = innerWidth; vh = innerHeight;
@@ -320,13 +320,12 @@
     const key = `${portrait}|${TW}|${Math.round((ch / cw) * 100)}`;
     if (key !== cardKey) {
       cardKey = key;
-      if (tex) for (const k of ['front', 'sig', 'back', 'backPeeled', 'cover']) gl.deleteTexture(tex[k]);
+      if (tex) for (const k of ['front', 'back', 'backPeeled', 'cover']) gl.deleteTexture(tex[k]);
       const mark = Print.openMark(portrait, DATE);
       const cover = Print.coverStamp(portrait, mark, assets.stamps[COVER.id]);
       const common = { cw, ch, TW, portrait, cover, mark, intro: INTRO, lines: ADDRESS };
       tex = {
-        front: scene.texture(Print.front(cw, ch, TW)),
-        sig: scene.texture(Print.signature(cw, ch, TW, portrait)),
+        front: scene.texture(Print.front(cw, ch, TW, assets.photo)),
         back: scene.texture(Print.back({ ...common, peeled: false })),
         backPeeled: scene.texture(Print.back({ ...common, peeled: true })),
         cover: scene.texture(cover.inked),
@@ -436,7 +435,11 @@
 
   // the stamps are drawn from their art, so nothing is printed until it is here
   const loadImg = (src) => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
-  const stampsLoaded = Promise.all([COVER, ...PROJECTS].map((p) => p.id).map((id) => loadImg(`stamps/${id}.webp`).then((im) => { assets.stamps[id] = im; }).catch(() => {})));
+  const stampsLoaded = Promise.all([
+    ...[COVER, ...PROJECTS].map((p) => p.id).map((id) => loadImg(`stamps/${id}.webp`).then((im) => { assets.stamps[id] = im; }).catch(() => {})),
+    // and the photo on the front of the postcard
+    loadImg('aarya.jpg').then((im) => { assets.photo = im; }).catch(() => {}),
+  ]);
   Promise.all([
     document.fonts.load("400 40px 'Geist'"), document.fonts.load("500 40px 'Geist'"), document.fonts.load("600 40px 'Geist'"),
     document.fonts.load("700 40px 'Geist'"), document.fonts.load("800 40px 'Geist'"), document.fonts.load("500 40px 'Geist Mono'"),
@@ -504,7 +507,8 @@
   const roll = { k: 0, stage: 0, lock: -1, input: 0, to: -1 };
   const nudge = () => { roll.input = performance.now(); roll.to = -1; };
   // the last time anything moved the page along (or you did something on it); five seconds still, and the nudge to scroll shows
-  const moreEl = document.getElementById('more');
+  const moreEl = document.getElementById('more'), minimalEl = document.getElementById('minimal');
+  let minimalShown = true;
   let stillSince = performance.now(), moreShown = false;
   const busy = () => { stillSince = performance.now(); };
   for (const ev of ['wheel', 'touchmove', 'keydown', 'pointerdown', 'scroll']) addEventListener(ev, busy, { passive: true });
@@ -690,12 +694,11 @@
     const kTarget = (1.3 * arc + clamp(omega * 0.14, -0.7, 0.7) + cardHover.bow * 0.3 * (kf > 0.5 ? -1 : 1) + intro * (0.6 + 0.4 * Math.sin(wt * 3.1))) / cw;
     kappaV += ((kTarget - kappa) * 130 - kappaV * 13) * dt;
     kappa += kappaV * dt;
-    const sigNow = clamp((now - startAt - 2500) / 1900) * 1.25 - 0.08;
     const card = {
       mode: 1, pos: [intro * 70 * Math.sin(wt * 1.9), cardY - intro * 40, 0], size: [cw, ch],
       rot: [lerp(-0.08, 0.02, kf) - intro * 0.55, 0.12 * arc + cardHover.rx * 0.6 + intro * 0.25 * Math.sin(wt * 2.3), cardHover.ry * 0.6 + intro * 0.2 * Math.cos(wt * 1.7)], bend: [th, kappa],
-      texA: tex.front, texB: kp > 0 ? tex.backPeeled : tex.back, texS: tex.sig,
-      sig: sigNow, gloss: 0.55, glossBack: 0.18, sheen: 0.14,
+      texA: tex.front, texB: kp > 0 ? tex.backPeeled : tex.back,
+      gloss: 0.55, glossBack: 0.18, sheen: 0.14,
     };
     // keep the lowest part of the card resting on (never through) the mat
     let zmin = Infinity;
@@ -990,7 +993,7 @@
           mode: 1, pos: [lerp(F.x, 0, e), lerp(F.y, 0, e), 0], size: [w, h],
           rot: [lerp(F.r, -0.08, e) - 0.25 * arc, 0.12 * arc, 0],
           bend: [Math.PI * (1 - fk), (1.1 * Math.sin(Math.PI * fk)) / w],
-          texA: tex.front, texS: tex.sig, sig: sigNow, texB: footTex, gloss: 0.55, glossBack: 0.08, sheen: lerp(0.12, 0.14, e),
+          texA: tex.front, texB: footTex, gloss: 0.55, glossBack: 0.08, sheen: lerp(0.12, 0.14, e),
         }, lerp(0.6, 1.5, e) + 320 * arc);
       }
       objects.push(trip);
@@ -1040,6 +1043,11 @@
       if (want !== moreShown) { moreShown = want; moreEl.classList.toggle('on', want); }
     }
     markNav(sp);
+    // the minimal portfolio is offered on the hero alone: gone as soon as the postcard starts to turn, back when you return
+    {
+      const want = sp < 0.04 && !document.body.classList.contains('case');
+      if (want !== minimalShown) { minimalShown = want; minimalEl.classList.toggle('on', want); }
+    }
 
     // ---- things on the mat ----
     const meshes = [];

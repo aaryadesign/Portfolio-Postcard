@@ -12,6 +12,8 @@
     ['quickmart', 'QuickMart'],
   ];
   const here = location.pathname.split('/').pop().replace('.html', '');
+  // inside the minimal portfolio, every letter it leads to stays in the minimal portfolio
+  const q = /[?&]minimal/.test(location.search) ? '?minimal' : '';
   let seen = [];
   try { seen = JSON.parse(sessionStorage.getItem('picnic-seen') || '[]'); } catch (e) {}
   if (!seen.includes(here)) seen.push(here);
@@ -48,11 +50,11 @@
   name.className = 'name';
   const stamp = ([id, n]) => {
     const a = document.createElement('a');
-    a.href = id + '.html'; a.dataset.go = id; a.setAttribute('aria-label', n);
+    a.href = id + '.html' + q; a.dataset.go = id; a.setAttribute('aria-label', n);
     const im = new Image(); im.src = '../stamps/' + id + '.webp'; im.alt = n + ' stamp'; im.loading = 'lazy'; im.decoding = 'async';
     a.appendChild(im); return a;
   };
-  const point = (id, n) => { name.href = id + '.html'; name.dataset.go = id; name.innerHTML = n + ' &rarr;'; };
+  const point = (id, n) => { name.href = id + '.html' + q; name.dataset.go = id; name.innerHTML = n + ' &rarr;'; };
   box.replaceChildren(row, name);
 
   // one or two: they just sit there, side by side
