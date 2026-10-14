@@ -142,9 +142,9 @@
   .wide .label{display:block; margin-top:12px}
 
   /* the app, in its own dark theme */
-  .phone{position:relative; width:300px; height:620px; border-radius:46px; background:var(--pp-page); border:10px solid var(--ink); overflow:hidden; box-shadow:0 30px 50px -20px rgba(20,18,16,.35); color:#fff; font-family:'Inter',system-ui,sans-serif}
+  .phone{position:relative; width:300px; height:620px; border-radius:46px; background:var(--pp-page); border:10px solid var(--ink); overflow:hidden; isolation:isolate; box-shadow:0 30px 50px -20px rgba(20,18,16,.35); color:#fff; font-family:'Inter',system-ui,sans-serif}
   .phone::before{content:""; position:absolute; top:10px; left:50%; width:84px; height:22px; margin-left:-42px; background:#000; border-radius:12px; z-index:5}
-  .phone iframe{position:absolute; left:0; top:30px; width:390px; height:794px; border:0; transform-origin:0 0; transform:scale(.71795)}
+  .phone iframe{position:absolute; left:0; top:30px; width:390px; height:794px; border:0; transform-origin:0 0; transform:scale(.71795); clip-path:inset(0 round 0 0 50px 50px)}
 
   /* ---------- how it was made ---------- */
   .sub{margin-top:72px}

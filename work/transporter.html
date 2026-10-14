@@ -196,7 +196,7 @@
   .who.friend .match i{background:var(--t-red)}
   .who.friend .plate{border-color:var(--t-red); color:var(--t-red)}
 
-  .phone{position:relative; flex:none; width:300px; height:620px; border-radius:46px; background:#fff; border:10px solid var(--ink); overflow:hidden; box-shadow:0 30px 50px -20px rgba(20,18,16,.35); color:var(--t-text)}
+  .phone{position:relative; flex:none; width:300px; height:620px; border-radius:46px; background:#fff; border:10px solid var(--ink); overflow:hidden; isolation:isolate; box-shadow:0 30px 50px -20px rgba(20,18,16,.35); color:var(--t-text)}
   .phone::before{content:""; position:absolute; top:10px; left:50%; width:84px; height:22px; margin-left:-42px; background:#000; border-radius:12px; z-index:5}
   .scr{position:absolute; inset:0; padding:52px 18px 18px; display:flex; flex-direction:column; opacity:0; pointer-events:none; transform:translateX(16px); transition:opacity .35s var(--ease), transform .35s var(--ease)}
   .scr.on{opacity:1; pointer-events:auto; transform:none}
