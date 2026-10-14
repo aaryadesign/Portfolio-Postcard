@@ -35,6 +35,19 @@
   #track { position: relative; width: 1px; }
   #scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity 0.9s ease; }
   body.on #scene { opacity: 1; }
+  /* while it loads: one of the stamps tossed like a coin, up, over and down, a different project each time it
+     lands. Once the picnic is ready it lands one last time and glides off right, to where the stamps are, as the
+     red melts away into the picnic underneath */
+  #load { position: fixed; inset: 0; z-index: 7; perspective: 1400px; pointer-events: none; }
+  #load .bg { position: absolute; inset: 0; background: #c8283a; }
+  .nogl #load { display: none; }
+  #load .coin { position: absolute; left: 50%; top: 50%; transform-style: preserve-3d; }
+  #load img { position: absolute; left: 0; top: 0; display: block; width: 220px; height: auto; translate: -50% -50%; backface-visibility: hidden;
+    filter: drop-shadow(0 1px 1px rgba(70, 20, 25, 0.3)) drop-shadow(0 12px 20px rgba(70, 20, 25, 0.28)); }
+  #load img + img { rotate: y 180deg; }
+  #load .sh { position: absolute; left: 50%; top: calc(50% + 86px); width: 200px; height: 26px; margin-left: -100px; border-radius: 50%;
+    background: rgba(70, 20, 25, 0.32); filter: blur(10px); }
+  @media (max-width: 600px) { #load img { width: 160px; } #load .sh { top: calc(50% + 62px); width: 150px; margin-left: -75px; } }
   /* the words, for screen readers and search; the scene draws them as print */
   .copy { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   /* tabbing to a link brings the words into view, so focus is never invisible */
@@ -182,6 +195,48 @@
 </style>
 </head>
 <body>
+  <div id="load" aria-hidden="true"><div class="bg"></div><div class="sh"></div><div class="coin"><img alt=""><img alt=""></div></div>
+  <script>
+    // the loader runs on its own, before anything else, and stops once the picnic is showing
+    (() => {
+      const IDS = ['goalkeeper', 'phonepe', 'ride-through-the-valley', 'dayro', 'lamad', 'transporter', 'quickmart'];
+      const el = document.getElementById('load'), coin = el.querySelector('.coin'), sh = el.querySelector('.sh'), [a, b] = coin.querySelectorAll('img');
+      const src = (k) => 'stamps/mini/' + IDS[k % IDS.length] + '.webp';
+      a.src = src(0); b.src = src(1);
+      const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let k = 1, face = 0, done = false, cur = null, curSh = null, pose = 'translateY(0) rotateY(0deg) rotateZ(-4deg)';
+      const T = 1050;
+      const toss = () => {
+        if (done) return;
+        pose = `translateY(0) rotateY(${face * 180 + 180}deg) rotateZ(-4deg)`;
+        cur = coin.animate([
+          { transform: `translateY(0) rotateY(${face * 180}deg) rotateZ(-4deg)` },
+          { transform: `translateY(-160px) rotateY(${face * 180 + 90}deg) rotateZ(6deg)`, easing: 'cubic-bezier(0.3, 0, 0.6, 1)' },
+          { transform: `translateY(0) rotateY(${face * 180 + 180}deg) rotateZ(-4deg)` },
+        ], { duration: T, easing: 'cubic-bezier(0.25, 0.8, 0.5, 1)', fill: 'forwards' });
+        curSh = sh.animate([{ transform: 'scale(1)', opacity: 1 }, { transform: 'scale(.55)', opacity: 0.45 }, { transform: 'scale(1)', opacity: 1 }], { duration: T, easing: 'ease-in-out' });
+        // the face that has gone out of sight changes to the next project, ready for the next toss
+        setTimeout(() => { k++; (face % 2 === 0 ? a : b).src = src(k); }, T / 2 + 40);
+        setTimeout(() => { face++; toss(); }, T + 300);
+      };
+      if (!calm) setTimeout(toss, 350);
+      const leave = async () => {
+        done = true;
+        // a stamp in the air comes down quicker
+        if (cur && cur.playState === 'running') { cur.playbackRate = 2.2; if (curSh) curSh.playbackRate = 2.2; await cur.finished.catch(() => {}); }
+        const ease = 'cubic-bezier(0.55, 0, 0.25, 1)', t = calm ? 500 : 1300;
+        if (!calm) {
+          coin.animate([{ transform: pose }, { transform: pose.replace('translateY(0)', 'translate(calc(50vw + 260px), -8vh)').replace('rotateZ(-4deg)', 'rotateZ(14deg) scale(0.8)') }],
+            { duration: t, easing: ease, fill: 'forwards' });
+          sh.animate([{ opacity: 1 }, { opacity: 0 }], { duration: t * 0.4, fill: 'forwards' });
+        } else el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: t, fill: 'forwards' });
+        el.querySelector('.bg').animate([{ opacity: 1 }, { opacity: 0 }], { duration: t, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', fill: 'forwards' });
+        setTimeout(() => el.remove(), t + 50);
+      };
+      new MutationObserver((m, o) => { if (document.body.classList.contains('on')) { o.disconnect(); leave(); } })
+        .observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    })();
+  </script>
   <div id="track"></div>
   <canvas id="scene" aria-hidden="true"></canvas>
   <div id="more" aria-hidden="true"><span class="m"><i></i></span><span class="t"><i></i></span></div>
