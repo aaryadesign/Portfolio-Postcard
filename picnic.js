@@ -594,12 +594,14 @@
     if (!tex || !titles) { raf(frame); return; }
     document.body.classList.add('on');
 
-    const target = scrollY / vh;
+    let target = scrollY / vh;
     sp += (target - sp) * (1 - Math.exp(-dt * 7));
     if (Math.abs(target - sp) < 1e-4) sp = target;
     // back at the top of the mat, the postcard looks just as it did at the start: begin again from there
     if (target >= T.u1 - 0.002 && sp >= T.u1 - 0.004) {
-      sp = 0; scrollTo(0, 0);
+      sp = target = 0; scrollTo(0, 0);
+      // (and the ball of paper is back in a ball, this same frame, so the camera doesn't go looking for it)
+      Object.assign(roll, { k: 0, stage: 0, lock: -1, to: -1 });
       // so the stamps ink and the stickers stick down again on the way round
       inkAt.fill(0);
       for (const key in seenAt) delete seenAt[key];
@@ -658,7 +660,7 @@
     const kf2 = ease(seg(Ps, T.tf0, T.tf1));
     let camY = Math.min(Math.max(0, Ps - T.tf0), T.down - T.tf0) * vh;
     // then left along the bottom of the mat to the colouring page, and up the side to the postcard
-    if (P > T.s0 || k1 > 0) { cam = lerp(maxCam, foot.x, ease(kc)); camY = lerp(foot.camY, 0, ease(ku)); }
+    if (P > T.s0 || (k1 > 0 && P > T.down)) { cam = lerp(maxCam, foot.x, ease(kc)); camY = lerp(foot.camY, 0, ease(ku)); }
     camNow = cam; camNowY = camY;
     testOn = kf2 >= 1;
     if (logo.open && document.activeElement !== logoInput && Math.abs(target - logo.at) > 0.08) closeLogo();
