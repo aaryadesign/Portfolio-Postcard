@@ -154,7 +154,7 @@
     T.down = T.tf0 + Math.max(T.tf1 - T.tf0, sec.bottom / vh - 0.5);
     T.sheet = T.tf0 + Math.max(0, (sec.sheet.y - sec.sheet.H / 2) / vh - 0.3);
     T.end = T.down;
-    T.s0 = T.down + 0.45; T.s1 = T.s0 + 2;
+    T.s0 = T.down + 0.45; T.s1 = T.s0 + 1;
     T.u0 = T.s1 + 0.35; T.u1 = T.u0 + 1.6;
     const yb = (T.down - T.tf0) * vh;
     foot = footLayout(yb);
@@ -498,6 +498,19 @@
   const stampHover = PROJECTS.map(() => ({ z: 0, rx: 0, ry: 0, p: 0 })), coverHover = { z: 0, rx: 0, ry: 0, p: 0 };
   const inkAt = PROJECTS.map(() => 0);
   const testHover = TESTIMONIALS.map(() => ({ z: 0, rx: 0, ry: 0 }));
+  // the ball of paper plays in two goes, each set off by one scroll: it rolls all the way to where the
+  // colouring page goes, then (on the next scroll) opens out. While a go plays the page holds still, and it
+  // stays held until the scroll that set it off has run out, so one flick never does both
+  const roll = { k: 0, stage: 0, lock: -1, input: 0, to: -1 };
+  const nudge = () => { roll.input = performance.now(); roll.to = -1; };
+  // the last time anything moved the page along (or you did something on it); five seconds still, and the nudge to scroll shows
+  const moreEl = document.getElementById('more');
+  let stillSince = performance.now(), moreShown = false;
+  const busy = () => { stillSince = performance.now(); };
+  for (const ev of ['wheel', 'touchmove', 'keydown', 'pointerdown', 'scroll']) addEventListener(ev, busy, { passive: true });
+  addEventListener('wheel', nudge, { passive: true });
+  addEventListener('touchmove', nudge, { passive: true });
+  addEventListener('keydown', nudge);
   // a testimonial picked up to read: lifted off the mat toward you until it fills most of the screen
   const held = { k: -1, p: 0, open: false, at: 0 };
   let testOn = false;
@@ -591,18 +604,40 @@
       inkAt.fill(0);
       for (const key in seenAt) delete seenAt[key];
     }
+    {
+      const S0 = T.s0, S1 = T.s0 + 0.5, S2 = T.s1, R = roll, e = 0.01;
+      // (a jump from the nav goes straight through, and the ball plays to wherever it lands)
+      if (R.to >= 0 && Math.abs(target - R.to) < 0.01) R.to = -1;
+      if (R.to >= 0) R.stage = target >= S2 ? 2 : target > S0 ? 1 : 0;
+      else if (target < T.down || target > T.u0) { R.stage = target > T.u0 ? 2 : 0; R.k = [0, 0.7, 1][R.stage]; R.lock = -1; }
+      else if (target <= S0 && R.lock < 0) R.stage = 0;
+      else if (target >= S2 && R.lock < 0) R.stage = 2;
+      else if (R.stage === 0 && target > S0 + e) { R.stage = 1; R.lock = S1; }
+      else if (R.stage === 1 && target > S1 + e) { R.stage = 2; R.lock = S2; }
+      else if (R.stage === 1 && target < S1 - e) { R.stage = 0; R.lock = S0; }
+      else if (R.stage === 2 && target < S2 - e) { R.stage = 1; R.lock = S1; }
+      else if (R.lock < 0 && target > S0 && target < S2) R.lock = [S0, S1, S2][R.stage];
+      // the roll takes a couple of seconds, the opening a little less
+      const want = [0, 0.7, 1][R.stage], v = (R.k < 0.7 || (R.k === 0.7 && want < 0.7) ? 0.7 / 2.1 : 0.3 / 1.3) * dt;
+      R.k = R.k < want ? Math.min(want, R.k + v) : Math.max(want, R.k - v);
+      if (R.lock >= 0) {
+        if (Math.abs(scrollY - R.lock * vh) > 1) scrollTo(0, R.lock * vh);
+        if (R.k === want && now - R.input > 260) R.lock = -1;
+      }
+    }
     const P = sp;
     // the story stops at the bottom of the sheet; after that only the camera moves. On the way up the side,
     // the postcard is back as it began (everything else that changes back is far out of sight by then).
     const Ps = P >= T.u0 ? 0 : Math.min(P, T.down);
-    const k1 = seg(P, T.s0, T.s1), ku = seg(P, T.u0, T.u1);
+    const k1 = roll.k, ku = seg(P, T.u0, T.u1);
     // the camera keeps up with the ball of paper, and is there when it opens out
     const kc = clamp(k1 / 0.7);
     // on the way up the side, the colouring page is on its way to becoming the postcard
     const climbing = P > T.u0;
     // the long trips along the bottom and up the side are taken from a little higher up
     const up = (k, a) => a * Math.pow(Math.sin(Math.PI * k), 1.4);
-    const lz = 1 - up(kc, 0.42) - up(ku, 0.42), ls = 0;
+    // while it rolls the camera leans in on the ball, and leans back out as it opens to show the whole page
+    const lz = 1 + 0.45 * ease(kc) * (1 - smooth(clamp((k1 - 0.68) / 0.32))) - up(ku, 0.42), ls = 0;
     rewinding = lz < 0.97;
     // the welcome: the camera comes down from high above, turning straight, while the postcard floats
     // down onto the mat and settles
@@ -623,7 +658,7 @@
     const kf2 = ease(seg(Ps, T.tf0, T.tf1));
     let camY = Math.min(Math.max(0, Ps - T.tf0), T.down - T.tf0) * vh;
     // then left along the bottom of the mat to the colouring page, and up the side to the postcard
-    if (P > T.s0) { cam = lerp(maxCam, foot.x, ease(kc)); camY = lerp(foot.camY, 0, ease(ku)); }
+    if (P > T.s0 || k1 > 0) { cam = lerp(maxCam, foot.x, ease(kc)); camY = lerp(foot.camY, 0, ease(ku)); }
     camNow = cam; camNowY = camY;
     testOn = kf2 >= 1;
     if (logo.open && document.activeElement !== logoInput && Math.abs(target - logo.at) > 0.08) closeLogo();
@@ -995,6 +1030,13 @@
       overPage = stroke !== null || (!!uv && Math.abs(uv[0]) <= 0.5 && Math.abs(uv[1]) <= 0.5);
     }
     placePaints(cam, camY, overPage);
+    {
+      // not while something else has your attention: a letter, the nav, a sticker held up, the paints, or the ball playing
+      const away = roll.lock >= 0 || paintOn || held.k >= 0 || logo.open || navBtn.getAttribute('aria-expanded') === 'true' || document.body.classList.contains('case');
+      if (away || Math.abs(target - sp) > 0.002) stillSince = Math.max(stillSince, now);
+      const want = now - Math.max(stillSince, startAt + 2800) > 5000;
+      if (want !== moreShown) { moreShown = want; moreEl.classList.toggle('on', want); }
+    }
     markNav(sp);
 
     // ---- things on the mat ----
@@ -1272,6 +1314,7 @@
     setNav(false);
     if (held.k >= 0) held.open = false;
     if (logo.open) closeLogo();
+    roll.to = to; roll.lock = -1;
     scrollTo({ top: to * vh, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   // which part of the page you are in, postmarked on its stamp
@@ -1350,5 +1393,5 @@
   }
 
   // test hook: jump straight to a point on the timeline
-  window.picnic = { jump(p) { scrollTo(0, p * vh); sp = p; }, T, foot: () => foot, painter: () => painter, flies, drop: () => fall.drop(), held, cardAt, contactAt, contactState, CONTACT, copied: () => { copiedAt = performance.now(); } };
+  window.picnic = { jump(p) { scrollTo(0, p * vh); sp = p; }, T, roll, foot: () => foot, painter: () => painter, flies, drop: () => fall.drop(), held, cardAt, contactAt, contactState, CONTACT, copied: () => { copiedAt = performance.now(); } };
 })();

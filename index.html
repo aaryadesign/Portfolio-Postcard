@@ -6,6 +6,8 @@
 <!-- the address changes to /work/<id> while a letter is open; everything here still loads from the root -->
 <base href="/">
 <title>Aarya Shah — Product Designer</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="description" content="Product designer who designs and builds. Case studies on PhonePe, Dayro, LAMAD, Transporter and Goalkeeper, spread out on a picnic mat.">
 <!-- the link preview: the picnic itself, with a postmark on the card -->
 <meta property="og:type" content="website">
@@ -149,6 +151,23 @@
   }
   @media (prefers-reduced-motion: reduce) { #nav .sheet, #nav .st, #nav .open { transition: none !important; } #nav img, #nav .pm { animation: none !important; } }
   .nogl #nav { display: none; }
+  /* sitting still a while: a quiet nudge at the bottom that the page goes on by scrolling. A mouse whose
+     wheel rolls down, or on a touch screen a fingertip sliding up. It fades the moment you scroll */
+  #more { position: fixed; left: 50%; bottom: 16px; z-index: 1; display: grid; place-items: center; width: 44px; height: 56px; margin-left: -22px;
+    border-radius: 999px; background: rgba(251, 247, 238, 0.94); box-shadow: 0 1px 2px rgba(70, 20, 25, 0.2), 0 8px 20px rgba(70, 20, 25, 0.16);
+    pointer-events: none; opacity: 0; translate: 0 8px; transition: opacity 0.6s ease, translate 0.6s ease; }
+  #more.on { opacity: 1; translate: 0 0; transition: opacity 0.9s ease, translate 0.9s cubic-bezier(0.2, 1, 0.3, 1); }
+  #more .m { position: relative; width: 18px; height: 28px; border: 1.75px solid #2b2824; border-radius: 9px; }
+  #more .m i { position: absolute; left: 50%; top: 5px; width: 3px; height: 6px; margin-left: -1.5px; border-radius: 2px; background: #2b2824;
+    animation: more-wheel 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+  @keyframes more-wheel { 0% { opacity: 0; translate: 0 -2px; } 20% { opacity: 1; } 65% { opacity: 0; translate: 0 9px; } 100% { opacity: 0; translate: 0 9px; } }
+  #more .t { display: none; position: relative; width: 12px; height: 34px; }
+  #more .t i { position: absolute; left: 0; bottom: 0; width: 12px; height: 12px; border-radius: 50%; background: #2b2824;
+    animation: more-swipe 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+  @keyframes more-swipe { 0% { opacity: 0; translate: 0 0; scale: 0.7; } 15% { opacity: 1; scale: 1; } 70% { opacity: 0; translate: 0 -22px; scale: 0.85; } 100% { opacity: 0; translate: 0 -22px; } }
+  @media (hover: none) { #more .m { display: none; } #more .t { display: block; } }
+  @media (prefers-reduced-motion: reduce) { #more i { animation: none; } #more .m i { opacity: 1; } #more .t i { opacity: 1; } }
+  body.case #more, .nogl #more { display: none; }
   .nogl .copy { position: fixed; inset: 0; width: auto; height: auto; clip-path: none; white-space: normal; background: #f4eee0; padding: 48px 24px; max-width: 640px; margin: auto; line-height: 1.5; }
   /* a case study: a letter in a frame over the scene, and the stamp being carried onto it */
   /* a letter is open: the page behind can't be scrolled (its scrollbar keeps its room, so nothing shifts) */
@@ -165,6 +184,7 @@
 <body>
   <div id="track"></div>
   <canvas id="scene" aria-hidden="true"></canvas>
+  <div id="more" aria-hidden="true"><span class="m"><i></i></span><span class="t"><i></i></span></div>
   <button id="sound" type="button" aria-pressed="false" aria-label="Sound off"><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i></button>
   <main class="copy">
     <h1>Aarya Shah</h1>
