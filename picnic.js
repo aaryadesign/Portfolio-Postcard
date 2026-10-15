@@ -20,6 +20,8 @@
   const COVER = { id: 'goalkeeper', name: 'Goalkeeper',
     summary: 'A voice assistant for everyday errands. Say what you need and it drafts it, compares prices and opens the right app to finish. The website is live, the app is in testing and 35+ people are on the waitlist.' };
   const PROJECTS = [
+    { id: 'prd-loop', ink: '#2a3a7a', pm: { x: 352, y: 224, R: 40 }, name: 'PRD Loop',
+      summary: 'Six free skills for Claude that keep a PRD true while the work moves, from the first rough ask to a reviewed handoff.' },
     { id: 'phonepe', ink: '#2a3a7a', pm: { x: 352, y: 224, R: 40 }, name: 'PhonePe Car Insurance',
       summary: 'A case study redesigning the car insurance flow in PhonePe, to make the whole journey clearer and easier to finish.' },
     { id: 'ride-through-the-valley', ink: '#7a1f2a', pm: { x: 90, y: 220, R: 40 }, name: 'Ride Through the Valley',
@@ -33,7 +35,7 @@
     { id: 'quickmart', ink: '#7a1f2a', pm: { x: 90, y: 220, R: 40 }, name: 'QuickMart',
       summary: 'The backend behind a retail chain of 200 stores.' },
   ];
-  const ROT = [-0.035, 0.04, -0.025, 0.05, -0.04, 0.035, -0.03];
+  const ROT = [-0.035, 0.045, -0.03, 0.04, -0.025, 0.05, -0.04, 0.035];
   // What people said, each written on the back of a stamp. The first is the last project's stamp, turned over.
   const TESTIMONIALS = [
     { name: 'Heet Jivani', role: 'Founder @ Stairs Media', client: 'stairs',
@@ -509,7 +511,7 @@
   // the last time anything moved the page along (or you did something on it); two seconds still, and the nudge to scroll shows
   const moreEl = document.getElementById('more'), minimalEl = document.getElementById('minimal');
   let minimalShown = true;
-  let stillSince = performance.now(), moreShown = false;
+  let stillSince = performance.now(), moreShown = false, onStamp = false;
   const busy = () => { stillSince = performance.now(); };
   for (const ev of ['wheel', 'touchmove', 'keydown', 'pointerdown', 'scroll']) addEventListener(ev, busy, { passive: true });
   addEventListener('wheel', nudge, { passive: true });
@@ -678,6 +680,8 @@
     // the stamp you are looking at is full size; the rest wait their turn, smaller
     const focus = Math.max(0, (cam - Xc) / spacing);
     const grow = (i) => QUEUE + (1 - QUEUE) * smooth(clamp(1 - Math.abs(focus - i)));
+    // resting on one stamp in the Work row: that's a case study to open, not a page to scroll past
+    onStamp = kt >= 1 && Ps < T.tf0 && Math.abs(focus - Math.round(focus)) < 0.12;
 
     // ---- the postcard ----
     const arc = Math.sin(Math.PI * kf);
@@ -1040,6 +1044,8 @@
       const away = roll.lock >= 0 || paintOn || held.k >= 0 || logo.open || navBtn.getAttribute('aria-expanded') === 'true' || document.body.classList.contains('case');
       if (away || Math.abs(target - sp) > 0.002) stillSince = Math.max(stillSince, now);
       const want = now - Math.max(stillSince, startAt + 2800) > 2000;
+      // what it says is settled as it appears, so the words never change while you can see them
+      if (want && !moreShown) moreEl.classList.toggle('tap', onStamp);
       if (want !== moreShown) { moreShown = want; moreEl.classList.toggle('on', want); }
     }
     markNav(sp);

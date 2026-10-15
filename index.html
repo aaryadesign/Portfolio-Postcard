@@ -188,7 +188,19 @@
     animation: more-swipe 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
   @keyframes more-swipe { 0% { opacity: 0; translate: 0 0; scale: 0.7; } 15% { opacity: 1; scale: 1; } 70% { opacity: 0; translate: 0 -16px; scale: 0.85; } 100% { opacity: 0; translate: 0 -16px; } }
   @media (hover: none) { #more .m { display: none; } #more .t { display: block; } }
-  @media (prefers-reduced-motion: reduce) { #more i { animation: none; } #more .m i { opacity: 1; } #more .t i { opacity: 1; } }
+  #more b { font-weight: 500; }
+  /* on a stamp in the Work row, it asks you to open it instead: a pointer pressing, a ring going out around it */
+  #more .p, #more .v, #more.tap .m, #more.tap .t, #more.tap .s { display: none; }
+  #more.tap .p { display: block; position: relative; width: 20px; height: 20px; }
+  #more.tap .v.k { display: inline; }
+  @media (hover: none) { #more.tap .v.k { display: none; } #more.tap .v.f { display: inline; } }
+  #more .p svg { position: absolute; inset: 0; width: 20px; height: 20px; fill: #2b2824; stroke: #fbf7ee; stroke-width: 1.4; stroke-linejoin: round;
+    animation: more-press 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+  #more .p i { position: absolute; left: 50%; top: 50%; width: 20px; height: 20px; margin: -10px 0 0 -10px; border: 1.75px solid #2b2824; border-radius: 50%;
+    opacity: 0; animation: more-ring 1.8s cubic-bezier(0.2, 0.6, 0.3, 1) infinite; }
+  @keyframes more-press { 0%, 30% { scale: 1; } 40% { scale: 0.86; } 55%, 100% { scale: 1; } }
+  @keyframes more-ring { 0%, 36% { opacity: 0; scale: 0.5; } 42% { opacity: 0.7; } 80%, 100% { opacity: 0; scale: 1.5; } }
+  @media (prefers-reduced-motion: reduce) { #more i, #more svg { animation: none; } #more .m i { opacity: 1; } #more .t i { opacity: 1; } }
   body.case #more, .nogl #more { display: none; }
   .nogl .copy { position: fixed; inset: 0; width: auto; height: auto; clip-path: none; white-space: normal; background: #f4eee0; padding: 48px 24px; max-width: 640px; margin: auto; line-height: 1.5; }
   /* a case study: a letter in a frame over the scene, and the stamp being carried onto it */
@@ -208,7 +220,7 @@
   <script>
     // the loader runs on its own, before anything else, and stops once the picnic is showing
     (() => {
-      const IDS = ['goalkeeper', 'phonepe', 'ride-through-the-valley', 'dayro', 'lamad', 'transporter', 'quickmart'];
+      const IDS = ['goalkeeper', 'prd-loop', 'phonepe', 'ride-through-the-valley', 'dayro', 'lamad', 'transporter', 'quickmart'];
       const el = document.getElementById('load'), coin = el.querySelector('.coin'), sh = el.querySelector('.sh'), [a, b] = coin.querySelectorAll('img');
       const src = (k) => 'stamps/mini/' + IDS[k % IDS.length] + '.webp';
       a.src = src(0); b.src = src(1);
@@ -249,7 +261,7 @@
   <div id="track"></div>
   <canvas id="scene" aria-hidden="true"></canvas>
   <a id="minimal" class="on" href="/minimal/">Minimal portfolio &rarr;</a>
-  <div id="more" aria-hidden="true"><span class="m"><i></i></span><span class="t"><i></i></span>Scroll</div>
+  <div id="more" aria-hidden="true"><span class="m"><i></i></span><span class="t"><i></i></span><span class="p"><i></i><svg viewBox="0 0 24 24"><path d="M6.5 6l11 6.4-4.9 1.1-2.3 4.5z"/></svg></span><b class="s">Scroll</b><b class="v k">Click to view</b><b class="v f">Tap to view</b></div>
   <button id="sound" type="button" aria-pressed="false" aria-label="Sound off"><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i></button>
   <main class="copy">
     <h1>Aarya Shah</h1>

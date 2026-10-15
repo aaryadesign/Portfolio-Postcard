@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRD Loop</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Six free skills for Claude that keep a PRD true while the work moves. I designed them, built them and made the site that explains them.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://aarya.wtf/work/prd-loop">
+<meta property="og:site_name" content="Aarya Shah">
+<meta property="og:title" content="PRD Loop — Aarya Shah">
+<meta property="og:description" content="Six free skills for Claude that keep a PRD true while the work moves. I designed them, built them and made the site that explains them.">
+<meta property="og:image" content="https://aarya.wtf/work/og/prd-loop.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="PRD Loop, with its stamp, on a red gingham picnic mat">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PRD Loop — Aarya Shah">
+<meta name="twitter:description" content="Six free skills for Claude that keep a PRD true while the work moves. I designed them, built them and made the site that explains them.">
+<meta name="twitter:image" content="https://aarya.wtf/work/og/prd-loop.jpg">
+<script>if (/[?&]embed/.test(location.search)) document.documentElement.classList.add('embed');</script>
+<!-- opened on its own, this page is the letter's address: people go to the picnic, with it open; link previews still read this page -->
+<script>if (!/[?&](embed|minimal)/.test(location.search) && window.top === window) location.replace('/#prd-loop');</script>
+<!-- opened from the minimal portfolio, it stays there: on that paper, in the theme picked there, and every way out leads back to it -->
+<script>if (/[?&]minimal/.test(location.search)) { const h = document.documentElement; let t = null; try { t = localStorage.getItem('minimal-theme'); } catch (e) {} h.classList.add('minimal'); h.dataset.theme = t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; }</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
+<style>
+  /* One scale for the whole letter:
+     type   h1 48 · h2 40 · h3 24 · body 18 · line 16 · label 14   (700 headings, 600 emphasis, 500 labels, 400 text)
+     space  section 144 · heading to intro 16 · intro to content 48 · inside cards 32 · gaps 24
+     colour ink for headings, ink2 for text, line for rules, cream cards; blue only for numbers and the postmark */
+  :root{
+    --paper:#fbf7ec; --cream:#f6f0e0; --ink:#141210; --ink2:#5b554c; --line:#e4d9c2;
+    --blue:#1d3fa6;
+    --col:960px;
+    --ease:cubic-bezier(.4,0,.2,1);
+  }
+  *{box-sizing:border-box}
+  body{margin:0; color:var(--ink); font-family:'Geist',system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden}
+  img{display:block; max-width:100%}
+  p, h1, h2, h3, ol, ul, dl, dd{margin:0}
+
+  /* standalone, the letter lies on the picnic mat; inside the picnic (?embed) the real mat shows through */
+  body{background-color:#f9d4d5;
+    background-image:linear-gradient(90deg, rgba(204,26,46,.42) 50%, transparent 50%), linear-gradient(rgba(204,26,46,.42) 50%, transparent 50%);
+    background-size:88px 88px}
+  html.embed, html.embed body{background:transparent}
+  html.minimal, html.minimal body{background:#fbf7ec} html.minimal[data-theme="dark"], html.minimal[data-theme="dark"] body{background:#171512}
+  .back{position:fixed; top:16px; left:16px; z-index:10; display:inline-flex; gap:8px; align-items:center; height:40px; padding:0 16px; border:0; border-radius:999px; background:var(--paper); color:var(--ink); font:500 15px/1 'Geist',system-ui,sans-serif; cursor:pointer;
+    box-shadow:0 1px 2px rgba(70,20,25,.2), 0 8px 20px rgba(70,20,25,.16); transition:transform .2s var(--ease)}
+  .back:hover{transform:translateY(-1px)}
+
+  /* ---------- the letter: one long sheet, everything written on it ---------- */
+  .letter{position:relative; width:min(1180px, calc(100vw - 48px)); margin:max(96px, 14vh) auto 120px; padding:80px 80px 112px; background:var(--paper) var(--grain, none);
+    border-radius:3px; box-shadow:0 1px 1px rgba(70,20,25,.18), 0 10px 24px rgba(70,20,25,.18), 0 40px 80px -30px rgba(70,20,25,.35)}
+  .col{max-width:var(--col); margin:0 auto}
+
+  /* ---------- type ---------- */
+  h1{font-weight:700; font-size:clamp(36px,4.4vw,48px); letter-spacing:-.035em; line-height:1.05}
+  h2{font-weight:700; font-size:clamp(30px,3.6vw,40px); letter-spacing:-.03em; line-height:1.15}
+  h3{font-weight:600; font-size:24px; letter-spacing:-.02em; line-height:1.3}
+  .body{font-size:18px; line-height:1.65; color:var(--ink2)}
+  .body + .body{margin-top:16px}
+  .body b{color:var(--ink); font-weight:600}
+  .label{font-size:14px; font-weight:500; color:var(--ink2)}
+  .num{font-family:'Yellowtail',cursive; color:var(--blue); font-size:32px; line-height:1}
+
+  /* ---------- hero ---------- */
+  .lt-head{display:grid; grid-template-columns:1fr auto; gap:48px; align-items:start}
+  .lt-head h1{margin-top:48px}
+  .lt-head .lede{margin-top:16px; max-width:560px; font-size:20px; line-height:1.55; color:var(--ink2)}
+  .live{margin-top:32px; display:inline-flex; gap:10px; align-items:center; height:52px; padding:0 24px; border-radius:999px; background:var(--ink); color:var(--paper); font-size:16px; font-weight:600; text-decoration:none; transition:transform .2s var(--ease)}
+  .live:hover{transform:translateY(-1px)}
+  /* the stamp, stuck down in the top corner, and the postmark struck across it onto the paper */
+  .lt-slot{position:relative; width:clamp(170px,20vw,240px); margin:-16px -16px 0 0}
+  .lt-stamp{display:block; width:100%; aspect-ratio:440/308; transform:rotate(3deg); filter:drop-shadow(0 1px 1px rgba(60,40,0,.25)) drop-shadow(0 3px 6px rgba(60,40,0,.12))}
+  html.embed .lt-stamp{opacity:0}
+  .lt-pm{position:absolute; right:58%; top:52%; width:118%; pointer-events:none; opacity:0; transform:rotate(-9deg); transform-origin:85% 50%}
+  .lt-pm.on{animation:strike .45s cubic-bezier(.3,1.4,.5,1) both}
+  @keyframes strike{from{opacity:0; transform:rotate(-9deg) scale(1.5)} to{opacity:.88; transform:rotate(-9deg) scale(1)}}
+  .facts{margin-top:64px; display:grid; grid-template-columns:repeat(4, minmax(0,1fr))}
+  .facts{gap:0 32px}
+  .facts div{padding:20px 0 22px}
+  .facts dt{font-size:14px; font-weight:500; color:var(--ink2)}
+  .facts dd{margin-top:6px; font-size:16px; font-weight:600; line-height:1.4}
+
+  .photo{margin-top:48px; border-radius:20px; overflow:hidden; border:1px solid var(--line); background:#f4f3ef}
+  .photo video{display:block; width:100%; aspect-ratio:16/9; object-fit:cover}
+
+  /* ---------- sections ---------- */
+  section{padding-top:144px}
+  .head{max-width:680px}
+  .head{max-width:680px}
+  .head .body{margin-top:16px}
+  .after{margin-top:48px}
+  .card{background:var(--cream); border:1px solid var(--line); border-radius:20px; padding:32px}
+  .card h3{font-size:20px}
+  .card p{margin-top:8px; font-size:16px; line-height:1.6; color:var(--ink2)}
+  .grid2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px}
+  .grid3{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px}
+
+  /* PRD Loop in use, in a Claude window, beside what it shows */
+  .duo{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:64px; align-items:center; margin-top:96px}
+  .duo h3{margin-bottom:12px}
+  .head + .duo{margin-top:56px}
+  .chat .cd{aspect-ratio:5/6}
+  .duo.flip > div:first-child{order:2}
+
+  /* the six skills, in the order the loop runs: a plain ledger, the way the PRD itself is kept */
+  .skills{border-top:1px solid var(--ink)}
+  .skills > div{display:grid; grid-template-columns:200px 220px minmax(0,1fr); gap:32px; padding:24px 0; border-bottom:1px solid var(--line); align-items:baseline}
+  .skills .when{display:block; font-size:14px; font-weight:500; color:var(--ink2); margin-bottom:6px}
+  .skills b{font-weight:600; font-size:18px; letter-spacing:-.01em}
+  .skills q{font-size:16px; font-weight:500; quotes:'\201C' '\201D'}
+  .skills p{font-size:16px; line-height:1.6; color:var(--ink2)}
+
+  /* how to use it */
+  .steps .num{display:block; margin-bottom:20px}
+
+  /* ---------- next ---------- */
+  .nextp{margin-top:144px; padding-top:72px; border-top:1px solid var(--line); text-align:center}
+  .nextp a{color:inherit; text-decoration:none; display:inline-flex; flex-direction:column; align-items:center; gap:24px}
+  .nextp img{width:200px; transform:rotate(3deg); transition:transform .4s var(--ease); filter:drop-shadow(0 2px 2px rgba(60,40,0,.25)) drop-shadow(0 12px 16px rgba(60,40,0,.18))}
+  .nextp a:hover img{transform:rotate(-2deg) scale(1.04)}
+  .nextp .t{font-weight:700; font-size:32px; letter-spacing:-.03em}
+
+  /* reveal on scroll */
+  .rv{opacity:0; transform:translateY(24px); transition:opacity .8s var(--ease), transform .8s var(--ease)}
+  .rv.in{opacity:1; transform:none}
+
+  @media (max-width: 1000px){
+    .letter{padding:64px 48px 96px}
+    .grid3{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .duo{grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:40px}
+    .skills > div{grid-template-columns:170px minmax(0,1fr); gap:8px 24px}
+    .skills p{grid-column:2}
+  }
+  @media (max-width: 760px){
+    .letter{width:calc(100vw - 24px); padding:56px 24px 72px; margin-top:76px}
+    .lt-head{grid-template-columns:1fr; gap:0}
+    .lt-slot{grid-row:1; justify-self:end; width:150px; margin:-32px -8px 0 0}
+    .lt-head h1{margin-top:16px}
+    .lt-head .lede{font-size:18px}
+    .facts{grid-template-columns:1fr 1fr; gap:0 24px}
+    .facts div{padding:16px 0}
+    .photo{border-radius:14px}
+    section{padding-top:96px}
+    .grid2, .grid3, .duo{grid-template-columns:minmax(0,1fr); gap:24px}
+    .duo{gap:40px; margin-top:72px}
+    .duo.flip > div:first-child{order:0}
+    .skills > div{grid-template-columns:minmax(0,1fr); gap:6px; padding:20px 0}
+    .skills p{grid-column:auto}
+  }
+</style>
+</head>
+<body>
+
+<button class="back" type="button" id="back">&larr; Back</button>
+
+<article class="letter">
+  <header class="col">
+    <div class="lt-head">
+      <div>
+        <h1>PRD Loop</h1>
+        <p class="lede">Six free skills for Claude that keep a PRD true while the work moves. I designed them, built them and made the site that explains them.</p>
+        <a class="live" href="https://prd-loop-drab.vercel.app/" target="_blank" rel="noopener">Visit the live site &nearr;</a>
+      </div>
+      <div class="lt-slot"><canvas class="lt-stamp" id="stamp" aria-label="PRD Loop stamp" role="img"></canvas><canvas class="lt-pm" id="pm" aria-hidden="true"></canvas></div>
+    </div>
+    <dl class="facts">
+      <div><dt>Role</dt><dd>Design and build</dd></div>
+      <div><dt>Team</dt><dd>Solo</dd></div>
+      <div><dt>Platform</dt><dd>Claude skills + website</dd></div>
+      <div><dt>Status</dt><dd>Live, free to download</dd></div>
+    </dl>
+    <div class="photo"><video class="play" src="assets/prd-loop/intro.mp4" poster="assets/prd-loop/intro.jpg" muted loop playsinline controls preload="metadata" aria-label="PRD Loop explained: one PRD scoped, worked, changed, reviewed and handed off"></video></div>
+  </header>
+
+  <!-- WHY -->
+  <section class="col rv">
+    <div class="head">
+      <h2>Designers should spend their time thinking</h2>
+      <p class="body">In this era of AI-native designers, the work that can be automated should be, so designers can focus on what matters most: thinking.</p>
+      <p class="body">A PRD eats that time. Someone has to turn a rough ask into requirements, read the whole thing again before each task, and keep it true as decisions land in email, chat and tickets.</p>
+      <p class="body">PRD Loop takes that over. From a requirement, it writes the PRD and gives you a short, crisp brief of what needs doing, so you don't have to read everything. When something changes or gets added, the PRD reflects it. When you want to check that everything in it is actually done, there's a skill for that too. The PRD stays intact and up to date, and designers only have to design and build.</p>
+    </div>
+  </section>
+
+  <!-- THE SKILLS -->
+  <section class="col">
+    <div class="head rv">
+      <h2>Six skills, one PRD</h2>
+      <p class="body">You ask in plain words. Each skill reads and writes the same PRD, from the first rough ask to a reviewed handoff: scope, work, review, hand off, plus two for when things move.</p>
+    </div>
+    <div class="skills after rv">
+      <div><span><span class="when">01 &middot; Scope</span><b>requirement-to-prd</b></span><q>Scope this</q><p>Reads the ask straight from the client's email and turns each part into a requirement. Every line is tagged from the brief, derived or proposed, and ranked now, next or later. What's excluded goes under out of scope.</p></div>
+      <div><span><span class="when">02 &middot; Work</span><b>prd-next</b></span><q>What's next?</q><p>Picks the next open requirement and works on it one step at a time. It attaches evidence someone can open, then marks it done and updates the ledger.</p></div>
+      <div><span><span class="when">Any time</span><b>prd-change</b></span><q>Can we also&hellip;</q><p>When a new ask arrives mid-project, it traces which requirements it touches and sends finished work it breaks back to review. It shows you the impact, and edits only after you apply.</p></div>
+      <div><span><span class="when">Any time</span><b>prd-feedback</b></span><q>Sort these comments</q><p>Gathers comments from email, chat and tickets and sorts each one: defect, change, answer or question. Opposite opinions stay side by side, for you to decide.</p></div>
+      <div><span><span class="when">03 &middot; Review</span><b>prd-review</b></span><q>Are we done?</q><p>Walks every requirement and marks each one pass, fail or unverified, with the reason, then totals it up. Nothing passes on a guess.</p></div>
+      <div><span><span class="when">04 &middot; Hand off</span><b>prd-handoff</b></span><q>Hand this to the developer</q><p>Asks who the handoff is for and packs only work that passed review. It lists what's not included and why, then attaches the evidence and sends it.</p></div>
+    </div>
+    <div class="duo rv">
+      <div>
+        <h3>A short answer, then back to work</h3>
+        <p class="body">Each skill answers in a line or two and keeps the detail in the PRD. You hear what changed and what to do next, without reading the whole document again.</p>
+      </div>
+      <div class="chat" id="chatLoop" role="img" aria-label="In Claude: Scope this, with the client's email attached. Claude uses requirement-to-prd and replies with a short brief and the PRD. Then What's next, using prd-next, and Are we done, using prd-review: two pass, one fails."></div>
+    </div>
+    <div class="duo flip rv">
+      <div>
+        <h3>A change, traced before it's made</h3>
+        <p class="body">When a new ask lands mid-project, prd-change shows which requirements it touches and waits. The PRD changes only when you say apply.</p>
+      </div>
+      <div class="chat" id="chatChange" role="img" aria-label="In Claude: The client wants dark mode too. Claude uses prd-change, shows the two requirements it touches, and waits. Apply is clicked, and the PRD becomes v2."></div>
+    </div>
+  </section>
+
+
+  <!-- HOW TO USE IT -->
+  <section class="col rv">
+    <div class="head">
+      <h2>Connected in under a minute</h2>
+      <p class="body">The skills are free. They work in the Claude app and in Claude Code.</p>
+    </div>
+    <div class="grid2 after steps">
+      <div class="card"><span class="num">1</span><h3>Download the skills</h3><p>One zip per skill for the Claude app, or all six in one for Claude Code.</p></div>
+      <div class="card"><span class="num">2</span><h3>Turn on code execution</h3><p>In Settings, under Capabilities. Skills need it to run.</p></div>
+      <div class="card"><span class="num">3</span><h3>Upload and switch on</h3><p>Under Capabilities, then Skills, upload each zip.</p></div>
+      <div class="card"><span class="num">4</span><h3>Just ask</h3><p>Plain words usually do it: Claude matches your ask to each skill's description. Name the skill to be sure.</p></div>
+    </div>
+  </section>
+
+  <div class="nextp">
+    <a href="phonepe.html" data-go="phonepe">
+      <img src="../stamps/phonepe.webp" alt="PhonePe stamp">
+      <span class="t">PhonePe Car Insurance &rarr;</span>
+    </a>
+  </div>
+  <script src="more.js"></script>
+</article>
+
+<script src="../print.js"></script>
+<script>window.CD_SPARK = 'assets/prd-loop/claude-spark.png';</script>
+<script src="claude-demo.js"></script>
+<script>
+  // PRD Loop in use, as it plays out in Claude
+  ClaudeDemo(document.getElementById('chatLoop'), { title: 'Onboarding redesign', steps: [
+    { you: 'Scope this', file: 'Client \u00b7 Onboarding feels busy' },
+    { skill: 'requirement-to-prd', say: ['The PRD is ready: 3 requirements, ranked. Payments stays out of scope, as the email asks. Start with R1, a calm visual system.'], doc: ['PRD \u00b7 Onboarding redesign', 'v1 \u00b7 3 requirements'] },
+    { you: "What's next?" },
+    { skill: 'prd-next', say: ['R1 is done, with board.fig attached. Next is R2, the talk screen in 5 states.'] },
+    { you: 'Are we done?' },
+    { skill: 'prd-review', say: ['Not yet.'], list: [['R1 Calm visual system', '', 'pass', 'g'], ['R2 Talk screen, 5 states', '', 'pass', 'g'], ['R3 Empty states', 'no inbox state', 'fail', 'r']] },
+  ] });
+  ClaudeDemo(document.getElementById('chatChange'), { title: 'Onboarding redesign', steps: [
+    { you: 'The client wants dark mode too.' },
+    { skill: 'prd-change', say: ['This touches 2 requirements. Nothing changes until you apply.'], list: [['R1 Calm visual system', 'done, back to review', 'reopen', 'r'], ['R4 Dark theme', 'added', 'new', 'b']], ask: ['Apply', 'Not now'] },
+    { skill: 'prd-change', say: ['Applied. The PRD is now v2, and R1 is waiting for review again.'], doc: ['PRD \u00b7 Onboarding redesign', 'v2 \u00b7 4 requirements'], hold: 2400 },
+  ] });
+
+  // reveal sections as they scroll in
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    io.unobserve(e.target);
+  }), { threshold: 0.2 });
+  document.querySelectorAll('.rv').forEach((el) => io.observe(el));
+
+  // the recordings play, muted, while they're on screen
+  const vio = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) e.target.play().catch(() => {}); else e.target.pause(); }), { threshold: 0.4 });
+  document.querySelectorAll('video.play').forEach((v) => vio.observe(v));
+
+  // ---- the letter ----
+  const embed = document.documentElement.classList.contains('embed');
+  const host = embed && parent !== window ? parent : null;
+  const stampEl = document.getElementById('stamp'), pmEl = document.getElementById('pm');
+  const today = new Date();
+  const DATE = [`${today.toLocaleString('en', { month: 'short' }).toUpperCase()} ${today.getDate()}`, String(today.getFullYear())];
+
+  // paper grain, from the same recipe as the postcard
+  try {
+    const g = document.createElement('canvas'); g.width = g.height = 360;
+    Print.paper(g.getContext('2d'), 360, 360, '#fbf7ec', 41, 10);
+    document.querySelector('.letter').style.setProperty('--grain', `url(${g.toDataURL()})`);
+  } catch (e) {}
+
+  // the stamp: the very one from the mat when this opens inside the picnic, otherwise drawn the same way
+  function drawStamp(src) {
+    stampEl.width = src.width; stampEl.height = src.height;
+    stampEl.getContext('2d').drawImage(src, 0, 0);
+  }
+  const art = host && host.Picnic && host.Picnic.art('prd-loop').front;
+  if (art) drawStamp(art);
+  else {
+    const img = new Image();
+    img.onload = () => document.fonts.ready.then(() => drawStamp(Print.coverStamp(false, Print.openMark(false, DATE), img).inked));
+    img.src = '../stamps/prd-loop.webp';
+  }
+  // the letter's own postmark, its waves running off to the left across the paper
+  document.fonts.ready.then(() => {
+    const pm = Print.postmark({ R: 60, top: 'SELECTED WORK', bottom: 'AARYA SHAH', l1: DATE[0], l2: DATE[1], color: '#2a3a7a', waves: -1, waveLen: 150, seed: 11, k: 3 });
+    pmEl.width = pm.canvas.width; pmEl.height = pm.canvas.height;
+    pmEl.getContext('2d').drawImage(pm.canvas, 0, 0);
+    if (!embed) setTimeout(() => pmEl.classList.add('on'), 500);
+  });
+
+  window.Letter = {
+    // the stamp's place on the screen: its centre, unturned size and turn
+    slot() {
+      const r = stampEl.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: stampEl.offsetWidth, h: stampEl.offsetHeight, r: (3 * Math.PI) / 180 };
+    },
+    hideStamp() { stampEl.style.opacity = 0; pmEl.classList.remove('on'); },
+    land() { stampEl.style.opacity = 1; pmEl.classList.add('on'); },
+    toTop() {
+      return new Promise((done) => {
+        if (scrollY < 2) return done();
+        scrollTo({ top: 0, behavior: 'smooth' });
+        const t0 = performance.now();
+        const check = () => (scrollY < 2 || performance.now() - t0 > 900 ? done() : setTimeout(check, 30));
+        setTimeout(check, 30);
+      });
+    },
+  };
+  const minimal = document.documentElement.classList.contains('minimal');
+  const leave = () => (host && host.Case ? host.Case.close() : (location.href = minimal ? '../minimal/' : '../'));
+  document.getElementById('back').addEventListener('click', leave);
+  // the next letter, in place, when inside the picnic
+  document.querySelectorAll('[data-go]').forEach((a) => a.addEventListener('click', (e) => {
+    if (host && host.Case) { e.preventDefault(); host.Case.go(a.dataset.go); }
+    else if (minimal) { e.preventDefault(); location.href = a.dataset.go + '.html?minimal'; }
+  }));
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') leave(); });
+</script>
+</body>
+</html>

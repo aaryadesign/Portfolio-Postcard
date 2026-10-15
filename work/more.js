@@ -4,6 +4,7 @@
 (() => {
   const LIST = [
     ['goalkeeper', 'Goalkeeper'],
+    ['prd-loop', 'PRD Loop'],
     ['phonepe', 'PhonePe Car Insurance'],
     ['ride-through-the-valley', 'Ride through the Valley'],
     ['dayro', 'Dayro Smart Home'],

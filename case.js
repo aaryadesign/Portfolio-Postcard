@@ -4,7 +4,7 @@
 // everything on it stay just where they were. Closing runs it all backwards. While a letter is open the
 // address reads /work/<id>, the letter's own page, so a copied link carries that case's preview.
 window.Case = (() => {
-  const PAGES = { goalkeeper: '/work/goalkeeper.html', phonepe: '/work/phonepe.html', 'ride-through-the-valley': '/work/ride-through-the-valley.html', dayro: '/work/dayro.html', lamad: '/work/lamad.html', transporter: '/work/transporter.html', quickmart: '/work/quickmart.html' };
+  const PAGES = { goalkeeper: '/work/goalkeeper.html', 'prd-loop': '/work/prd-loop.html', phonepe: '/work/phonepe.html', 'ride-through-the-valley': '/work/ride-through-the-valley.html', dayro: '/work/dayro.html', lamad: '/work/lamad.html', transporter: '/work/transporter.html', quickmart: '/work/quickmart.html' };
   const at = (id) => '/work/' + id;
   // the case in the address: /work/<id>, or #<id> from older links and from a letter's page sending you here
   const inAddress = () => { const m = location.pathname.match(/^\/work\/([^/.]+)(\.html)?$/); return m ? m[1] : location.hash.slice(1); };
