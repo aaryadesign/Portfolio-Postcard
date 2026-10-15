@@ -506,7 +506,7 @@
   // stays held until the scroll that set it off has run out, so one flick never does both
   const roll = { k: 0, stage: 0, lock: -1, input: 0, to: -1 };
   const nudge = () => { roll.input = performance.now(); roll.to = -1; };
-  // the last time anything moved the page along (or you did something on it); five seconds still, and the nudge to scroll shows
+  // the last time anything moved the page along (or you did something on it); two seconds still, and the nudge to scroll shows
   const moreEl = document.getElementById('more'), minimalEl = document.getElementById('minimal');
   let minimalShown = true;
   let stillSince = performance.now(), moreShown = false;
@@ -1039,7 +1039,7 @@
       // not while something else has your attention: a letter, the nav, a sticker held up, the paints, or the ball playing
       const away = roll.lock >= 0 || paintOn || held.k >= 0 || logo.open || navBtn.getAttribute('aria-expanded') === 'true' || document.body.classList.contains('case');
       if (away || Math.abs(target - sp) > 0.002) stillSince = Math.max(stillSince, now);
-      const want = now - Math.max(stillSince, startAt + 2800) > 5000;
+      const want = now - Math.max(stillSince, startAt + 2800) > 2000;
       if (want !== moreShown) { moreShown = want; moreEl.classList.toggle('on', want); }
     }
     markNav(sp);
