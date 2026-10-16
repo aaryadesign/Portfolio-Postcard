@@ -67,6 +67,15 @@
     h1 { font-size: 40px; }
     .msg p { font-size: 16px; }
   }
+  /* with WebGL, the card is the real one lying on the mat; these words stay for screen readers and the keyboard */
+  #scene { position: fixed; inset: 0; width: 100%; height: 100%; display: none; opacity: 0; transition: opacity 0.9s ease; touch-action: manipulation; }
+  body.gl { background: #c8283a; }
+  body.gl::after { display: none; }
+  body.gl #scene { display: block; }
+  body.gl.on #scene { opacity: 1; }
+  body.gl .card { position: fixed; left: 16px; top: 16px; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); animation: none; }
+  body.gl .card:focus-within { width: auto; height: auto; clip-path: none; padding: 16px 20px; display: block; rotate: 0deg; }
+  body.gl .card:focus-within .addr, body.gl .card:focus-within .rule { display: none; }
   @media (prefers-reduced-motion: reduce) {
     .card, .card.thud, .ink { animation: none; }
     .lines .x::after { animation: none; scale: 1 1; }
@@ -87,7 +96,12 @@
       <div class="lines"><div class="x" id="to"></div><div>aarya.wtf</div><div></div></div>
     </div>
   </main>
+<canvas id="scene" aria-hidden="true"></canvas>
+<script src="paint.js"></script>
 <script src="print.js"></script>
+<script src="scene.js"></script>
+<script src="nature.js"></script>
+<script src="lost.js"></script>
 <script>
   const card = document.getElementById('card');
   const path = decodeURI(location.pathname);
@@ -103,8 +117,7 @@
   Print.paper(g.getContext('2d'), 360, 360, '#fbf7ec', 41, 10);
   card.style.setProperty('--grain', `url(${g.toDataURL()})`);
 
-  // one of the project stamps, cancelled with today's date and a 404
-  const IDS = ['goalkeeper', 'prd-loop', 'phonepe', 'dayro', 'lamad', 'transporter', 'quickmart', 'ride-through-the-valley'];
+  // the 404 stamp, cancelled with today's date
   const M = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
   const now = new Date();
   const img = new Image();
@@ -113,7 +126,7 @@
     const c = document.getElementById('stamp'); c.width = s.inked.width; c.height = s.inked.height;
     c.getContext('2d').drawImage(s.inked, 0, 0);
   });
-  img.src = 'stamps/' + IDS[Math.floor(Math.random() * IDS.length)] + '.webp';
+  img.src = 'stamps/404.webp';
 
   document.fonts.ready.then(() => {
     // the strike-through runs only as far as the words do
@@ -159,7 +172,7 @@
   }
 
   // the first one lands on its own, over the address
-  document.fonts.ready.then(() => setTimeout(() => {
+  if (!document.body.classList.contains('gl')) document.fonts.ready.then(() => setTimeout(() => {
     const a = document.querySelector('.addr').getBoundingClientRect(), b = card.getBoundingClientRect();
     press(a.left - b.left + a.width / 2, a.top - b.top + a.height * (card.clientWidth < 600 ? 0.62 : 0.66), -12);
   }, 1100));

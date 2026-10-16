@@ -390,6 +390,94 @@ window.Print = (() => {
     return c;
   }
 
+  // The back of a postcard that came back (the 404): the same card, addressed to a page that isn't there,
+  // the address crossed out. Returns the canvas and where its button is, in units (the card is 1000 wide)
+  function lost({ cw, ch, TW, portrait, cover, mark, path }) {
+    const U = 1000, H = (ch / cw) * U, k = TW / U;
+    const c = canvas(TW, H * k), ctx = c.getContext('2d');
+    paper(ctx, c.width, c.height, PAPER, 71, 12);
+    ctx.scale(k, k);
+    frame(ctx, H, portrait);
+    const Lo = backLayout(portrait, H), s = Lo.slot, sh = (s.w * SH) / SW;
+    ctx.fillStyle = INK;
+    ctx.textBaseline = 'alphabetic';
+    font(ctx, 700, portrait ? 30 : 24); spaced(ctx, 'POST CARD', 500, portrait ? 74 : 62, portrait ? 16 : 13, 'center');
+
+    // divider with its imprint
+    ctx.strokeStyle = '#3f6e50'; ctx.lineWidth = 1.6;
+    ctx.fillStyle = 'rgba(43,40,36,.55)';
+    font(ctx, 500, portrait ? 12 : 8.5, 'mono');
+    const imprint = 'AARYA SHAH · PORTFOLIO · RETURNED · NO. 404';
+    if (portrait) {
+      ctx.beginPath(); ctx.moveTo(70, 650); ctx.lineTo(930, 650); ctx.stroke();
+      spaced(ctx, imprint, 500, 680, 2, 'center');
+    } else {
+      ctx.beginPath(); ctx.moveTo(566, 96); ctx.lineTo(566, 612); ctx.stroke();
+      ctx.save(); ctx.translate(552, 354); ctx.rotate(-Math.PI / 2);
+      spaced(ctx, imprint, 0, 0, 1.8, 'center');
+      ctx.restore();
+    }
+
+    // the address it was sent to, crossed out in red
+    const ax0 = portrait ? 70 : 600, ax1 = portrait ? 930 : 944;
+    const ay = portrait ? [420, 500, 580] : [330, 404, 478];
+    ctx.strokeStyle = 'rgba(43,40,36,.38)'; ctx.lineWidth = 1.2;
+    ay.forEach((y) => { ctx.beginPath(); ctx.moveTo(ax0, y + 12); ctx.lineTo(ax1, y + 12); ctx.stroke(); });
+    ctx.fillStyle = INK;
+    let fs = portrait ? 38 : 28;
+    font(ctx, 700, fs);
+    while (ctx.measureText(path).width > ax1 - ax0 - 12 && fs > 14) font(ctx, 700, --fs);
+    let shown = path;
+    while (ctx.measureText(shown).width > ax1 - ax0 - 12) shown = shown.slice(0, -2) + '…';
+    ctx.fillText(shown, ax0 + 6, ay[0]);
+    const pw = ctx.measureText(shown).width;
+    ctx.strokeStyle = '#c8283a'; ctx.lineWidth = portrait ? 4 : 3; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(ax0, ay[0] - fs * 0.3 + 3); ctx.lineTo(ax0 + pw + 12, ay[0] - fs * 0.3 - 3); ctx.stroke();
+    font(ctx, 500, portrait ? 32 : 23); ctx.fillText('aarya.wtf', ax0 + 6, ay[1]);
+
+    // the message, and the way back
+    const mx = portrait ? 70 : 60, mw = portrait ? 860 : 455;
+    let y = portrait ? 800 : 170;
+    font(ctx, 700, portrait ? 64 : 46); ctx.fillText('Lost in the post', mx, y);
+    y += portrait ? 76 : 56;
+    const bs = portrait ? 33 : 21.5, lh = bs * (portrait ? 1.5 : 1.56);
+    font(ctx, 400, bs);
+    wrap(ctx, 'Nothing lives at this address. It may have moved, or there’s a typo somewhere.', mw).forEach((l) => { ctx.fillText(l, mx, y); y += lh; });
+    const bh = portrait ? 92 : 60;
+    font(ctx, 600, bh * 0.36);
+    const label = 'Back to the portfolio', bw = ctx.measureText(label + '  \u2192').width + bh * 1.1;
+    // (the button is a sticker of its own, stuck on here: see goSticker)
+    const by = y + (portrait ? 30 : 16);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = '#1d3fa6'; font(ctx, 400, portrait ? 56 : 38, 'script');
+    ctx.fillText('Aarya Shah', mx, portrait ? H - 90 : 560);
+
+    // the postmark, then the stamp
+    const p = Lo.pm;
+    ctx.save(); ctx.globalAlpha = 0.86;
+    ctx.drawImage(mark.canvas, p.x - mark.cx, p.y - mark.cy, mark.W, mark.H);
+    ctx.restore();
+    ctx.translate(s.x + s.w / 2, s.y + sh / 2); ctx.rotate(SLOT_ROT);
+    ctx.save(); ctx.shadowColor = 'rgba(60,40,20,.25)'; ctx.shadowBlur = 3 * k; ctx.shadowOffsetY = 0.6 * k;
+    ctx.drawImage(cover.inked, -s.w / 2, -sh / 2, s.w, sh);
+    ctx.restore();
+    return { canvas: c, H, button: { x: mx, y: by, w: bw, h: bh, label }, address: { x: (ax0 + ax1) / 2, y: (ay[0] + ay[1]) / 2 } };
+  }
+  // the way back, as a sticker: a red pill die-cut with a white edge, like the ones on the sheet
+  function goSticker(label, w, h) {
+    const K = 3, e = h * 0.09, c = canvas((w + e * 2) * K, (h + e * 2) * K), ctx = c.getContext('2d');
+    ctx.scale(K, K);
+    rr(ctx, 0, 0, w + e * 2, h + e * 2, (h + e * 2) / 2); ctx.fillStyle = '#fffdf6'; ctx.fill();
+    rr(ctx, e, e, w, h, h / 2); ctx.fillStyle = '#c8283a'; ctx.fill();
+    font(ctx, 600, h * 0.36); ctx.fillStyle = '#fff8f0'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(label + '  \u2192', e + w / 2, e + h / 2 + h * 0.02);
+    return { canvas: c, w: w + e * 2, h: h + e * 2 };
+  }
+  function lostMark(portrait, date) {
+    const p = backLayout(portrait, 0).pm;
+    return postmark({ R: p.R, top: 'NOT FOUND', bottom: 'AARYA SHAH', l1: date[0], l2: '404', color: '#2a3a7a', waves: 1, waveLen: p.waveLen, seed: 404, k: 3 });
+  }
+
   // The cover stamp, inked with the part of the card's postmark that landed on it
   function coverStamp(portrait, mark, img) {
     const plain = stamp(img);
@@ -810,5 +898,5 @@ window.Print = (() => {
     return c;
   }
 
-  return { navStamp, rng, paper, postmark, stickerSheet, blankSticker, contactSticker, inkStamp, CONTACT_DIMS, testimonial, stampBack, dieCut, cleanSticker, letter, stamp, sticker, front, back, coverStamp, openMark, title, SW, SH, backLayout, SLOT_ROT };
+  return { lost, lostMark, goSticker, navStamp, rng, paper, postmark, stickerSheet, blankSticker, contactSticker, inkStamp, CONTACT_DIMS, testimonial, stampBack, dieCut, cleanSticker, letter, stamp, sticker, front, back, coverStamp, openMark, title, SW, SH, backLayout, SLOT_ROT };
 })();
