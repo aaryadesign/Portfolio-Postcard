@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- GitHub Pages serves this for any address that doesn't exist, so everything loads from the root -->
+<base href="/">
+<title>Lost in the post — Aarya Shah</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700;800&family=Geist+Mono:wght@500&family=Yellowtail&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: #efe7e4; }
+  body { min-height: 100vh; min-height: 100svh; display: grid; place-items: center; padding: 48px 16px; overflow-x: hidden;
+    font-family: 'Geist', system-ui, sans-serif; color: #2b2824;
+    background-color: #efe7e4;
+    background-image: linear-gradient(90deg, rgba(200, 30, 40, 0.66) 50%, transparent 50%), linear-gradient(rgba(200, 30, 40, 0.66) 50%, transparent 50%);
+    background-size: 240px 240px; background-position: center; }
+  body::after { content: ""; position: fixed; inset: 0; box-shadow: inset 0 0 180px rgba(60, 0, 10, 0.35); pointer-events: none; }
+
+  /* the card that came back: it drops onto the mat, then the rubber stamp lands on it */
+  .card { position: relative; width: min(880px, 100%); display: grid; grid-template-columns: 1fr 1px 300px; gap: 40px; padding: 56px;
+    background: #fbf7ec var(--grain, none); border-radius: 4px; overflow: hidden; cursor: crosshair; user-select: none;
+    box-shadow: 0 1px 1px rgba(70, 20, 25, 0.25), 0 18px 40px rgba(70, 20, 25, 0.32);
+    rotate: -1deg; animation: drop 0.9s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+  .card.thud { animation: thud 0.28s ease-out; }
+  @keyframes drop { from { opacity: 0; translate: 0 -40px; rotate: -6deg; } to { opacity: 1; translate: 0 0; rotate: -1deg; } }
+  @keyframes thud { 0% { scale: 1; } 30% { scale: 0.992; translate: 0 2px; } 100% { scale: 1; translate: 0 0; } }
+
+  h1 { font: 700 48px/1.05 'Geist', sans-serif; letter-spacing: -0.035em; color: #141210; }
+  .msg p { margin-top: 20px; max-width: 400px; font: 400 18px/1.6 'Geist', sans-serif; color: #3d3934; }
+  .msg code { font: 500 0.9em 'Geist Mono', monospace; background: rgba(43, 40, 36, 0.07); padding: 2px 6px; border-radius: 4px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .home { display: inline-flex; align-items: center; gap: 8px; height: 48px; margin-top: 32px; padding: 0 24px; border-radius: 999px;
+    background: #c8283a; color: #fff8f0; font: 500 16px/1 'Geist', sans-serif; text-decoration: none; cursor: pointer;
+    box-shadow: 0 1px 2px rgba(70, 20, 25, 0.25), 0 8px 18px rgba(200, 40, 58, 0.28); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .home:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(70, 20, 25, 0.25), 0 12px 24px rgba(200, 40, 58, 0.34); }
+  .home:focus-visible { outline: 2px solid #1d3fa6; outline-offset: 3px; }
+  .sig { margin-top: 40px; font: 400 32px/1 'Yellowtail', cursive; color: #1d3fa6; }
+
+  .rule { background: rgba(43, 40, 36, 0.18); }
+
+  /* the back of a postcard: a stamp, then the address it was sent to, crossed out */
+  .addr { position: relative; display: flex; flex-direction: column; }
+  .addr canvas { align-self: flex-end; width: 168px; rotate: 4deg; filter: drop-shadow(0 1px 1px rgba(60, 20, 20, 0.3)) drop-shadow(0 6px 10px rgba(60, 20, 20, 0.2)); }
+  .lines { margin-top: auto; padding-top: 32px; }
+  .lines div { position: relative; height: 44px; border-bottom: 1px solid rgba(43, 40, 36, 0.28); font: 400 26px/44px 'Yellowtail', cursive; color: #1d3fa6;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lines .x::after { content: ""; position: absolute; left: -4px; top: 50%; height: 2px; width: calc(var(--w, 100%) + 8px); background: #c8283a;
+    rotate: -2deg; transform-origin: left; scale: 0 1; animation: strike 0.5s 1.9s ease-out forwards; }
+  @keyframes strike { to { scale: 1 1; } }
+
+  /* the rubber stamp: drawn to a canvas, pressed in with a thud */
+  .ink { position: absolute; pointer-events: none; translate: -50% -50%; mix-blend-mode: multiply; animation: press 0.32s cubic-bezier(0.3, 1.4, 0.5, 1) both; }
+  .ink.go { transition: opacity 0.6s ease; opacity: 0; }
+  @keyframes press { from { opacity: 0; scale: 1.7; } 60% { opacity: 0.92; } to { opacity: 0.88; scale: 1; } }
+
+  @media (max-width: 760px) {
+    .card { grid-template-columns: 1fr; gap: 32px; padding: 32px 24px; rotate: -0.5deg; }
+    @keyframes drop { from { opacity: 0; translate: 0 -40px; rotate: -4deg; } to { opacity: 1; translate: 0 0; rotate: -0.5deg; } }
+    .rule { display: none; }
+    .addr { order: -1; }
+    .addr canvas { width: 132px; }
+    .lines { padding-top: 16px; }
+    h1 { font-size: 40px; }
+    .msg p { font-size: 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card, .card.thud, .ink { animation: none; }
+    .lines .x::after { animation: none; scale: 1 1; }
+  }
+</style>
+</head>
+<body>
+  <main class="card" id="card">
+    <div class="msg">
+      <h1>Lost in the post</h1>
+      <p>Nothing lives at <code id="path">this address</code>. It may have moved, or there's a typo somewhere.</p>
+      <a class="home" href="/">Back to the portfolio</a>
+      <div class="sig">Aarya Shah</div>
+    </div>
+    <div class="rule"></div>
+    <div class="addr" aria-hidden="true">
+      <canvas id="stamp"></canvas>
+      <div class="lines"><div class="x" id="to"></div><div>aarya.wtf</div><div></div></div>
+    </div>
+  </main>
+<script src="print.js"></script>
+<script>
+  const card = document.getElementById('card');
+  const path = decodeURI(location.pathname);
+  // long addresses wrap after a slash, never mid-word
+  const code = document.getElementById('path');
+  code.textContent = '';
+  ('aarya.wtf' + path).split('/').forEach((part, i) => { if (i) { code.append('/'); code.append(document.createElement('wbr')); } code.append(part); });
+  const to = document.getElementById('to');
+  to.textContent = path;
+
+  // paper grain, the same as the postcard on the mat
+  const g = document.createElement('canvas'); g.width = g.height = 360;
+  Print.paper(g.getContext('2d'), 360, 360, '#fbf7ec', 41, 10);
+  card.style.setProperty('--grain', `url(${g.toDataURL()})`);
+
+  // one of the project stamps, cancelled with today's date and a 404
+  const IDS = ['goalkeeper', 'prd-loop', 'phonepe', 'dayro', 'lamad', 'transporter', 'quickmart', 'ride-through-the-valley'];
+  const M = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  const now = new Date();
+  const img = new Image();
+  img.onload = () => document.fonts.ready.then(() => {
+    const s = Print.stamp(img, { x: 330, y: 214, R: 46, top: 'NOT FOUND', bottom: 'AARYA SHAH', l1: M[now.getMonth()] + ' ' + now.getDate(), l2: '404', color: '#2a3a7a', seed: 404 });
+    const c = document.getElementById('stamp'); c.width = s.inked.width; c.height = s.inked.height;
+    c.getContext('2d').drawImage(s.inked, 0, 0);
+  });
+  img.src = 'stamps/' + IDS[Math.floor(Math.random() * IDS.length)] + '.webp';
+
+  document.fonts.ready.then(() => {
+    // the strike-through runs only as far as the words do
+    const r = document.createRange(); r.selectNodeContents(to);
+    to.style.setProperty('--w', Math.min(r.getBoundingClientRect().width, to.clientWidth) + 'px');
+  });
+
+  // RETURN TO SENDER, in red ink with the rubber's gaps in it
+  function rubber(seed) {
+    const rand = Print.rng(seed), K = 2, W = 300, H = 104;
+    const c = document.createElement('canvas'); c.width = W * K; c.height = H * K;
+    const x = c.getContext('2d'); x.scale(K, K);
+    x.strokeStyle = x.fillStyle = '#c8283a';
+    x.lineWidth = 5; x.strokeRect(4, 4, W - 8, H - 8);
+    x.lineWidth = 1.6; x.strokeRect(12, 12, W - 24, H - 24);
+    x.textAlign = 'center';
+    x.font = "800 30px 'Geist', sans-serif"; x.fillText('RETURN TO SENDER', W / 2, 54, W - 44);
+    x.font = "700 14px 'Geist', sans-serif";
+    const t = 'ADDRESS UNKNOWN', sp = 3.2; let w = 0; for (const ch of t) w += x.measureText(ch).width + sp; w -= sp;
+    let cx = W / 2 - w / 2; x.textAlign = 'left'; for (const ch of t) { x.fillText(ch, cx, 80); cx += x.measureText(ch).width + sp; }
+    // wear: speckles and a lighter patch where the stamp didn't press evenly
+    x.globalCompositeOperation = 'destination-out';
+    for (let i = 0; i < 900; i++) { x.globalAlpha = 0.3 + rand() * 0.7; x.beginPath(); x.arc(rand() * W, rand() * H, rand() * 1.4, 0, Math.PI * 2); x.fill(); }
+    const gx = rand() * W, gy = rand() * H, gr = x.createRadialGradient(gx, gy, 0, gx, gy, 120);
+    gr.addColorStop(0, 'rgba(0,0,0,.28)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+    x.globalAlpha = 1; x.fillStyle = gr; x.fillRect(0, 0, W, H);
+    return c;
+  }
+
+  const inks = [];
+  let n = 0;
+  function press(px, py, rot) {
+    const c = rubber(++n * 97);
+    const narrow = card.clientWidth < 600;
+    c.className = 'ink';
+    c.style.width = (narrow ? 210 : 280) + 'px';
+    c.style.left = px + 'px'; c.style.top = py + 'px';
+    c.style.rotate = rot + 'deg';
+    card.appendChild(c);
+    inks.push(c);
+    if (inks.length > 8) { const old = inks.shift(); old.classList.add('go'); setTimeout(() => old.remove(), 700); }
+    setTimeout(() => { card.classList.remove('thud'); void card.offsetWidth; card.classList.add('thud'); }, 150);
+  }
+
+  // the first one lands on its own, over the address
+  document.fonts.ready.then(() => setTimeout(() => {
+    const a = document.querySelector('.addr').getBoundingClientRect(), b = card.getBoundingClientRect();
+    press(a.left - b.left + a.width / 2, a.top - b.top + a.height * (card.clientWidth < 600 ? 0.62 : 0.66), -12);
+  }, 1100));
+
+  // and every click on the card stamps it again
+  card.addEventListener('click', (e) => {
+    if (e.target.closest('a')) return;
+    const b = card.getBoundingClientRect();
+    press(e.clientX - b.left, e.clientY - b.top, (Math.random() - 0.5) * 36);
+  });
+</script>
+</body>
+</html>

@@ -1243,7 +1243,7 @@
     else if (b.dataset.s) { painter.setSize(+b.dataset.s); }
     else if (b.dataset.a === 'erase') { painter.erase(!painter.eraser); }
     else if (b.dataset.a === 'clear') { painter.clear(performance.now()); }
-    else if (b.dataset.a === 'save') { painter.save('picnic.png'); savedPageAt = performance.now(); }
+    else if (b.dataset.a === 'save') { painter.save('aarya-wtf.png'); savedPageAt = performance.now(); }
     setPaint(painter.colour, painter.eraser);
   });
   // under the page, centred on it, and the brush ring following the cursor over it
